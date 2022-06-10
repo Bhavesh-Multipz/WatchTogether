@@ -11,7 +11,11 @@ data class ChatDataNewResponse(
 	val success: Int? = null,
 
 	@field:SerializedName("messageData")
-	val messageData: ArrayList<MessageDataItem>? = null
+	val messageData: ArrayList<MessageDataItem>? = null,
+
+	@field:SerializedName("result")
+	val result: MessageDataItem? = null
+
 )
 
 data class MessageDataItem(

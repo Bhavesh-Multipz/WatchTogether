@@ -76,7 +76,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     private lateinit var binding: ActivityWatchTogetherVideoBinding
     private var isScroll: Boolean? = true
     private var chatDataList: ArrayList<MessageDataItem>? = null
-
     var chatAdapter: WatchTogetherChatAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -186,11 +185,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
     private fun onCurrentMessage() {
         SocketConnector.getSocket()!!.on(
-            "getMessages"
+            "getPostMessage"
         ) { args ->
 
             val data = args[0] as JSONObject
             try {
+                val result = data.getJSONObject("result")
 
                 val chatData: ChatDataNewResponse =
                     Gson().fromJson(
@@ -199,7 +199,10 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     )
 
                 if(actualPostId == chatData.postId){
-                    chatDataList!!.addAll(chatData.messageData!!)
+                    val messageData: MessageDataItem =
+                        Gson().fromJson(result.toString(), object : TypeToken<MessageDataItem?>() {}.type)
+
+                    chatDataList!!.add(messageData)
                     notifyList()
                     scrollViewToLastPos(true)
                 }
