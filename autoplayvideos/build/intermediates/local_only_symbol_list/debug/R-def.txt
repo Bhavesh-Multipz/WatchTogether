@@ -1,0 +1,7 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_card
+id exo_player
+id ivCover
+layout exo_video_image
+string app_name

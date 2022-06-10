@@ -1,0 +1,139 @@
+{
+  "project_info": {
+    "project_number": "926332255620",
+    "firebase_url": "https://explorii.firebaseio.com",
+    "project_id": "explorii",
+    "storage_bucket": "explorii.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926332255620:android:f58233351810d5ec7db1d1",
+        "android_client_info": {
+          "package_name": "com.instaconnect.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "926332255620-74k4jrsffctnfu4k112br8bgt5i14t5u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "fb9b7df381b1886a4ec026bee9500cfa39bd3332"
+          }
+        },
+        {
+          "client_id": "926332255620-bbjcmq88v2sk4ltgi2rh0ctgp7gbejco.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "323e2738e3dc03dd6b1eaeb4a590ebcfe2400b1a"
+          }
+        },
+        {
+          "client_id": "926332255620-c6vsf91bc747e5snkbam5tgtqdoql0oj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "eb0e3ef1332c7050c8b69905ffe899fc4efadeed"
+          }
+        },
+        {
+          "client_id": "926332255620-lued5k3de2d6q4jp5770cir5a4upqafj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "ccfb78433ac2ce481ae43df7f3bd8992ee5bf4c0"
+          }
+        },
+        {
+          "client_id": "926332255620-oce950f1nshha1hkif8uv4hm3dvc6l9q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "2bc2dcdf898093d996a3e6992f39ece5496e51c6"
+          }
+        },
+        {
+          "client_id": "926332255620-ql5bc82oc542v24e3qapni4nr7vti6vu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "50a417c7927195ff911695761ce900671157a166"
+          }
+        },
+        {
+          "client_id": "926332255620-uk41vqcam2auv2jok6cvvnj84kmbcsbd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.instaconnect.android",
+            "certificate_hash": "0769556970d61c24c569da2cde907a4804b37b4f"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWUsZVEqhaa7_1OTJOTQRQVyO-76bsxCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "926332255620-oknjkui2g4bne2k2fgidu1p4tc1fl4gb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "926332255620-l1u3b40q6kpgd0g4e87ntj6o623fq9vn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.instaconnect.instaconnect"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926332255620:android:228deda597719bf27db1d1",
+        "android_client_info": {
+          "package_name": "instaconnect.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "926332255620-gmcne2jjp8bu7gjgnub6co5d6ug4o41j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "instaconnect.app",
+            "certificate_hash": "25e2792ddb926115077c6f7067d51a7a4631dfb8"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWUsZVEqhaa7_1OTJOTQRQVyO-76bsxCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "926332255620-oknjkui2g4bne2k2fgidu1p4tc1fl4gb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "926332255620-l1u3b40q6kpgd0g4e87ntj6o623fq9vn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.instaconnect.instaconnect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_100_percent"
+    android:orientation="vertical">
+
+    <!--No Streams Available.\nCheck Back Later-->
+    <com.instaconnect.android.widget.BasicTextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_130sdp"
+        android:background="@color/transparent_100_percent"
+        android:gravity="center_horizontal"
+        android:text="No post available"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sdp"
+        app:typeFace="@string/bold" />
+
+</FrameLayout>

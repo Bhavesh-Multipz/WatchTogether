@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.instaconnect.android.widget.RelativeViewLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_viewlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    app:progressView="@layout/progress_center">
+
+    <include layout="@layout/include_main_bg_trans" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_260sdp"
+        android:background="@drawable/layout_bg"
+        android:paddingTop="@dimen/_24sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize">
+
+            <com.instaconnect.android.widget.BasicTextView
+                android:id="@+id/tv_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/public_profile"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16sdp"
+                app:typeFace="@string/bold" />
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_8sdp"
+                app:srcCompat="@drawable/ic_back_glass"
+                app:tint="@color/white" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_img"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_200sdp"
+        app:cardCornerRadius="@dimen/_12sdp">
+
+        <ImageView
+            android:id="@+id/img_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop">
+
+        </ImageView>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.instaconnect.android.widget.BasicEditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/card_img"
+        android:layout_marginLeft="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginRight="@dimen/_40sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/layout_medium_rounded_white_glass"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:hint="Enter Name"
+        android:maxLength="30"
+        android:maxLines="1"
+        android:padding="@dimen/_8sdp"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="@color/transparent_white_hex_10"
+        android:textSize="@dimen/_15sdp" />
+
+    <com.instaconnect.android.widget.BasicButton
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_40sdp"
+        android:layout_marginBottom="@dimen/_40sdp"
+        android:background="@drawable/layout_square_rounded_white_glass"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:maxLength="30"
+        android:maxLines="1"
+        android:padding="@dimen/_8sdp"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15sdp" />
+
+</com.instaconnect.android.widget.RelativeViewLayout>

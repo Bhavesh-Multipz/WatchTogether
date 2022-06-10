@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.instaconnect.android.utils.dialog_helper.ListDialogModel"/>
+
+    </data>
+
+<RelativeLayout android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:paddingTop="@dimen/_8sdp"
+    android:paddingBottom="@dimen/_8sdp"
+    android:paddingStart="@dimen/_18sdp"
+    android:paddingRight="@dimen/_60sdp"
+    android:paddingEnd="@dimen/_60sdp"
+    android:paddingLeft="@dimen/_18sdp"
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/iv_item_image"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:scaleType="fitCenter"/>
+
+    <com.instaconnect.android.widget.BasicTextView
+        android:id="@+id/tv_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:layout_toEndOf="@id/iv_item_image"
+        android:layout_toRightOf="@+id/iv_item_image"
+        android:text="Placeholder"
+        android:textColor="@color/black"
+        android:visibility="visible"
+        android:textStyle="bold" />
+
+    </RelativeLayout>
+</layout>

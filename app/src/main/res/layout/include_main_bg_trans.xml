@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/img_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/main_bg" />
+
+    <!--<io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"android:id="@+id/blurLayout"android:layout_width="match_parent"android:layout_height="match_parent"android:layout_centerInParent="true"android:visibility="visible"blurkit:blk_blurRadius="4"blurkit:blk_cornerRadius="0dp"blurkit:blk_fps="0"blurkit:blk_downscaleFactor="0.12"/>-->
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.1"
+        android:background="#ffffff" />
+
+</RelativeLayout>

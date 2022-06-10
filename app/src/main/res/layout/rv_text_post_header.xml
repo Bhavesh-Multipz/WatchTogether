@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--    <rana.jatin.core.widget.HexagonMaskView-->
+    <!--    android:scaleType="fitXY"-->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_user_image"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_margin="@dimen/_2sdp"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/ic_profile"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="@dimen/_1sdp" />
+
+    <com.instaconnect.android.widget.BasicTextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/tv_follow"
+        android:layout_toRightOf="@+id/iv_user_image"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+        android:paddingVertical="6dp"
+        android:text="Username"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
+        app:fontFamily="@string/regular" />
+
+    <View
+        android:id="@+id/option"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_55sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_follow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/_4sdp"
+        android:layout_toLeftOf="@+id/iv_favourite"
+        android:padding="@dimen/_4sdp"
+        android:text="@string/follow"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"/>
+
+    <ImageView
+        android:id="@+id/iv_favourite"
+        android:layout_width="@dimen/_22sdp"
+        android:layout_height="@dimen/_22sdp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/_4sdp"
+        android:layout_toLeftOf="@+id/iv_option"
+        app:tint="@color/colorPrimary"
+        android:src="@drawable/ic_favourites" />
+
+    <ImageView
+        android:id="@+id/iv_option"
+        android:layout_width="@dimen/_22sdp"
+        android:layout_height="@dimen/_22sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/_5sdp"
+        app:tint="@color/colorPrimary"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/ic_share" />
+
+</RelativeLayout>

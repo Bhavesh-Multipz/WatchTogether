@@ -1,0 +1,5 @@
+int drawable ic_card 0x0
+int id exo_player 0x0
+int id ivCover 0x0
+int layout exo_video_image 0x0
+int string app_name 0x0

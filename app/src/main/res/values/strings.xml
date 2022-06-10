@@ -1,0 +1,389 @@
+<resources>
+    <string name="app_name">Watch Together</string>
+
+    <string name="facebook_app_id" translatable="false">257470076267801</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb257470076267801</string>
+
+    <!--fonts settings-->
+    <string name="bold">SFCompactText_Bold.otf</string>
+    <string name="regular">SFCompactText_Regular.otf</string>
+    <string name="italic">SFCompactText_RegularItalic.otf</string>
+    <string name="savoye">Savoye.ttf</string>
+    <string name="brush_script">brush_script.ttf</string>
+    <string name="chalkboard_bold">Chalkboard_Bold.ttf</string>
+    <string name="baoli_medium">baoli_medium.ttf</string>
+    <string name="gurumukhi">gurumukhi.ttc</string>
+    <string name="not_exist">Not exists</string>
+
+    <!-- app strings-->
+    <string name="intra_message">Watch Together</string>
+    <string name="selecting">By selecting continue you agree to our</string>
+    <string name="terms_policy">Terms and Policies</string>
+    <string name="login_text">Select Your Country \n Enter Your Phone Number \n and \n Click Continue </string>
+    <string name="number_verification">NUMBER VERIFICATION</string>
+    <!--  <string name="code">Enter the 4 digit code sent to you at</string>-->
+    <string name="code">Enter your 4 digit code</string>
+    <string name="not_receive_code">Did not receive any code?</string>
+    <string name="enter_name">Enter Name and Phone \n Number</string>
+    <string name="note1">If you do not receive an SMS in 30 seconds</string>
+    <string name="note2">If you do not receive an SMS in 30 seconds\nPlease Check your number.</string>
+    <string name="chatMessage">Send a message...</string>
+    <string name="continues">Continue</string>
+    <string name="terms">Terms &amp; Policies</string>
+
+    <string name="msg_no_sim">Mobile network not available</string>
+    <string name="error_invalid_pnone">Please enter valid phone number</string>
+    <string name="msg_no_internet">Please connect to internet</string>
+    <string name="type_caption">Add a Caption</string>
+    <string name="error_no_file_manager">File manager not installed</string>
+    <string name="msg_something_wrong">Something went wrong</string>
+    <string name="msg_check_your_number">Please check your number.</string>
+    <string name="profile_information">Profile Information</string>
+    <string name="please_provide_photo">Please provide your name and an optional profile photo</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="name">Name:-</string>
+    <string name="invite">Invite</string>
+    <string name="chat">Chat</string>
+    <string name="chats">Chats</string>
+    <string name="edit_profile">Edit profile photo</string>
+    <string name="calls">Calls</string>
+    <string name="group">Group</string>
+    <string name="camera">Camera</string>
+    <string name="more">More</string>
+    <string name="is_typing">is typing...</string>
+    <string name="work_in_progress">Work in progress..</string>
+    <string name="last_seen">Last seen</string>
+    <string name="online">Online</string>
+    <string name="typing">Typing</string>
+    <string name="hold_for_video_tap_for_photo">Hold for video or Tap for photo</string>
+    <string name="retry">RETRY</string>
+    <string name="open">OPEN</string>
+    <string name="no_media">Media not available</string>
+    <string name="unblock">Unblock</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="post_a_message">Post a message...</string>
+    <string name="public_profile">Public Profile</string>
+    <string name="private_profile">Private Profile</string>
+    <string name="public_terms">1. You are at least 13 years old.\n\n2. You will not post material that is offensive to others such as, but not limited to, foul language, violence or harm to self or others, nudity or pornography, sale or promotion of firearms,alcohol,smoking and other drugs.
+    \n\n3. You will not post material that is inappropriate such as, but not limited to, animal cruelty or cruelty to any living beings (and any products arising from such),racism or hatred towards others and anything that may make other users feel uncomfortable in any way or form.
+    \n\n4. Watch Together is not promoting or endorsing anything that is posted. The postings are full responsibility morally, ethically, legally and in every other possible way of the person or entity who is posting. The postings solely reflect the view or opinion of the person posting, and do not in any way or form reflect the opinion or view of Watch Together and it\'s team.
+    \n\n5. You will not  post anything that violates intellectual property of others including copyright and trademark infringement.
+    \n\n6. You will not post anything that promotes harm to self or other living beings.
+        \n\n7. You will not perform any activities that puts yourself or other living beings at risk of harm in any way or form. This includes (but not limited to) both for posting reasons or after viewing the content in the app.
+    \n\n8. You will use the app responsibly to avoid any health risks to self or others.
+    \n\n9. Visit and fully read and review the \'Terms and Conditions\' in its entirety before proceeding. Once finished, you can click Accept to continue.</string>
+    <string name="public_hint_1">Double tap on photo or video to enlarge or shrink it.</string>
+    <string name="ok">OK</string>
+    <string name="public_hint_2">Use this space to make postings to your local community.</string>
+    <string name="spaming">This is Spamming</string>
+    <string name="inappropriate">This is inappropriate</string>
+    <string name="harassment">Bullying or harassment</string>
+    <string name="hate">Hate, violence or illegal goods</string>
+    <string name="sexual_activity">Sexual activity or nudity</string>
+    <string name="copyright">Copyright or trademark infringement</string>
+    <string name="self_injury">Self injury or injury to others</string>
+    <string name="violate_term">Violates Watch Together\'s Terms and Policies</string>
+    <string name="copy_url"><![CDATA[Copy & Share URL]]></string>
+    <string name="post_facebook">Post On Facebook</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="report_concern">Report a Concern</string>
+    <string name="cancel">Cancel</string>
+    <string name="location_off">Location services are off</string>
+    <string name="please_on_location">Please turn on location services in settings</string>
+    <string name="ok_caps">OK</string>
+    <string name="sort_by_near_me">Sort \'Near Me\' By Distance</string>
+    <string name="change_bg_trending">Change Background</string>
+    <string name="reset_public">Reset Public Settings</string>
+    <string name="photos">Photos</string>
+    <string name="background_liv">Background Library</string>
+    <string name="reset_bg_public">Reset Background</string>
+    <string name="change_radius">Change Radius</string>
+    <string name="sort_radius">Sort By Radius</string>
+    <string name="hyperlink">HyperLink</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="my_community">My Community</string>
+    <string name="my_neighbourhood">My Neighbourhood</string>
+    <string name="explore">Explore</string>
+    <string name="stream">Streams</string>
+    <string name="my_page">My Page</string>
+    <string name="community">Community</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+    <string name="invite_sub">Connect with me on this amazing app.\nhttps://play.google.com/store/apps/details?id=instaconnect.app</string>
+    <string name="invite_sub_new">Let’s watch Movies, TV Shows and Videos together on this amazing app. \n\nDownload ‘Watch Together’ today from: \n\nGoogle Play Store \nhttps://play.google.com/store/apps/details?id=com.instaconnect.android \n\nAppStore \nhttps://apps.apple.com/us/app/watch-together-live-explorii/id1230854709</string>
+    <string name="search_here">Search here</string>
+    <string name="hold_record">Hold to record, release to send</string>
+    <string name="invite_contacts_and_start_connecting">Invite Contacts and Start Connecting!</string>
+    <string name="messages_are_encrypted">Messages are encrypted</string>
+    <string name="pinned_message">pinned</string>
+    <string name="share_msg_txt">Connect with me on this amazing app.\n</string>
+    <string name="share_with_my_contacts_txt">Share with My Contacts</string>
+    <string name="share_with_others_txt">Share with Others</string>
+    <string name="block_user">Block User</string>
+    <string name="select_category_to_post_in_txt">Select Category to Post In</string>
+    <string name="settings_txt">Settings</string>
+    <string name="notification_txt">Notifications</string>
+    <string name="verificaation_txt">A 4 digit verification code will be sent via SMS to verify your mobile number! </string>
+
+
+    <string name="following">Following</string>
+    <string name="requested">Requested</string>
+    <string name="follow">Follow</string>
+
+    <string name="inappropriate_dialog_heading">If you feel someone is in immediate danger, call your local emergency services right away.</string>
+
+    <!--CJ: updated-->
+    <string-array name="trending">
+        <item>Trending</item>
+        <item>News</item>
+        <item>Movies &amp; TV</item>
+        <item>Travel</item>
+        <item>Music &amp; Dance</item>
+        <item>Food &amp; Drink</item>
+        <item>Fashion</item>
+        <item>Funny</item>
+        <item>Sports</item>
+        <item>Ideas &amp; Inspirations</item>
+        <item>Fitness</item>
+        <item>Weddings &amp; Celebrations</item>
+        <item>Technology</item>
+        <item>Arts &amp; Photography</item>
+        <item>Video Games</item>
+        <item>Pets</item>
+        <item>Cars</item>
+        <item>Home Decor</item>
+        <item>Comics</item>
+        <item>DIY</item>
+        <item>Seasonal</item>
+        <item>Kids Zone</item>
+        <item>University/College</item>
+        <item>Events &amp; Programs</item>
+        <item>Buy &amp; Sell</item>
+        <item>Finance</item>
+        <item>Real Estate</item>
+    </string-array>
+
+    <!--CJ: added-->
+    <string-array name="category_api">
+        <item>worldwide</item>
+        <item>News</item>
+        <item>Movies \u0020TV</item>
+        <item>Travel</item>
+        <item>Music \u0020Dance</item>
+        <item>Food \u0020Drink</item>
+        <item>Fashion</item>
+        <item>Funny Clips</item>
+        <item>Sports \u0020Games</item>
+        <item>Ideas \u0020Inspirations</item>
+        <item>Fitness</item>
+        <item>Weddings \u0020Celebrations</item>
+        <item>Technology</item>
+        <item>Arts \u0020Photography</item>
+        <item>Video Games</item>
+        <item>Pets</item>
+        <item>Cars</item>
+        <item>Home Decor</item>
+        <item>Comics</item>
+        <item>DIY</item>
+        <item>Seasonal</item>
+        <item>Kids Zone</item>
+        <item>University_College</item>
+        <item>Events \u0020Programs</item>
+        <item>Shopping</item>
+        <item>Finance</item>
+        <item>Real Estate</item>
+    </string-array>
+
+    <!--CJ: updated-->
+    <string-array name="more_items">
+        <item></item>
+        <item>Profile</item>
+        <item>Hyperlink</item>
+        <item>Reset Settings</item>
+        <item></item>
+        <item>Profile</item>
+        <item>Backgrounds</item>
+        <item>Notifications</item>
+        <item>Reset Private Chat Settings</item>
+        <item></item>
+        <item>Blocked Users</item>
+        <item>Logout</item>
+    </string-array>
+
+    <!--CJ: updated-->
+    <string-array name="more_header">
+        <item>EXPLORE PAGE SETTINGS</item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>PRIVATE CHAT SETTINGS</item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>GENERAL SETTING</item>
+        <item></item>
+        <item></item>
+    </string-array>
+
+    <!-- <string-array name="notification_header_array">
+         <item>PRIVATE CHAT SETTINGS</item>
+         <item>GROUP CHAT</item>
+         <item></item>
+         <item>ALL SOUNDS</item>
+         <item></item>
+     </string-array>
+     <string-array name="notification_bottom_text_array">
+         <item></item>
+         <item></item>
+         <item>Preview message text inside new message notification.</item>
+         <item></item>
+         <item></item>
+     </string-array>
+
+     <string-array name="notification_first_title_array">
+         <item>Alert</item>
+         <item>Alert</item>
+         <item>Show Preview</item>
+         <item>Sounds</item>
+         <item>Reset Notfications</item>
+     </string-array>
+
+     <string-array name="notification_second_title_array">
+         <item>Sound</item>
+         <item>Sound</item>
+         <item></item>
+         <item></item>
+         <item></item>
+     </string-array>
+     <string-array name="notification_sound_name_array">
+         <item>Sound1</item>
+         <item>Sound1</item>
+         <item></item>
+         <item></item>
+         <item></item>
+     </string-array>
+ -->
+
+    <string-array name="notification_header_array">
+        <item>PRIVATE CHAT SETTINGS</item>
+        <item></item>
+        <item></item>
+    </string-array>
+
+    <string-array name="notification_bottom_text_array">
+        <item></item>
+        <item>Preview message text inside new message notification.</item>
+        <item></item>
+    </string-array>
+
+    <string-array name="notification_first_title_array">
+        <item>Alert</item>
+        <item>Show Preview</item>
+        <item>Reset Notfications</item>
+    </string-array>
+
+    <string-array name="notification_second_title_array">
+        <item>Sound</item>
+        <item></item>
+        <item></item>
+    </string-array>
+    <string-array name="notification_sound_name_array">
+        <item>Sound1</item>
+        <item></item>
+        <item></item>
+    </string-array>
+
+    <string-array name="notification_sound_namelist_array">
+        <item>Sound1</item>
+        <item>Sound2</item>
+        <item>Sound3</item>
+        <item>Sound4</item>
+        <item>Sound5</item>
+        <item>Sound6</item>
+        <item>Sound7</item>
+        <item>Sound8</item>
+        <item>Sound9</item>
+        <item>Sound10</item>
+    </string-array>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="room_status">status</string>
+
+    <string name="error_retrieving_access_token">Error retrieving token</string>
+
+    <string name="log_out">Log Out</string>
+
+    <string name="permissions_needed">Camera and Microphone permissions needed. Please allow in App Settings for additional functionality.</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+
+    <!-- Strings related to Settings -->
+
+
+    <string name="codec_title">Set your preferred audio and video codec. Not all codecs are supported with Group rooms. The media server will fallback to OPUS or VP8 if a preferred codec is not supported.</string>
+
+    <string name="pref_title_audio_codec">Audio Codec</string>
+
+    <string name="pref_title_video_codec">Video Codec</string>
+
+    <string name="sender_bandwidth_constraints">Set sender bandwidth constraints. Zero represents the WebRTC default value which varies by codec.</string>
+
+    <string name="max_audio_bitrate">Max Audio Bitrate (bits per second)</string>
+
+    <string name="max_video_bitrate">Max Video Bitrate (bits per second)</string>
+
+    <string name="turn_speaker_on">Speaker ON</string>
+
+    <string name="vp8_simulcast">VP8 Simulcast</string>
+
+    <string name="default_room_name">shiny</string>
+    <string name="CALL_DB_NAME">EXPLORII</string>
+    <string name="speaker_txt">Speaker</string>
+    <string name="unfollow_msg">If you change your mind, you will have to follow %s again.</string>
+    <string name="add_comment">Add a comment...</string>
+    <!-- <string name="enter_the_room_password_to_watch_streaming_session">Enter the room password to watch streaming session</string>-->
+    <string name="enter_the_room_password_to_watch_streaming_session">Enter the password</string>
+    <string name="send_friend_request">Are you sure to send friend request?</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="spamming">Spamming</string>
+    <string name="incoming_call">Incoming</string>
+    <string name="outgoing_call">Outgoing</string>
+    <string name="missed_call">Missed Call</string>
+    <string name="my_favourites_post">My Favourites Post</string>
+    <string name="create_group">Create Group</string>
+    <string name="group_name">#Group Name</string>
+    <string name="type_a_message">Type your message</string>
+    <string name="exit_group">Exit Group</string>
+    <string name="yes">Yes</string>
+    <string name="exit">Exit</string>
+    <string name="save_to_gallery">Save to Gallery</string>
+    <string name="share_picture">Share Picture</string>
+    <string name="forward_to_explorii">Forward using Watch Together</string>
+    <string name="live_broadcast">Live Broadcast</string>
+    <string name="paste_or_type_video_url">Paste or type video URL</string>
+    <string name="go">GO</string>
+    <string name="manage_external_storage_dialog_text">This will allow you to access files when using Watch Together and it CANNOT see anything. It is completely private and secure. This can be configured in Privacy Policy.</string>
+    <string name="login_with">Login With</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="help">Help?</string>
+    <string name="are_you_sure_want_to_logout">Are you sure want to logout?</string>
+    <string name="blocked_user">Blocked Users</string>
+    <string name="no_blocked_user_found">No blocked user found!</string>
+    <string name="list_of_working_websites">List of Working Websites</string>
+
+    <string name="message_permissions_reject">App will not work without these permissions</string>
+    <string name="okay">Okay</string>
+    <string name="msg_sms_permission">Sms permission needed for sending/receiving sms. Please allow in App Settings for additional functionality</string>
+    <string name="msg_microphone_permision">Microphone permission needed for recording. Please allow in App Settings for additional functionality</string>
+    <string name="msg_strorage_permission">External Storage permission needed. Please allow in App Settings for additional functionality.</string>
+    <string name="msg_camera_permission">Camera permission needed. Please allow in App Settings for additional functionality.</string>
+    <integer name="fragment_transition_time">250</integer>
+
+</resources>

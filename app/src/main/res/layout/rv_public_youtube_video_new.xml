@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.instaconnect.android.widget.RelativeViewLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_8sdp"
+    android:background="@drawable/layout_square_rounded_white_glass"
+    android:padding="@dimen/_8sdp">
+
+    <ImageView
+        android:id="@+id/iv_imageBlur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/videoCardView"
+        android:layout_alignTop="@+id/videoCardView"
+        android:layout_alignEnd="@+id/videoCardView"
+        android:layout_alignBottom="@+id/videoCardView"
+        android:alpha="0.7"
+        android:background="@color/grey"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/relYoutubeGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/relVideoHeader"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_youtubeGridImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_private_room_new" />
+
+        <TextView
+            android:id="@+id/tvYoutubeGridCaption"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:maxLines="3"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp"
+            tools:text="This is caption, This is caption, This is caption, This is caption" />
+
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/videoCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/transparent_100_percent"
+        app:cardElevation="0dp">
+
+        <com.instaconnect.android.widget.RelativeViewLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_100sdp">
+
+            <LinearLayout
+                android:id="@+id/relHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/header"
+                    layout="@layout/rv_post_header" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/relYoutube"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relHeader"
+                android:background="@color/transparent_100_percent">
+
+                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                    android:id="@+id/youtubeplayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_160sdp"
+                    app:background="@color/transparent_100_percent"
+                    app:showFullScreenButton="false"
+                    app:showYouTubeButton="false">
+
+                    <ImageView
+                        android:id="@+id/mute_unmute_button"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end|bottom"
+                        android:layout_marginBottom="@dimen/_18sdp"
+                        android:padding="@dimen/_12sdp"
+                        android:src="@drawable/ic_mute" />
+
+                    <com.allattentionhere.autoplayvideos.ExoVideoImage
+                        android:id="@+id/player"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_280sdp"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:keepScreenOn="true"
+                        android:visibility="gone" />
+
+                </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
+
+
+                <ImageView
+                    android:id="@+id/btnClick"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_180sdp"
+                    android:layout_alignTop="@+id/youtubeplayer"
+                    android:layout_alignEnd="@+id/youtubeplayer"
+                    android:layout_alignBottom="@+id/youtubeplayer"
+                    android:layout_marginEnd="@dimen/_32sdp"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tvYoutubeGridViewCaption"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_25sdp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:maxLines="3"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="gone"
+                    tools:text="This is caption, This is caption, This is caption, This is caption" />
+
+            </RelativeLayout>
+
+            <com.instaconnect.android.widget.BasicTextView
+                android:id="@+id/tv_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:background="@drawable/round_transparent_fill"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_8sdp"
+                android:paddingTop="@dimen/_4sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp"
+                android:visibility="gone"
+                app:typeFace="@string/regular" />
+
+            <com.instaconnect.android.widget.BasicTextView
+                android:id="@+id/tvLbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relYoutube"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/_14sdp"
+                android:visibility="gone"
+                app:typeFace="@string/bold" />
+
+
+            <RelativeLayout
+                android:id="@+id/relLabels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvLbl">
+
+                <com.instaconnect.android.widget.BasicEmojiTextView
+                    android:id="@+id/tvText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_6sdp"
+                    android:layout_marginRight="@dimen/_6sdp"
+                    android:layout_toLeftOf="@id/ivAudio"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:gravity="bottom"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/ivAudio"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:src="@drawable/mute"
+                    android:visibility="gone"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:id="@+id/img_togather"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvText"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginLeft="@dimen/_6sdp"
+                    android:adjustViewBounds="true"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_watch_together_glass"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/relFooter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relLabels"
+                android:visibility="gone">
+
+                <include
+                    android:id="@+id/footer"
+                    layout="@layout/rv_post_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/visibility_percents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:textColor="@color/red"
+                android:textSize="@dimen/_28sdp"
+                android:visibility="gone" />
+
+        </com.instaconnect.android.widget.RelativeViewLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</com.instaconnect.android.widget.RelativeViewLayout>

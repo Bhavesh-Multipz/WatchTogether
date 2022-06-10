@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_8sdp">
+
+    <com.instaconnect.android.widget.RoundImageView
+        android:id="@+id/img_bg"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_160sdp"
+        android:alpha="0.8"
+        android:scaleType="centerCrop"
+        app:cornerRadius="10dp"
+        app:shapeAppearanceOverlay="@style/ImageView.Corner.Top"
+        app:srcCompat="@drawable/main_bg" />
+
+    <com.instaconnect.android.widget.RelativeViewLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layout_password_rounded_white_glass">
+
+        <com.instaconnect.android.widget.BasicTextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_22sdp"
+            android:text="Select Country"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp"
+            app:typeFace="@string/bold" />
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvName"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:background="@drawable/layout_rounded_white_glass"
+            app:ccp_contentColor="@color/white"
+            app:ccp_showFullName="true"
+            app:ccp_showNameCode="false"
+            app:ccp_showPhoneCode="false" />
+
+        <com.instaconnect.android.widget.BasicTextView
+            android:id="@+id/tvDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ccp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/_26sdp"
+            android:layout_marginTop="@dimen/_26sdp"
+            android:layout_marginEnd="@dimen/_26sdp"
+            android:layout_marginBottom="@dimen/_26sdp"
+            android:background="@drawable/layout_rounded_white_glass"
+            android:paddingHorizontal="@dimen/_30sdp"
+            android:paddingVertical="@dimen/_6sdp"
+            android:text="Done"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold"
+            app:typeFace="@string/bold" />
+
+        <com.instaconnect.android.widget.BasicTextView
+            android:id="@+id/tvCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ccp"
+            android:layout_marginStart="@dimen/_26sdp"
+            android:layout_marginTop="@dimen/_26sdp"
+            android:layout_marginEnd="@dimen/_26sdp"
+            android:layout_marginBottom="@dimen/_26sdp"
+            android:background="@drawable/layout_rounded_white_glass"
+            android:paddingHorizontal="@dimen/_30sdp"
+            android:paddingVertical="@dimen/_6sdp"
+            android:text="Cancel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold"
+            app:typeFace="@string/bold" />
+
+    </com.instaconnect.android.widget.RelativeViewLayout>
+
+</RelativeLayout>

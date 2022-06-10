@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.login.LoginActivity">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <com.instaconnect.android.widget.RelativeViewLayout
+            android:id="@+id/ll_splash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:progressView="@layout/progress_center">
+
+            <include layout="@layout/include_main_bg_trans" />
+
+            <com.instaconnect.android.utils.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/blurLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/rel_bottom"
+                android:layout_centerInParent="true"
+                android:visibility="visible"
+                blurkit:blk_blurRadius="@integer/blur_radius"
+                blurkit:blk_cornerRadius="0dp"
+                blurkit:blk_downscaleFactor="0.12"
+                blurkit:blk_fps="0">
+
+                <RelativeLayout
+                    android:id="@+id/relative"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/layout_bg_white_glass">
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/viewpager"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:id="@+id/SliderDots"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="@dimen/_16sdp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_3sdp" />
+
+                </RelativeLayout>
+            </com.instaconnect.android.utils.BlurLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/_16sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.instaconnect.android.widget.BasicTextView
+                        android:id="@+id/txt_login_with"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:layout_marginBottom="@dimen/_16sdp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="@string/login_with"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16sdp"
+                        android:layout_marginBottom="@dimen/_16sdp"
+                        android:orientation="horizontal">
+
+                        <com.instaconnect.android.utils.BlurLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            app:blk_blurRadius="@integer/blur_radius"
+                            app:blk_cornerRadius="0dp"
+                            app:blk_downscaleFactor="0.12"
+                            app:blk_fps="0">
+
+                            <RelativeLayout
+                                android:id="@+id/img_google"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_marginEnd="@dimen/_8sdp"
+                                android:background="@drawable/layout_square_rounded_white_glass">
+
+                                <ImageView
+                                    android:layout_width="21dp"
+                                    android:layout_height="25dp"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/ic_google_white" />
+
+                            </RelativeLayout>
+
+                        </com.instaconnect.android.utils.BlurLayout>
+
+                        <com.instaconnect.android.utils.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            blurkit:blk_blurRadius="@integer/blur_radius"
+                            blurkit:blk_cornerRadius="0dp"
+                            blurkit:blk_downscaleFactor="0.12"
+                            blurkit:blk_fps="0">
+
+                            <RelativeLayout
+                                android:id="@+id/img_fb"
+                                android:layout_width="@dimen/_45sdp"
+                                android:layout_height="@dimen/_45sdp"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:background="@drawable/layout_square_rounded_white_glass">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_20sdp"
+                                    android:layout_height="@dimen/_20sdp"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/ic_fb_white" />
+
+                            </RelativeLayout>
+
+                        </com.instaconnect.android.utils.BlurLayout>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_16sdp">
+
+                        <com.instaconnect.android.widget.BasicTextView
+                            android:id="@+id/tv_terms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:padding="@dimen/_8sdp"
+                            android:text="@string/terms"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sdp" />
+
+                        <com.instaconnect.android.widget.BasicTextView
+                            android:id="@+id/tv_help"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:padding="@dimen/_8sdp"
+                            android:text="@string/help"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sdp"
+                            android:visibility="gone" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_fb_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone" />
+
+        </com.instaconnect.android.widget.RelativeViewLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

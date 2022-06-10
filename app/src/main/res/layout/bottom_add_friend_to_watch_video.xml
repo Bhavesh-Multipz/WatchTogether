@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent_100_percent"
+    android:padding="@dimen/_8sdp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ImageView.Corner" />
+
+        <RelativeLayout
+            android:id="@+id/rel_border"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_19sdp"
+            android:background="@drawable/layout_medium_rounded_white_glass"
+            android:padding="@dimen/_8sdp">
+
+            <TextView
+                android:id="@+id/tvInviteFriendsHead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:text="Invite Friends"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_18sdp" />
+
+            <LinearLayout
+                android:id="@+id/linTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInviteFriendsHead"
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/linExploriiUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_10sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center_horizontal"
+                            android:src="@drawable/ic_top_friend_logo_glass" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/_4sdp"
+                            android:text="Friends"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!--<RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/img_explorii"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_38sdp"
+                            android:layout_marginHorizontal="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:background="@drawable/main_bg"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/ImageView.Corner" />
+
+                        <TextView
+                            android:id="@+id/txt_explorii"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_38sdp"
+                            android:layout_marginHorizontal="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:background="@drawable/layout_medium_gradiant_rounded_white_glass"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_20sdp"
+                            android:paddingVertical="@dimen/_8sdp"
+                            android:text="Explorii"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_18" />
+                    </RelativeLayout>-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/_1sdp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:id="@+id/linContactUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_10sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center_horizontal"
+                            android:src="@drawable/ic_user_plus_glass" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/_4sdp"
+                            android:text="Contacts"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!--<RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/img_contact"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_38sdp"
+                            android:layout_marginHorizontal="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/main_bg"
+                            app:shapeAppearanceOverlay="@style/ImageView.Corner" />
+
+                        <TextView
+                            android:id="@+id/txt_contacts"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_38sdp"
+                            android:layout_marginHorizontal="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:background="@drawable/layout_medium_gradiant_rounded_white_glass"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_20sdp"
+                            android:paddingVertical="@dimen/_8sdp"
+                            android:text="Contacts"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_18" />
+                    </RelativeLayout>-->
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/ed_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linTop"
+                android:background="@drawable/layout_square_rounded_white_glass"
+                android:drawableStart="@drawable/ic_search_glass2"
+                android:drawablePadding="@dimen/_8sdp"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Search"
+                android:padding="@dimen/_8sdp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/transparent_white_hex_10"
+                android:textCursorDrawable="@drawable/custom_cursor"
+                android:textSize="16sp" />
+
+            <FrameLayout
+                android:id="@+id/invite_contact_frg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:layout_below="@+id/ed_search" />
+
+            <com.allattentionhere.autoplayvideos.recyclerview.BasicRecyclerView
+                android:id="@+id/recycler_my_friend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/ed_search"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:visibility="visible">
+
+            </com.allattentionhere.autoplayvideos.recyclerview.BasicRecyclerView>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_16sdp" />
+
+</RelativeLayout>

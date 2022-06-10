@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/cl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <include layout="@layout/include_main_bg_trans"/>
+
+    <com.instaconnect.android.widget.RelativeViewLayout
+        android:id="@+id/rl_main_viewlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@id/blur_view"
+        android:background="@color/transparent_100_percent"
+        app:errorView="@layout/error"
+        app:progressView="@layout/progress_center">
+
+        <LinearLayout
+            android:id="@+id/fl_container_home_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent_100_percent"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/pager_headers_flv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/rounded_corner_light_green_bg">
+
+                <com.instaconnect.android.widget.BasicRadioButton
+                    android:id="@+id/rbPublic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/home_tab_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="6dp"
+                    android:text="New Group"
+                    android:textColor="@drawable/selected_radio_text"
+                    android:textSize="@dimen/_14sdp"
+                    app:typeFace="@string/regular" />
+
+                <com.instaconnect.android.widget.BasicRadioButton
+                    android:id="@+id/rbChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_toEndOf="@+id/rbPublic"
+                    android:background="@drawable/home_tab_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="6dp"
+                    android:text="Chats"
+                    android:textColor="@drawable/selected_radio_text"
+                    android:textSize="@dimen/_14sdp"
+                    app:typeFace="@string/regular" />
+
+                <com.instaconnect.android.widget.BasicRadioButton
+                    android:id="@+id/rbContacts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|right"
+                    android:layout_marginStart="16dp"
+                    android:layout_toEndOf="@+id/rbChat"
+                    android:background="@drawable/home_tab_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingStart="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="6dp"
+                    android:text="Contacts"
+                    android:textColor="@drawable/selected_radio_text"
+                    android:textSize="@dimen/_14sdp"
+                    app:typeFace="@string/regular" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent_100_percent">
+
+                <com.instaconnect.android.widget.viewPager.BasicViewPager
+                    android:id="@+id/main_view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:background="@color/transparent_100_percent"
+                    android:layout_above="@id/fl_container_home_other" />
+
+                <RelativeLayout
+                    android:id="@+id/fl_container_home_other"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent_100_percent"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </com.instaconnect.android.widget.RelativeViewLayout>
+
+    <io.alterac.blurkit.BlurLayout
+        android:id="@+id/blur_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        app:blk_blurRadius="@integer/blur_radius"
+        app:blk_cornerRadius="0dp"
+        app:blk_downscaleFactor="0.12"
+        app:blk_fps="0">
+
+        <LinearLayout
+            android:id="@+id/lin_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:background="@drawable/layout_bottom_navigation_glass"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="@dimen/_12sdp">
+
+            <RelativeLayout
+                android:id="@+id/relLive"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="@dimen/_14sdp"
+                android:background="@drawable/layout_rounded_white_glass">
+
+                <ImageView
+                    android:id="@+id/ivLive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_9sdp"
+                    android:src="@drawable/ic_live_glass"
+                    tools:ignore="UnusedAttribute" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relFriend"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="@dimen/_14sdp">
+
+                <ImageView
+                    android:id="@+id/ivFriend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_9sdp"
+                    android:src="@drawable/ic_friend_glass"
+                    tools:ignore="UnusedAttribute" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relPlus"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="@dimen/_14sdp">
+
+                <ImageView
+                    android:id="@+id/ivPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_9sdp"
+                    android:src="@drawable/ic_plus_glass"
+                    tools:ignore="UnusedAttribute" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relSetting"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="@dimen/_14sdp">
+
+                <ImageView
+                    android:id="@+id/ivSetting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_9sdp"
+                    android:src="@drawable/ic_setting_glass"
+                    tools:ignore="UnusedAttribute" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </io.alterac.blurkit.BlurLayout>
+
+    <com.instaconnect.android.widget.CustomBottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        app:itemHorizontalTranslationEnabled="false"
+        app:itemIconSize="@dimen/_18sdp"
+        android:visibility="gone"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/navigation" />
+
+</RelativeLayout>

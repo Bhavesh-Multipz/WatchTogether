@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_8sdp"
+    android:layout_margin="@dimen/_8sdp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<com.instaconnect.android.widget.RelativeViewLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.instaconnect.android.widget.BasicTextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Uploading"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        app:typeFace="@string/bold"
+        android:layout_marginTop="@dimen/_22sdp"/>
+
+    <ProgressBar
+        android:id="@+id/pbProcessing"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvName"
+        android:layout_margin="@dimen/_16sdp"
+        android:indeterminateOnly="false"/>
+
+</com.instaconnect.android.widget.RelativeViewLayout>
+
+</androidx.cardview.widget.CardView>

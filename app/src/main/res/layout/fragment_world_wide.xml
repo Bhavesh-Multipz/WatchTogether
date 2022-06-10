@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_100_percent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.instaconnect.android.widget.FrameViewLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/flViewLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:emptyView="@layout/empty_public_post"
+            tools:context="instaconnect.android.ui.publicChat.worldwide.WorldwideFragment">
+
+            <com.allattentionhere.autoplayvideos.VideoRecyclerView
+                android:id="@+id/rv_worldwide"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone"
+                android:clipToPadding="false" />
+
+        </com.instaconnect.android.widget.FrameViewLayout>
+
+    </FrameLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

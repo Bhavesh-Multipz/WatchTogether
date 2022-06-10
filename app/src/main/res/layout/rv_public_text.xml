@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.instaconnect.android.widget.RelativeViewLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relText2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/textCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.instaconnect.android.widget.RelativeViewLayout
+            android:id="@+id/relText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.instaconnect.android.widget.RelativeViewLayout
+                android:id="@+id/relHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/header"
+                    layout="@layout/rv_text_post_header" />
+
+            </com.instaconnect.android.widget.RelativeViewLayout>
+
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relHeader"
+                android:layout_marginLeft="@dimen/_6sdp"
+                android:layout_marginRight="@dimen/_6sdp"
+                android:gravity="start"
+                tools:text="post"
+                android:textColor="@color/txt_second"
+                android:textSize="@dimen/_15sdp"
+                android:fontFamily="@string/regular"
+                tools:ignore="MissingConstraints" />
+
+            <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+            <com.instaconnect.android.widget.BasicTextView
+                android:id="@+id/tvdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvText"
+                android:background="@color/white"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_3sdp"
+                android:text="Today 6 PM"
+                android:textSize="@dimen/_12sdp"
+                android:visibility="gone"
+                app:typeFace="@string/regular" />
+
+            <TextView
+                android:id="@+id/visibility_percents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:textColor="@color/red"
+                android:textSize="@dimen/_28sdp"
+                android:visibility="gone" />
+
+            <com.instaconnect.android.widget.RelativeViewLayout
+                android:id="@+id/relFooter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvdate">
+
+                <include
+                    android:id="@+id/footer"
+                    layout="@layout/rv_text_post_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.instaconnect.android.widget.RelativeViewLayout>
+
+        </com.instaconnect.android.widget.RelativeViewLayout>
+
+    </androidx.cardview.widget.CardView>
+    
+</com.instaconnect.android.widget.RelativeViewLayout>

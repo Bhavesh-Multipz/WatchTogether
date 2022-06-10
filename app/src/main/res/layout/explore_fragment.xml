@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/cl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_100_percent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.instaconnect.android.widget.RelativeViewLayout
+        android:id="@+id/rl_main_viewlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:errorView="@layout/error"
+        android:paddingTop="@dimen/_16sdp"
+        android:background="@color/transparent_100_percent"
+        app:progressView="@layout/progress_center">
+
+        <RelativeLayout
+            android:id="@+id/header_rel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/transparent_100_percent"
+            android:padding="@dimen/_16sdp">
+
+            <io.alterac.blurkit.BlurLayout
+                xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                android:visibility="visible"
+                blurkit:blk_blurRadius="@integer/blur_radius"
+                blurkit:blk_cornerRadius="10dp"
+                blurkit:blk_downscaleFactor="0.12"
+                blurkit:blk_fps="0">
+                <LinearLayout
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/layout_square_rounded_white_glass"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivList"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@drawable/ic_list_glass" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:background="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/ivGrid"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@drawable/ic_grid_glass" />
+
+                </LinearLayout>
+            </io.alterac.blurkit.BlurLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <io.alterac.blurkit.BlurLayout
+                    xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    blurkit:blk_blurRadius="@integer/blur_radius"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    blurkit:blk_cornerRadius="0dp"
+                    blurkit:blk_downscaleFactor="0.12"
+                    blurkit:blk_fps="0">
+                    <ImageView
+                        android:id="@+id/binocular_iv"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@drawable/ic_glob_glass" />
+                </io.alterac.blurkit.BlurLayout>
+
+                <io.alterac.blurkit.BlurLayout
+                    xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginHorizontal="@dimen/_4sdp"
+                    blurkit:blk_blurRadius="@integer/blur_radius"
+                    blurkit:blk_cornerRadius="0dp"
+                    blurkit:blk_downscaleFactor="0.12"
+                    blurkit:blk_fps="0">
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@drawable/ic_filter_glass" />
+                </io.alterac.blurkit.BlurLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_container_trending"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_below="@id/header_rel"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <FrameLayout
+            android:id="@+id/main_frg_fl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/fl_container_trending"
+            android:background="@color/transparent_100_percent" />
+
+    </com.instaconnect.android.widget.RelativeViewLayout>
+
+
+
+    <!-- belove view is avoid crash from previous implementation-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorAccent">
+
+        <com.instaconnect.android.widget.BasicTextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <ImageView
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/community_iv"
+            android:adjustViewBounds="true"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_binocular"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/community_iv"
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/myfav_iv"
+            android:adjustViewBounds="true"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_naighbourhood"
+            app:tint="@color/white" />
+
+
+        <ImageView
+            android:id="@+id/myfav_iv"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/shareIv"
+            android:adjustViewBounds="true"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_unfavourites"
+            android:visibility="gone"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/shareIv"
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/mypage_iv"
+            android:adjustViewBounds="true"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_share_icon"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/mypage_iv"
+            android:layout_width="@dimen/_26sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:adjustViewBounds="true"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_setting"
+            app:tint="@color/white" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/selection_tv_rel"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/selection_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:paddingVertical="4dp"
+            android:textColor="#fff"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/lin_grid"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_below="@+id/selection_tv"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="-12dp"
+                android:layout_marginEnd="-12dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bottom_line"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

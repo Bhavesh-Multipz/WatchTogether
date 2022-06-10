@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_100_percent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/relSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corner_gray_bg"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:src="@drawable/ic_search_green" />
+
+                <com.instaconnect.android.widget.BasicEditText
+                    android:id="@+id/inputSearch1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/search_here"
+                    android:padding="10dp"
+                    android:paddingStart="@dimen/_40sdp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="@dimen/_12sdp"
+                    app:typeFace="@string/bold" />
+
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/inputSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_square_rounded_white_glass"
+                android:drawableStart="@drawable/ic_search_glass2"
+                android:drawablePadding="@dimen/_8sdp"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Search"
+                android:padding="@dimen/_8sdp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/transparent_white_hex_10"
+                android:textCursorDrawable="@drawable/custom_cursor"
+                android:textSize="@dimen/_13sdp" />
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/inputSearch">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingVertical="@dimen/_16sdp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</layout>

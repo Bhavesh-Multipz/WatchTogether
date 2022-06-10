@@ -1,0 +1,6 @@
+com.allattentionhere.autoplayvideos
+drawable ic_card
+id exo_player
+id ivCover
+layout exo_video_image
+string app_name

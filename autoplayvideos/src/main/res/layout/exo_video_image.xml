@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <merge>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/black">
+
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/exo_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignStart="@+id/ivCover"
+                    android:layout_alignLeft="@+id/ivCover"
+                    android:layout_alignTop="@+id/ivCover"
+                    android:layout_alignEnd="@+id/ivCover"
+                    android:layout_alignRight="@+id/ivCover"
+                    android:layout_alignBottom="@+id/ivCover"
+                    app:resize_mode="fixed_width"
+                    app:show_buffering="false"
+                    app:surface_type="surface_view"
+                    app:use_controller="false" />
+
+                <com.allattentionhere.autoplayvideos.PercentageCropImageView
+                    android:id="@+id/ivCover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </merge>
+</layout>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/_4sdp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:id="@+id/lin_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="@dimen/_4sdp">
+
+            <ImageView
+                android:id="@+id/iv_like"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_unlike"
+                app:tint="@color/white"/>
+
+            <com.instaconnect.android.widget.BasicTextView
+                android:id="@+id/tv_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_favourite"
+                android:text="10k"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/lin_like"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp"
+            android:paddingRight="2dp">
+
+            <ImageView
+                android:id="@+id/iv_comment"
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                android:layout_marginTop="1dp"
+                app:tint="@color/white"
+                android:visibility="gone" />
+
+            <com.instaconnect.android.widget.BasicTextView
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/iv_comment"
+                android:paddingLeft="@dimen/_2sdp"
+                android:text="10k"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/lin_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.instaconnect.android.widget.BasicTextView
+                    android:id="@+id/tvViewCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="+10k"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"/>
+
+                <com.instaconnect.android.widget.BasicTextView
+                    android:id="@+id/tvViews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingRight="7dp"
+                    android:paddingBottom="2dp"
+                    android:text="Views"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_8sdp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivAudio"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                app:tint="@color/white"
+                android:visibility="gone"
+                android:src="@drawable/mute" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:visibility="gone">
+
+        <com.instaconnect.android.widget.RoundImageView
+            android:id="@+id/img_profile"
+            android:layout_width="@dimen/_38sdp"
+            android:layout_height="@dimen/_38sdp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_user_avatar" />
+
+        <com.instaconnect.android.widget.BasicEditText
+            android:id="@+id/et_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/round_white_fill"
+            android:hint="@string/add_comment"
+            android:padding="@dimen/_8sdp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey"
+            android:text="dfnjdfndfndfngdngn"
+            android:textSize="@dimen/_12sdp"
+            android:visibility="visible"
+            app:typeFace="@string/regular" />
+
+    </LinearLayout>
+
+    <com.instaconnect.android.widget.BasicTextView
+        android:id="@+id/tvdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_6sdp"
+        tools:text="Date"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_10sdp"
+        android:visibility="visible"
+        android:paddingBottom="@dimen/_10sdp"
+        app:typeFace="@string/regular" />
+
+</LinearLayout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:paddingVertical="@dimen/_4sdp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/temp_profile_pic"
+        app:civ_border_color="@color/white_smoke"
+        app:civ_border_width="1dp" />
+
+    <ImageView
+        android:id="@+id/iv_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/iv_profile"
+        android:layout_marginEnd="@dimen/_minus4sdp"
+        android:visibility="gone"
+        android:src="@drawable/ic_add_friend_glass" />
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_profile"
+        android:ellipsize="end"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:maxLines="2"
+        android:minLines="2"
+        android:text="Mark Less"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_10sdp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <com.instaconnect.android.widget.BasicTextView
+        android:id="@+id/tvInvite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/layout_square_rounded_white_glass"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:maxWidth="200dp"
+        android:paddingHorizontal="@dimen/_16sdp"
+        android:paddingVertical="6dp"
+        android:text="Invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_11sdp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+    <!-- </FrameLayout>-->
+
+</RelativeLayout>
