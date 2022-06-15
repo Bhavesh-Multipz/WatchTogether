@@ -59,7 +59,7 @@ class VideoListAdapter(
     val user: User,
     val lifecycle: Lifecycle,
     var currentLayoutType: String,
-    private val videoCountIncreaseListener: VideoCountIncreaseListener
+    private val videoCountIncreaseListener: VideoCountIncreaseListener,
 ) : ExoVideosAdapter() {
     val postsLists = ArrayList<PostsList>()
     private var hyperlinkIcon: Drawable =
@@ -75,7 +75,6 @@ class VideoListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExoViewHolder {
         val resultView: View
-        Log.e("ViewType", "$viewType...")
         when (viewType) {
             VIDEO -> {
                 resultView = LayoutInflater.from(parent.context)
@@ -99,7 +98,7 @@ class VideoListAdapter(
                 return ImageViewHolder(resultView)
             }
             else -> {
-                resultView = LayoutInflater.from(parent.getContext())
+                resultView = LayoutInflater.from(parent.context)
                     .inflate(R.layout.rv_public_text, parent, false)
                 return TextViewHolder(resultView)
             }
@@ -149,7 +148,6 @@ class VideoListAdapter(
                         })
                     }
                 } catch (e: Exception) {
-                    Log.d("TAG", "onViewAttachedToWindow: ccccccc" + e.message);
                     e.printStackTrace();
                 }
 
@@ -172,12 +170,8 @@ class VideoListAdapter(
         }
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-    }
-
     override fun onBindViewHolder(viewHolder: ExoViewHolder, position: Int) {
-        Log.d("viewholder", "onBindViewHolder")
+
         when (viewHolder) {
             is VideoViewHolder -> {
                 setVideoView(viewHolder, position, videoCountIncreaseListener)
@@ -193,51 +187,20 @@ class VideoListAdapter(
 
     override fun onViewRecycled(holder: ExoViewHolder) {
         super.onViewRecycled(holder)
-        Log.d("viewholder", "onViewRecycled" + holder.itemId)
     }
 
     private fun setVideoView(
         viewHolder: VideoViewHolder,
         position: Int,
-        videoCountIncreaseListener: VideoCountIncreaseListener?
+        videoCountIncreaseListener: VideoCountIncreaseListener?,
     ) {
         viewHolder.currentPosition = position
         viewHolder.tvDate.text = DateUtil.formatByDay((postsLists[position].date)!!)
         viewHolder.tvViewCount.text = prettyCount(postsLists[position].totalViews!!.toInt())
         viewHolder.tv_comment_count.text = prettyCount(postsLists[position].commentTotal)
         viewHolder.tv_like_count.text = prettyCount(postsLists[position].reaction!!.likes)
-        viewHolder.tvText.post {
-            hyperlinkIcon.setBounds(
-                0,
-                0,
-                viewHolder.tvText.lineHeight,
-                viewHolder.tvText.lineHeight
-            )
-            val myText: String? = postsLists[position].caption
-            val textLength: Int = myText!!.length
-            val sb = SpannableString("$myText     ")
-            if (postsLists[position].hyperlink != null && postsLists[position].hyperlink!!.trim { it <= ' ' }
-                    .isNotEmpty()) {
-                val imageSpan = ImageSpan(hyperlinkIcon, ImageSpan.ALIGN_BOTTOM)
-                sb.setSpan(
-                    imageSpan,
-                    textLength + 2,
-                    textLength + 3,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-            if (postsLists[position].caption != null && postsLists[position].caption != "") {
-                viewHolder.tvText.text = sb
-                /*if ((postsLists[position].mediaType == "web")) {
-                    viewHolder.tvText.text = sb
-                } else {
-                    viewHolder.tvText.text = sb
-                }*/
-            } else {
-                viewHolder.tvText.height = 5
-            }
-            viewHolder.tvText.movementMethod = LinkMovementMethod.getInstance()
-        }
+        viewHolder.tvText.text = postsLists[position].caption
+
         if ((postsLists[position].userId == user.phone)) {
             viewHolder.tv_follow.visibility = View.GONE
         }
@@ -591,7 +554,7 @@ class VideoListAdapter(
                     override fun onLoadCleared(placeholder: Drawable?) {}
                     override fun onResourceReady(
                         resource: Bitmap,
-                        transition: Transition<in Bitmap?>?
+                        transition: Transition<in Bitmap?>?,
                     ) {
                         val blur = Util.blur(context, resource)
                         Handler().postDelayed(object : Runnable {
@@ -708,42 +671,11 @@ class VideoListAdapter(
 
     private fun setYoutubeView(viewHolder: YoutubeViewHolder, position: Int) {
         viewHolder.currentPosition = position
-        viewHolder.tvDate.text = DateUtil.formatByDay((postsLists.get(position).date)!!)
-        viewHolder.tvViewCount.text = prettyCount(postsLists.get(position).totalViews!!.toInt())
-        viewHolder.tv_comment_count.text = prettyCount(postsLists.get(position).commentTotal)
-        viewHolder.tv_like_count.text = prettyCount(postsLists.get(position).reaction!!.likes)
-        viewHolder.tvText.post {
-            hyperlinkIcon.setBounds(
-                0,
-                0,
-                viewHolder.tvText.lineHeight,
-                viewHolder.tvText.lineHeight
-            )
-            val myText = postsLists[position].caption
-            val textLength = myText!!.length
-            val sb = SpannableString("$myText     ")
-            if (postsLists[position].caption != null && postsLists[position].caption!!.trim { it <= ' ' }
-                    .isNotEmpty()) {
-                val imageSpan = ImageSpan(hyperlinkIcon, ImageSpan.ALIGN_BOTTOM)
-                sb.setSpan(
-                    imageSpan,
-                    textLength + 2,
-                    textLength + 3,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-            if (postsLists[position].caption != null && postsLists[position].caption != "") {
-                viewHolder.tvText.text = sb
-                /*if ((postsLists[position].mediaType == "web")) {
-                    viewHolder.tvText.text = sb
-                } else {
-                    viewHolder.tvText.text = sb
-                }*/
-            } else {
-                viewHolder.tvText.height = 40
-            }
-            viewHolder.tvText.movementMethod = LinkMovementMethod.getInstance()
-        }
+        viewHolder.tvDate.text = DateUtil.formatByDay((postsLists[position].date)!!)
+        viewHolder.tvViewCount.text = prettyCount(postsLists[position].totalViews!!.toInt())
+        viewHolder.tv_comment_count.text = prettyCount(postsLists[position].commentTotal)
+        viewHolder.tv_like_count.text = prettyCount(postsLists[position].reaction!!.likes)
+        viewHolder.tvText.text = postsLists[position].caption
         viewHolder.mute_unmute_button.setOnClickListener { v: View? ->
             if (viewHolder.mYouTubePlayer != null) {
                 if (isMute) {
@@ -1230,103 +1162,84 @@ class VideoListAdapter(
                     viewHolder.mCover
                 )
             }
-            viewHolder.tvText.post(object : Runnable {
-                override fun run() {
-                    hyperlinkIcon.setBounds(
-                        0,
-                        0,
-                        viewHolder.tvText.lineHeight,
-                        viewHolder.tvText.lineHeight
+            viewHolder.tvText.post {
+                hyperlinkIcon.setBounds(
+                    0,
+                    0,
+                    viewHolder.tvText.lineHeight,
+                    viewHolder.tvText.lineHeight
+                )
+                val myText = postsLists[position].caption
+                val textLength = myText!!.length
+                val sb = SpannableString("$myText     ")
+                if (postsLists[position].hyperlink != null && !postsLists[position].hyperlink!!.isEmpty()) {
+                    val imageSpan = ImageSpan(hyperlinkIcon, ImageSpan.ALIGN_BOTTOM)
+                    sb.setSpan(
+                        imageSpan,
+                        textLength + 2,
+                        textLength + 3,
+                        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
                     )
-                    val myText = postsLists[position].caption
-                    val textLength = myText!!.length
-                    val sb = SpannableString("$myText     ")
-                    if (postsLists[position].hyperlink != null && !postsLists[position].hyperlink!!.isEmpty()) {
-                        val imageSpan = ImageSpan(hyperlinkIcon, ImageSpan.ALIGN_BOTTOM)
-                        sb.setSpan(
-                            imageSpan,
-                            textLength + 2,
-                            textLength + 3,
-                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                        )
-                    }
-                    viewHolder.tvText.visibility =
-                        if (postsLists.get(position).caption!!.isEmpty()) View.INVISIBLE else View.VISIBLE
-                    viewHolder.tvText.text = sb
-                    viewHolder.tvText.movementMethod = LinkMovementMethod.getInstance()
-                    viewHolder.tvViewCount.text =
-                        prettyCount(postsLists.get(position).totalViews!!.toInt())
-                    viewHolder.tv_comment_count.text =
-                        prettyCount(postsLists.get(position).commentTotal)
-                    viewHolder.tv_like_count.text = prettyCount(
-                        postsLists.get(position).reaction!!.likes
-                    )
-                    Log.e(
-                        "follow_image",
-                        postsLists[position].isPrivate
-                            .toString() + ".." + postsLists[position].follow!!.status
-                    )
-                    if (postsLists[position].favourite!!.status == 0) {
-                        viewHolder.iv_favourite.setImageResource(R.drawable.ic_unfavourites)
-                    } else {
-                        viewHolder.iv_favourite.setImageResource(R.drawable.ic_favourites)
-                    }
-                    if (postsLists[position].reaction!!.yourReaction.equals(
-                            "0",
-                            ignoreCase = true
-                        )
-                    ) {
-                        viewHolder.iv_like.setImageResource(R.drawable.ic_unlike)
-                    } else {
-                        viewHolder.iv_like.setImageResource(R.drawable.ic_like)
-                    }
-
-                    /*if (postsLists.get(position).isPrivate.equalsIgnoreCase("0") && postsLists.get(position).getFollow().getStatus() == 2) {
-                        viewHolder.tv_follow.setText("Following");
-                    } else if (postsLists.get(position).isPrivate.equalsIgnoreCase("1") && postsLists.get(position).getFollow().getStatus() == 1) {
-                        viewHolder.tv_follow.setText("Requested");
-                    } else {
-                        viewHolder.tv_follow.setText("+follow");
-                    }*/if (postsLists[position].follow!!.status == 0) {
-                        if (postsLists[position].isPrivate
-                                .equals("0", true)
-                        ) viewHolder.tv_follow.text =
-                            "Following" else if (postsLists[position].isPrivate
-                                .equals("1", true)
-                        ) viewHolder.tv_follow.text = "Requested"
-                    } else if (postsLists[position].follow!!.status == 1) viewHolder.tv_follow.text =
-                        "Requested" else if (postsLists[position].follow!!.status == 2) viewHolder.tv_follow.text =
-                        "Following" else if (postsLists[position].follow!!.status == 3) viewHolder.tv_follow.text =
-                        "+follow"
-                    viewHolder.tv_follow.setOnClickListener(object : View.OnClickListener {
-                        override fun onClick(view: View) {
-                            listListener.onItemClick(
-                                viewHolder.bindingAdapterPosition,
-                                postsLists[viewHolder.bindingAdapterPosition],
-                                viewHolder.tv_follow
-                            )
-                        }
-                    })
-                    viewHolder.lin_like.setOnClickListener(object : View.OnClickListener {
-                        override fun onClick(view: View) {
-                            listListener.onItemClick(
-                                viewHolder.bindingAdapterPosition,
-                                postsLists[viewHolder.bindingAdapterPosition],
-                                viewHolder.lin_like
-                            )
-                        }
-                    })
-                    viewHolder.lin_comment.setOnClickListener(object : View.OnClickListener {
-                        override fun onClick(view: View) {
-                            listListener.onItemClick(
-                                viewHolder.bindingAdapterPosition,
-                                postsLists[viewHolder.bindingAdapterPosition],
-                                viewHolder.lin_comment
-                            )
-                        }
-                    })
                 }
-            })
+                viewHolder.tvText.visibility =
+                    if (postsLists[position].caption!!.isEmpty()) View.INVISIBLE else View.VISIBLE
+                viewHolder.tvText.text = sb
+                viewHolder.tvText.movementMethod = LinkMovementMethod.getInstance()
+                viewHolder.tvViewCount.text =
+                    prettyCount(postsLists.get(position).totalViews!!.toInt())
+                viewHolder.tv_comment_count.text =
+                    prettyCount(postsLists[position].commentTotal)
+                viewHolder.tv_like_count.text = prettyCount(
+                    postsLists[position].reaction!!.likes
+                )
+
+                if (postsLists[position].favourite!!.status == 0) {
+                    viewHolder.iv_favourite.setImageResource(R.drawable.ic_unfavourites)
+                } else {
+                    viewHolder.iv_favourite.setImageResource(R.drawable.ic_favourites)
+                }
+                if (postsLists[position].reaction!!.yourReaction.equals("0", ignoreCase = true)) {
+                    viewHolder.iv_like.setImageResource(R.drawable.ic_unlike)
+                } else {
+                    viewHolder.iv_like.setImageResource(R.drawable.ic_like)
+                }
+
+                if (postsLists[position].follow!!.status == 0) {
+                    if (postsLists[position].isPrivate
+                            .equals("0", true)
+                    ) viewHolder.tv_follow.text =
+                        "Following" else if (postsLists[position].isPrivate
+                            .equals("1", true)
+                    ) viewHolder.tv_follow.text = "Requested"
+                } else if (postsLists[position].follow!!.status == 1)
+                    viewHolder.tv_follow.text =
+                        "Requested" else if (postsLists[position].follow!!.status == 2) viewHolder.tv_follow.text =
+                    "Following" else if (postsLists[position].follow!!.status == 3) viewHolder.tv_follow.text =
+                    "+follow"
+
+                viewHolder.tv_follow.setOnClickListener {
+                    listListener.onItemClick(
+                        viewHolder.bindingAdapterPosition,
+                        postsLists[viewHolder.bindingAdapterPosition],
+                        viewHolder.tv_follow
+                    )
+                }
+
+                viewHolder.lin_like.setOnClickListener {
+                    listListener.onItemClick(
+                        viewHolder.bindingAdapterPosition,
+                        postsLists[viewHolder.bindingAdapterPosition],
+                        viewHolder.lin_like
+                    )
+                }
+                viewHolder.lin_comment.setOnClickListener {
+                    listListener.onItemClick(
+                        viewHolder.bindingAdapterPosition,
+                        postsLists[viewHolder.bindingAdapterPosition],
+                        viewHolder.lin_comment
+                    )
+                }
+            }
             showImageLayout(viewHolder)
         }
     }
@@ -1336,12 +1249,9 @@ class VideoListAdapter(
         viewHolder.tvViewCount.visibility = View.VISIBLE
         viewHolder.tv_comment_count.visibility = View.VISIBLE
         viewHolder.tv_like_count.visibility = View.VISIBLE
-        //    viewHolder.tv_follow.setVisibility(View.VISIBLE); // montu
         viewHolder.tv_follow.visibility = View.GONE
-        //     viewHolder.iv_favourite.setVisibility(View.VISIBLE); // montu
         viewHolder.iv_favourite.visibility = View.GONE
         viewHolder.iv_like.visibility = View.VISIBLE
-//        viewHolder.tvText.visibility = View.VISIBLE
         viewHolder.tvUserName.visibility = View.VISIBLE
         viewHolder.lin_like.visibility = View.VISIBLE
         viewHolder.lin_comment.visibility = View.VISIBLE
@@ -1369,223 +1279,6 @@ class VideoListAdapter(
         viewHolder.relHeader.visibility = View.GONE
     }
 
-    /*private void setTextView(final TextViewHolder viewHolder, final int position) {
-        //   manageComment(postsLists.get(viewHolder.getbindingAdapterPosition()),viewHolder.llComment);
-        viewHolder.tvViewCount.setVisibility(View.GONE);
-        viewHolder.ivAudio.setVisibility(View.GONE);
-        viewHolder.lin_view.setVisibility(View.GONE);
-
-        if (postsLists.get(position).getCaption().contains("!@#$")) {
-            String replacedString = postsLists.get(position).getCaption().replace("!@#$", "1*12/");
-            String[] separated = replacedString.split("1*12/");
-            String title = "", body = "";
-            if (separated.length > 0) {
-                title = separated[0];
-            }
-
-            if (separated.length > 1) {
-                title = separated[0];
-                body = separated[1];
-            }
-            viewHolder.tvText.setText("");
-            SpannableString ss1 = new SpannableString(title);
-            ss1.setSpan(new StyleSpan(Typeface.BOLD), 0, ss1.length(), 0);
-            viewHolder.tvText.append(ss1);
-
-            if (!body.isEmpty() && !title.isEmpty()) {
-                viewHolder.tvText.append("\n");
-            }
-            viewHolder.tvText.append(body);
-            viewHolder.tvText.setTextColor(context.getResources().getColor(R.color.black));
-        } else {
-            viewHolder.tvText.setText(postsLists.get(position).getCaption());
-        }
-
-        // viewHolder.tvViewCount.setText(postsLists.get(position).getTotalViews());
-        viewHolder.tv_comment_count.setText(prettyCount(postsLists.get(position).getCommentTotal()));
-        viewHolder.tv_like_count.setText(prettyCount(postsLists.get(position).getReaction().getLikes()));
-        viewHolder.tvText.setMovementMethod(LinkMovementMethod.getInstance());
-        viewHolder.tvUserName.setText(postsLists.get(position).getUsername());
-        GlideHelper.loadFromUrl(context, postsLists.get(position).getUserimage(), R.drawable.placeholder, viewHolder.userPic);
-        viewHolder.tvDate.setText(DateUtil.formatByDay(postsLists.get(position).getDate()));
-
-        if (postsLists.get(position).getFavourite().getStatus() == 0) {
-            viewHolder.iv_favourite.setImageResource(R.drawable.ic_unfavourites);
-        } else {
-            viewHolder.iv_favourite.setImageResource(R.drawable.ic_favourites);
-        }
-
-        if (postsLists.get(position).getReaction().getYourReaction().equalsIgnoreCase("0")) {
-            viewHolder.iv_like.setImageResource(R.drawable.ic_unlike);
-        } else {
-            viewHolder.iv_like.setImageResource(R.drawable.ic_like);
-        }
-
-        Log.e("follow_text", postsLists.get(position).isPrivate + ".." + postsLists.get(position).getFollow().getStatus());
-
-        if (postsLists.get(position).getFollow().getStatus() == 0) {
-            if (postsLists.get(position).isPrivate.equalsIgnoreCase("0")) {
-                viewHolder.tv_follow.setText("Following");
-                viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.following_text_clr));
-            } else if (postsLists.get(position).isPrivate.equalsIgnoreCase("1")) {
-                viewHolder.tv_follow.setText("Requested");
-                viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-            }
-
-        } else if (postsLists.get(position).getFollow().getStatus() == 1) {
-            viewHolder.tv_follow.setText("Requested");
-            viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-        } else if (postsLists.get(position).getFollow().getStatus() == 2) {
-            viewHolder.tv_follow.setText("Following");
-            viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.following_text_clr));
-        } else if (postsLists.get(position).getFollow().getStatus() == 3) {
-            viewHolder.tv_follow.setText("+follow");
-            viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-        }
-
-
-        viewHolder.userPic.setOnClickListener(
-                v ->  {
-                    //goToOtherUserProfileActivity(postsLists.get(position).getUserId());
-                }
-        );
-
-        viewHolder.tvUserName.setOnClickListener(
-                v ->  {
-                    //goToOtherUserProfileActivity(postsLists.get(position).getUserId());
-                }
-        );
-
-        viewHolder.tvText.setOnClickListener(new DoubleClickListener() {
-            @Override
-            public void onSingleClick(View v) {
-                if (currentLayoutType.equals("Grid")) {
-                    listListener.onTextItemClick(postsLists.get(position), viewHolder.tvText, GRID_VIEW, position);
-                } else {
-                    listListener.onItemSingleClick(postsLists.get(viewHolder.getbindingAdapterPosition()), viewHolder.userPic, TEXT, position);
-                }
-            }
-
-            @Override
-            public void onDoubleClick(View v) {
-                listListener.onItemViewClick(postsLists.get(viewHolder.getbindingAdapterPosition()), viewHolder.userPic, TEXT);
-            }
-        });
-
-        viewHolder.ivOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listListener.onOptionClick(viewHolder.getbindingAdapterPosition(), postsLists.get(viewHolder.getbindingAdapterPosition()), TEXT);
-            }
-        });
-
-        viewHolder.tv_follow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (viewHolder.tv_follow.getText().equals(R.string.following)) {
-                    viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.following_text_clr));
-                } else {
-                    viewHolder.tv_follow.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                }
-                listListener.onItemClick(viewHolder.getbindingAdapterPosition(), postsLists.get(viewHolder.getbindingAdapterPosition()), viewHolder.tv_follow);
-            }
-        });
-
-        viewHolder.iv_favourite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listListener.onItemClick(viewHolder.getbindingAdapterPosition(), postsLists.get(viewHolder.getbindingAdapterPosition()), viewHolder.iv_favourite);
-            }
-        });
-        viewHolder.lin_like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listListener.onItemClick(viewHolder.getbindingAdapterPosition(), postsLists.get(viewHolder.getbindingAdapterPosition()), viewHolder.lin_like);
-            }
-        });
-        viewHolder.lin_comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listListener.onItemClick(viewHolder.getbindingAdapterPosition(), postsLists.get(viewHolder.getbindingAdapterPosition()), viewHolder.lin_comment);
-            }
-        });
-
-        if (currentLayoutType.equals("Grid")) {
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.tvText.getLayoutParams();
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 550);
-
-            RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 550);
-
-            params.setMargins(13, 13, 13, 13);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            viewHolder.textCard.setLayoutParams(params);
-            viewHolder.tvText.setLayoutParams(params2);
-            viewHolder.tvText.setGravity(Gravity.CENTER);
-            hideTextLayout(viewHolder);
-        } else {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            params2.addRule(RelativeLayout.CENTER_IN_PARENT);
-            viewHolder.textCard.setLayoutParams(params2);
-
-            viewHolder.tvText.setGravity(Gravity.START);
-            params.addRule(RelativeLayout.BELOW, R.id.relHeader);
-            params.setMargins(26, 0, 0, 0);
-            viewHolder.tvText.setLayoutParams(params);
-
-            showTextLayout(viewHolder);
-            if (postsLists.get(position).getUserId().equals(user.getPhone())) {
-                viewHolder.tv_follow.setVisibility(View.GONE);
-            } else {
-                viewHolder.tv_follow.setVisibility(View.GONE); //montu
-            }
-        }
-    }
-
-    private void showTextLayout(TextViewHolder viewHolder) {
-        viewHolder.tvDate.setVisibility(View.VISIBLE);
-        viewHolder.tvViewCount.setVisibility(View.VISIBLE);
-        viewHolder.tv_comment_count.setVisibility(View.VISIBLE);
-        viewHolder.tv_like_count.setVisibility(View.VISIBLE);
-        viewHolder.tv_follow.setVisibility(View.GONE);  // montu
-        viewHolder.iv_favourite.setVisibility(View.GONE); // montu
-        viewHolder.iv_like.setVisibility(View.VISIBLE);
-        viewHolder.tvUserName.setVisibility(View.VISIBLE);
-        viewHolder.lin_like.setVisibility(View.VISIBLE);
-        viewHolder.lin_comment.setVisibility(View.VISIBLE);
-        viewHolder.ivOption.setVisibility(View.VISIBLE);
-        viewHolder.relHeader.setVisibility(View.VISIBLE);
-        //   viewHolder.relFooter.setVisibility(View.VISIBLE);  // montu
-        viewHolder.userPic.setVisibility(View.VISIBLE);
-//        viewHolder.mVisibilityPercents.setVisibility(View.VISIBLE);
-    }
-
-    private void hideTextLayout(TextViewHolder viewHolder) {
-        viewHolder.tvDate.setVisibility(View.GONE);
-        viewHolder.tvViewCount.setVisibility(View.GONE);
-        viewHolder.tv_comment_count.setVisibility(View.GONE);
-        viewHolder.tv_like_count.setVisibility(View.GONE);
-        viewHolder.tv_follow.setVisibility(View.GONE);
-        viewHolder.iv_favourite.setVisibility(View.GONE);
-        viewHolder.iv_like.setVisibility(View.GONE);
-        viewHolder.tvUserName.setVisibility(View.GONE);
-        viewHolder.lin_like.setVisibility(View.GONE);
-        viewHolder.lin_comment.setVisibility(View.GONE);
-        viewHolder.ivOption.setVisibility(View.GONE);
-        viewHolder.relHeader.setVisibility(View.GONE);
-        viewHolder.relFooter.setVisibility(View.GONE);
-        viewHolder.userPic.setVisibility(View.GONE);
-        viewHolder.mVisibilityPercents.setVisibility(View.GONE);
-    }*/
     private fun manageComment(postsList: PostsList, llComment: LinearLayout) {
         if (postsList.commentVisible) {
             postsList.commentVisible = true
@@ -1610,16 +1303,15 @@ class VideoListAdapter(
             //   Log.e("viewType","Youtube");
             return YOUTUBE
         } else if ((postsLists[position].mediaType.equals("web", ignoreCase = true)
-                    && !postsLists[position].youTubeVideoId!!.trim { it <= ' ' }.isEmpty() &&
-                    postsLists.get(position).youTubeVideoId != "empty") //               && !postsLists.get(position).getGroupName().trim().isEmpty()
+                    && postsLists[position].youTubeVideoId!!.trim { it <= ' ' }.isNotEmpty() &&
+                    postsLists[position].youTubeVideoId != "empty")
         ) {
             return YOUTUBE
         } else if (postsLists[position].mediaType.equals("web", ignoreCase = true)) {
             return VIDEO
         } else if (postsLists[position].video != null && !postsLists[position].video!!.isEmpty()) {
-            //  Log.e("viewType","Video");
             return VIDEO
-        } else return if (postsLists.get(position).image != null && !postsLists.get(position).image!!.isEmpty()) {
+        } else return if (postsLists[position].image != null && !postsLists[position].image!!.isEmpty()) {
             IMAGE
         } else {
             TEXT
@@ -1653,7 +1345,7 @@ class VideoListAdapter(
             mediaType: String?,
             password: String?,
             hyperLink: String?,
-            type: Int
+            type: Int,
         )
     }
 
@@ -1669,6 +1361,7 @@ class VideoListAdapter(
         val YOUTUBE_WATCH_TOGATHER = 5
         val GRID_VIEW = 6
         val context: Context? = null
+
         fun extractYTId(ytUrl: String): String? {
             if (ytUrl.contains("youtu.be")) {
                 var vId: String? = null

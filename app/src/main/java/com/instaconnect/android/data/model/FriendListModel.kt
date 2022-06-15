@@ -1,156 +1,61 @@
-package com.instaconnect.android.data.model;
+package com.instaconnect.android.data.model
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.instaconnect.android.utils.Model;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import com.instaconnect.android.utils.Model
+import java.io.Serializable
+import java.util.ArrayList
 
-import java.io.Serializable;
-import java.util.List;
+class FriendListModel : Model(), Serializable {
+    @SerializedName("response")
+    @Expose
+    var response: Response? = null
 
-public class FriendListModel extends Model implements Serializable {
-
-        @SerializedName("response")
-        @Expose
-        private Response response;
-
-        public Response getResponse() {
-            return response;
-        }
-
-        public void setResponse(Response response) {
-            this.response = response;
-        }
-
-
-    public class Response implements Serializable{
-
+    inner class Response : Serializable {
         @SerializedName("is_last_page")
         @Expose
-        private Integer isLastPage;
+        var isLastPage: Int? = null
+
         @SerializedName("code")
         @Expose
-        private String code;
+        var code: String? = null
+
         @SerializedName("message")
         @Expose
-        private String message;
+        var message: String? = null
+
         @SerializedName("userlist")
         @Expose
-        private List<User> userlist = null;
-
-        public Integer getIsLastPage() {
-            return isLastPage;
-        }
-
-        public void setIsLastPage(Integer isLastPage) {
-            this.isLastPage = isLastPage;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public List<User> getUserlist() {
-            return userlist;
-        }
-
-        public void setUserlist(List<User> userlist) {
-            this.userlist = userlist;
-        }
-
+        var userlist: ArrayList<User>? = null
     }
 
-
-    public class User implements  Serializable{
-
+    inner class User : Serializable {
         @SerializedName("user_id")
         @Expose
-        private String userId;
+        var userId: String? = null
+
         @SerializedName("username")
         @Expose
-        private String username;
+        var username: String? = null
+
         @SerializedName("profile_pic")
         @Expose
-        private String profilePic;
+        var profilePic: String? = null
+
         @SerializedName("profile_url")
         @Expose
-        private String profileUrl;
+        var profileUrl: String? = null
+
         @SerializedName("is_online")
         @Expose
-        private String isOnline;
+        var isOnline: String? = null
+
         @SerializedName("datecreated")
         @Expose
-        private String datecreated;
+        var datecreated: String? = null
+
         @SerializedName("is_friended")
         @Expose
-        private int is_friended;
-
-        public String getDatecreated() {
-            return datecreated;
-        }
-
-        public void setDatecreated(String datecreated) {
-            this.datecreated = datecreated;
-        }
-
-        public int getIs_friended() {
-            return is_friended;
-        }
-
-        public void setIs_friended(int is_friended) {
-            this.is_friended = is_friended;
-        }
-
-        public String getIsOnline() {
-            return isOnline;
-        }
-
-        public void setIsOnline(String isOnline) {
-            this.isOnline = isOnline;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getProfilePic() {
-            return profilePic;
-        }
-
-        public void setProfilePic(String profilePic) {
-            this.profilePic = profilePic;
-        }
-
-        public String getProfileUrl() {
-            return profileUrl;
-        }
-
-        public void setProfileUrl(String profileUrl) {
-            this.profileUrl = profileUrl;
-        }
-
+        var is_friended = 0
     }
 }

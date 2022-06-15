@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.instaconnect.android.ui.friends.FriendsFragmentViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/include_main_bg_trans" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/_16sdp">
+
+            <RelativeLayout
+                android:id="@+id/rel_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_28sdp">
+
+                <ImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_top_friend_logo_glass" />
+
+                <ImageView
+                    android:id="@+id/iv_friend_request"
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_friend_user" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_10sdp">
+
+                <TextView
+                    android:id="@+id/txt_my_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:layout_gravity="center_vertical"
+                    android:text="My Friends"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/txt_add_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="Add Friends"
+                    android:textColor="@color/transparent_white_hex_10"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/txt_invite_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="Invite Contacts"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/transparent_white_hex_10"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/ed_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel_top"
+                android:background="@drawable/layout_square_rounded_white_glass"
+                android:drawableLeft="@drawable/ic_search_glass2"
+                android:drawablePadding="@dimen/_8sdp"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Search"
+                android:padding="@dimen/_8sdp"
+                android:textColorHint="@color/transparent_white_hex_10"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/invite_contact_frg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

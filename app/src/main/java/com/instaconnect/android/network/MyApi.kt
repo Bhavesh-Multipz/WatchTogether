@@ -8,6 +8,7 @@ import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogeth
 import com.instaconnect.android.ui.fragment.worldwide.Post
 import com.instaconnect.android.ui.login.SendOtp
 import com.instaconnect.android.ui.profile.ProfileResponse
+import com.instaconnect.android.ui.watch_together_room.PostReaction
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,20 +20,27 @@ import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 interface MyApi {
-
     @FormUrlEncoded
     @POST(ApiEndPoint.ENDPOINT_SEND_SOCIAL_ID)
     suspend fun sendSocialId(
         @Field("phone") phone: String, @Field("code") code: String,
         @Field("device_token") device_token: String, @Field("device_type") device_type: String,
-        @Field("username") userName: String, @Field("user_profile_url") userProfileUrl: String
+        @Field("username") userName: String, @Field("user_profile_url") userProfileUrl: String,
     ): SendOtp
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_GET_MY_FRIEND)
+    suspend fun getMyFriendList(
+        @Field("user_id") user_id: String?,
+        @Field("search") search: String?,
+        @Field("page") page: Int,
+    ): FriendListModel
 
     @Multipart
     @POST(ApiEndPoint.ENDPOINT_USER_PROFILE)
     suspend fun userProfile(
         @Part files: MultipartBody.Part,
-        @QueryMap params: Map<String, String>
+        @QueryMap params: Map<String, String>,
     ): ProfileResponse
 
     @FormUrlEncoded
@@ -40,7 +48,7 @@ interface MyApi {
     suspend fun getAddFriendList(
         @Field("user_id") user_id: String?,
         @Field("search") search: String?,
-        @Field("page") page: Int
+        @Field("page") page: Int,
     ): FriendListModel
 
     @FormUrlEncoded
@@ -52,7 +60,7 @@ interface MyApi {
         @Field("country") country: String?,
         @Field("radius") radius: String?,
         @Field("lat") lat: String?,
-        @Field("lng") lng: String?
+        @Field("lng") lng: String?,
     ): Post
 
     @FormUrlEncoded
@@ -60,15 +68,23 @@ interface MyApi {
     suspend fun invitePeopleToWatchVideo(
         @Field("user_id") user_id: String?,
         @Field("other_user_id") other_user_id: String?,
-        @Field("post_id") post_id: String?
+        @Field("post_id") post_id: String?,
     ): InvitePeopleForWatchTogether
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_ADD_POST_REACTION)
+    suspend fun addPostReaction(
+        @Field("postId") postId: String?,
+        @Field("reaction") reaction: String?,
+        @Field("userId") userId: String?,
+    ): PostReaction
 
     @FormUrlEncoded
     @POST(ApiEndPoint.ENDPOINT_REPORT_POST)
     suspend fun reportPost(
         @Field("post_id") post_id: String?,
         @Field("reason") reason: String?,
-        @Field("user_id") userId: String?
+        @Field("user_id") userId: String?,
     ): ReportPost
 
     @FormUrlEncoded
@@ -76,7 +92,7 @@ interface MyApi {
     suspend fun blockUser(
         @Field("block_user_id") block_user_id: String?,
         @Field("status") status: String?,
-        @Field("user_id") userId: String?
+        @Field("user_id") userId: String?,
     ): BlockUser
 
     companion object {

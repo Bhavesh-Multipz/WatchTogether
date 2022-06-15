@@ -10,6 +10,7 @@
             android:fitsSystemWindows="true">
 
             <!--<io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"android:id="@+id/blurLayout"android:layout_width="match_parent"android:layout_height="match_parent"android:layout_centerInParent="true"android:visibility="visible"blurkit:blk_blurRadius="4"blurkit:blk_cornerRadius="0dp"blurkit:blk_fps="0"blurkit:blk_downscaleFactor="0.12"/>-->
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -161,6 +162,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_10sdp"
                                 tools:text="983K" />
+
                         </RelativeLayout>
 
                     </RelativeLayout>
@@ -168,25 +170,21 @@
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvStreamUsers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/rvLiveUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_below="@+id/relUserDetail"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="10"
-                    tools:listitem="@layout/rv_stream_users_profile" />
+                    android:orientation="horizontal" />
 
                 <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
                     android:id="@+id/youtubeplayer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rvStreamUsers"
+                    android:layout_below="@+id/rvLiveUsers"
                     android:layout_marginTop="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-
                     app:layout_constraintTop_toTopOf="parent"
                     app:showFullScreenButton="true"
                     app:useWebUi="true">
@@ -197,7 +195,7 @@
                     android:id="@+id/exoPlayer"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_200sdp"
-                    android:layout_below="@+id/rvStreamUsers"
+                    android:layout_below="@+id/rvLiveUsers"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="@dimen/_100sdp"
                     android:background="@color/transparent_100_percent"
@@ -322,7 +320,7 @@
             <com.instaconnect.android.utils.heart_view.HeartsView
                 android:id="@+id/heartView"
                 android:layout_width="90dp"
-                android:layout_height="240dp"
+                android:layout_height="@dimen/_240sdp"
                 android:layout_above="@+id/bottomRelative"
                 android:layout_alignParentEnd="true"
                 android:background="@color/transparent_100_percent" />

@@ -20,6 +20,10 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     val invitePeopleResponse: LiveData<Resource<InvitePeopleForWatchTogether>>
         get() = _invitePeopleResponse
 
+    private val _postReactionResponse: MutableLiveData<Resource<PostReaction>> = MutableLiveData()
+    val postReactionResponse: LiveData<Resource<PostReaction>>
+        get() = _postReactionResponse
+
     suspend fun getAddFriendList(
         user_id: String,
         search: String,
@@ -36,5 +40,14 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     ) = viewModelScope.launch {
         _invitePeopleResponse.value = Resource.Loading
         _invitePeopleResponse.value = repository.invitePeopleToWatchVideo(user_id, other_user_id, post_id)
+    }
+
+    suspend fun addPostReaction(
+        post_id: String,
+        reaction: String,
+        user_id: String
+    ) = viewModelScope.launch {
+        _postReactionResponse.value = Resource.Loading
+        _postReactionResponse.value = repository.addPostReaction(post_id, reaction, user_id)
     }
 }

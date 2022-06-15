@@ -21,4 +21,12 @@ class WatchTogetherVideoRepository constructor(private val api : MyApi) : BaseRe
     ) = safeApiCall {
         api.invitePeopleToWatchVideo(user_id, other_user_id, post_id)
     }
+
+    suspend fun addPostReaction(
+        post_id: String,
+        reaction: String,
+        userId: String
+    ) = safeApiCall {
+        api.addPostReaction(post_id, reaction, userId)
+    }
 }

@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.allattentionhere.autoplayvideos.MediaSourceUtil
@@ -21,18 +22,17 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.*
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.instaconnect.android.InstaConnectApp
 import com.instaconnect.android.R
-import com.instaconnect.android.data.model.ChatDataNewResponse
-import com.instaconnect.android.data.model.FriendListModel
+import com.instaconnect.android.data.model.*
 import com.instaconnect.android.data.model.MessageDataItem
 import com.instaconnect.android.databinding.ActivityWatchTogetherVideoBinding
 import com.instaconnect.android.network.MyApi
+import com.instaconnect.android.network.Resource
 import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.heart_view.HeartsRenderer
 import com.instaconnect.android.utils.heart_view.HeartsView
@@ -42,11 +42,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import gun0912.tedimagepicker.util.ToastUtil
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import java.util.prefs.Preferences
-import kotlin.collections.ArrayList
 
 class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, View.OnClickListener,
     AddFriendToVideoListAdapter.AddFriendListListener {
@@ -72,11 +71,14 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     private var from: String? = null
     private var myPostReaction = ""
     private var actualPostId = ""
+    private var currentUserAvtar = ""
     private val screenWidth = 0
     private lateinit var binding: ActivityWatchTogetherVideoBinding
     private var isScroll: Boolean? = true
     private var chatDataList: ArrayList<MessageDataItem>? = null
     var chatAdapter: WatchTogetherChatAdapter? = null
+    var roomLiveUsersAdapter: RoomLiveUsersAdapter? = null
+    var liveUsersList: ArrayList<LiveUsersItem> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +90,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         videoId = intent.getStringExtra("VIDEO_ID")
         postId = intent.getStringExtra("POST_ID")!!
         userId = Prefrences.getPreferences(this, Constants.PREF_USER_ID)
-        userImage = Prefrences.getUser()!!.avatar
+        currentUserAvtar = Prefrences.getUser()!!.avatar
 
         viewModel = ViewModelProvider(
             this,
@@ -102,6 +104,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         mute = VideoRecyclerView.isMute()
         forBackgroundVideo()
         setChatAdapter()
+        setUpLiveUserAdapter()
         getCurrentUserData()
 
         val handler1 = Handler()
@@ -157,14 +160,15 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                         val handler = Handler()
                         handler.postDelayed({ playVideo() }, 100)
                     }
-                    binding.exoPlayer.setControllerVisibilityListener(PlayerControlView.VisibilityListener { visibility ->
+
+                    binding.exoPlayer.setControllerVisibilityListener { visibility ->
                         Log.e("control_visibilyt", "$visibility....")
                         if (visibility == 0) {
                             show()
                         } else {
                             hide()
                         }
-                    })
+                    }
                 }
             }
         }, 1000)
@@ -176,9 +180,85 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             if (SocketConnector.getSocket()!!.connected()) {
                 emitMessages()
                 onMessages()
+                getPostReaction()
                 onCurrentMessage()
+                onJoinPostRoom()
+                onGetPostLiveUsers()
+                getPostReactionSocket()
+
             } else {
                 ToastUtil.showToast("Socket not connected")
+            }
+        }
+
+        viewModel.postReactionResponse.observe(this) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.response != null) {
+                        binding.tvTotalLike.text = java.lang.String.valueOf(it.value.response!!.reaction!!.likes)
+                    }
+                }
+                is Resource.Failure -> {
+                    ToastUtil.showToast(it.toString())
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun getPostReactionSocket() {
+        val jsonObject = JSONObject()
+        try {
+            jsonObject.put("postId", actualPostId)
+            jsonObject.put("userId", userId)
+            SocketConnector.getSocket()!!.emit("getPostReactionSocket", jsonObject)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun onJoinPostRoom() {
+        val jsonObject = JSONObject()
+        try {
+            jsonObject.put("post_id", actualPostId)
+            jsonObject.put("image", currentUserAvtar)
+            jsonObject.put("username", user_name)
+            jsonObject.put("user_id", userId)
+
+            if (!actualPostId.isNullOrBlank() && !userId.isNullOrBlank())
+                SocketConnector.getSocket()!!.emit("joinroom", jsonObject)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun onGetPostLiveUsers() {
+
+        SocketConnector.getSocket()!!.on(
+            "availbleUsers"
+        ) { args ->
+
+            val data = args[0] as JSONObject
+            try {
+                val liveUsers = data.getJSONArray("liveusers")
+
+                var liveUser: RoomLiveUsersResponse =
+                    Gson().fromJson(
+                        data.toString(),
+                        object : TypeToken<RoomLiveUsersResponse>() {}.type
+                    )
+
+                if (actualPostId == liveUser.postId) {
+                    liveUsersList.clear()
+                    liveUsersList.addAll(liveUser.liveUsers)
+                    runOnUiThread {
+                        roomLiveUsersAdapter!!::notifyDataSetChanged
+                        binding.tvTotalWatch.text = liveUsersList.size.toString()
+                    }
+                }
+
+            } catch (e: JSONException) {
+                e.printStackTrace()
             }
         }
     }
@@ -198,7 +278,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                         object : TypeToken<ChatDataNewResponse?>() {}.type
                     )
 
-                if(actualPostId == chatData.postId){
+                if (actualPostId == chatData.postId) {
                     val messageData: MessageDataItem =
                         Gson().fromJson(result.toString(), object : TypeToken<MessageDataItem?>() {}.type)
 
@@ -227,12 +307,37 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 )
 
             chatDataList!!.clear()
-            if(actualPostId == chatData.postId){
+            if (actualPostId == chatData.postId) {
                 chatDataList!!.addAll(chatData.messageData!!)
                 notifyList()
                 scrollViewToLastPos(false)
             }
+        }
+    }
 
+    private fun getPostReaction() {
+        SocketConnector.getSocket()!!.on(
+            "getPostReaction"
+        ) { args ->
+            val data = args[0] as JSONObject
+            val reaction: PostReactionSocketResponse =
+                Gson().fromJson(
+                    data.toString(),
+                    object : TypeToken<PostReactionSocketResponse?>() {}.type
+                )
+            myPostReaction = "${reaction.messageData!!.yourReaction}"
+            if (binding.tvTotalLike.text.toString() != "${reaction.messageData.likes}") {
+                showLikesAnimation(reaction.messageData.likes)
+            }
+            runOnUiThread { binding.tvTotalLike.text = "${reaction.messageData.likes}" }
+        }
+    }
+
+    private fun showLikesAnimation(likes: Int?) {
+        runOnUiThread {
+            for (i in 1..likes!!) {
+                callHeart(100)
+            }
         }
     }
 
@@ -241,7 +346,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         val jsonObject = JSONObject()
         try {
             jsonObject.put("post_id", actualPostId)
-            //jsonObject.put("page", currentPage)
             SocketConnector.getSocket()!!.emit("getMessages", jsonObject)
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -254,10 +358,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 if (isSmoothScroll) binding.recyclerChat.smoothScrollToPosition(chatDataList!!.size - 1) else binding.recyclerChat.scrollToPosition(
                     chatDataList!!.size - 1
                 )
-//                binding.relNewMsg.setVisibility(View.GONE)
-//                count = 0
                 isScroll = false
-//                binding.relNewMsg.setVisibility(View.GONE)
             }
         }
     }
@@ -277,7 +378,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         val totalViews = total_views!!.toInt()
         binding.tvUserName.text = user_name
         binding.tvTotalWatch.text = (totalViews + 1).toString()
-        binding.tvTotalLike.text = total_likes
+//        binding.tvTotalLike.text = total_likes
         GlideHelper.loadFromUrl(
             context, userImage,
             R.drawable.loader, binding.ivUserImage
@@ -307,6 +408,22 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             hide()
         } else {
             show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        onLeavePostRoom()
+    }
+
+    private fun onLeavePostRoom() {
+        val jsonObject = JSONObject()
+        try {
+            jsonObject.put("post_id", actualPostId)
+
+            SocketConnector.getSocket()!!.emit("leaveroom", jsonObject)
+        } catch (e: JSONException) {
+            e.printStackTrace()
         }
     }
 
@@ -348,19 +465,37 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             }
 
             R.id.iv_like -> {
-                if (myPostReaction != null && myPostReaction == "0") {
+                if (myPostReaction == "0") {
                     myPostReaction = "1"
-//                    callAddPostReaction(userId, myPostReaction, actualPostId)
+                    postLike(actualPostId, myPostReaction, userId)
+                    viewModel.viewModelScope.launch {
+                        viewModel.addPostReaction(actualPostId, myPostReaction, userId!!)
+                    }
                 }
                 showHeart()
-                callHeart(100)
-                callHeart(300)
-
             }
 
             R.id.iv_streamUser -> {
                 val addFriendDialog = AddFriendToWatchVideoDialog(this@WatchTogetherVideoActivity, actualPostId, this, viewModel)
                 addFriendDialog.show(supportFragmentManager, "AddFriendDialog")
+            }
+        }
+    }
+
+    private fun postLike(actualPostId: String, myPostReaction: String, userId: String?) {
+        if (SocketConnector.getInstance() != null) {
+            if (SocketConnector.getSocket()!!.connected()) {
+                val jsonObject = JSONObject()
+                try {
+                    jsonObject.put("reaction", myPostReaction)
+                    jsonObject.put("postId", actualPostId)
+                    jsonObject.put("userId", userId)
+
+                    SocketConnector.getSocket()!!.emit("addPostReaction", jsonObject)
+                    binding.etMessageBox.setText("")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -389,8 +524,8 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 try {
                     jsonObject.put("post_id", actualPostId)
                     jsonObject.put("user_id", userId)
-                    jsonObject.put("message", Objects.requireNonNull(binding.etMessageBox.text).toString()
-                        .trim { it <= ' ' })
+                    jsonObject.put("message", Objects.requireNonNull(binding.etMessageBox.text)
+                        .toString().trim { it <= ' ' })
 
                     SocketConnector.getSocket()!!.emit("sendMessage", jsonObject)
                     binding.etMessageBox.setText("")
@@ -402,7 +537,9 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun callHeart(mils: Int) {
-        Handler().postDelayed({ showHeart() }, mils.toLong())
+        Handler().postDelayed({
+                showHeart()
+            }, mils.toLong())
     }
 
     private fun showHeart() {
@@ -411,7 +548,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun heartAnimation() {
-        val config = HeartsRenderer.Config(3f, 0.8f, getRandomNumber(1, 2))
+        val config = HeartsRenderer.Config(3f, 0.8f, 1.5f)
         binding.heartView.applyConfig(config)
         val bitmap = BitmapFactory.decodeResource(context!!.resources, R.drawable.ic_heart)
         model = HeartsView.Companion.Model(0, bitmap)
@@ -423,7 +560,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun playVideo() {
-        //InstaConnectApp.getInstance().mediaPlayer().initPlayer(Uri.parse(videoId), player, true, this);
         simpleExoPlayer!!.addListener(this)
         simpleExoPlayer!!.prepare(buildMediaSource(Uri.parse(videoId), MediaSourceUtil.getExtension(Uri.parse(videoId))!!))
         binding.exoPlayer.requestFocus()
@@ -481,20 +617,24 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         )
     }
 
+    private fun setUpLiveUserAdapter() {
+        var linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvLiveUsers.layoutManager = linearLayoutManager
+        roomLiveUsersAdapter = RoomLiveUsersAdapter(this, liveUsersList) {}
+        binding.rvLiveUsers.adapter = roomLiveUsersAdapter
+    }
+
     private fun setChatAdapter() {
         var linearLayoutManager = LinearLayoutManager(context)
         val recyclerChat: RecyclerView = binding.recyclerChat
         recyclerChat.layoutManager = linearLayoutManager
-        chatAdapter = WatchTogetherChatAdapter(this, chatDataList!!){
-
-        }
+        chatAdapter = WatchTogetherChatAdapter(this, chatDataList!!) {}
         recyclerChat.adapter = chatAdapter
+
 
     }
 
     private fun getCurrentUserData() {
-
-
         /* val call: Call<GetPublicProfile> =
              dataManager.apiHelper().getPublicProfile(dataManager.prefHelper().getUser().getPhone())
          call.enqueue(object : Callback<GetPublicProfile?> {

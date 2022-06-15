@@ -130,8 +130,8 @@ class AddFriendToWatchVideoDialog(
         viewModel.friendListResponse.observe(requireActivity()) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.response.code.equals("200")) {
-                        if (it.value.response.userlist == null || it.value.response.userlist.isEmpty()
+                    if (it.value.response!!.code.equals("200")) {
+                        if (it.value.response!!.userlist == null || it.value.response!!.userlist!!.isEmpty()
                         ) {
                             if (page == 1) {
                                 //txtEmpty.setVisibility(View.VISIBLE);
@@ -139,15 +139,15 @@ class AddFriendToWatchVideoDialog(
                             }
                         } else {
                             // txtEmpty.setVisibility(View.GONE);
-                            myFriendList = it.value.response.getUserlist()
+                            myFriendList = it.value.response!!.userlist!!
                             myFriendListAdapter!!.addUser(myFriendList)
                         }
-                        if (it.value.response.isLastPage === 0) {
+                        if (it.value.response!!.isLastPage === 0) {
                             recyclerView!!.isLoading = false
                         } else {
                             recyclerView!!.isNestedScrollingEnabled = false
                         }
-                    } else if (it.value.response.code.equals("301")) {
+                    } else if (it.value.response!!.code.equals("301")) {
                         if (page == 1) {
                             // txtEmpty.setVisibility(View.VISIBLE);
                             // txtEmpty.setText(it.value.response.getMessage());
@@ -345,7 +345,7 @@ class AddFriendToWatchVideoDialog(
 
     override fun onAddFriendClick(position: Int, user: FriendListModel.User?, view: View?) {
         // invite Watch Together user for my watch together party...
-        invitePeopleForWatchTogetherParty(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, user!!.userId)
+        invitePeopleForWatchTogetherParty(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, user!!.userId!!)
     }
 
     private fun invitePeopleForWatchTogetherParty(loginUserId: String, otherUserId: String) {

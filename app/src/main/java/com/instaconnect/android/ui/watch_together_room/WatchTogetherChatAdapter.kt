@@ -55,14 +55,4 @@ class WatchTogetherChatAdapter(
     }
 
     override fun getItemCount(): Int = chatList.size
-
-    fun getList(): List<MessageDataItem> {
-        return chatList
-    }
-
-    fun updateList(newPortfolioList: ArrayList<MessageDataItem>) {
-        chatList.clear()
-        chatList.addAll(newPortfolioList)
-        notifyDataSetChanged()
-    }
 }

@@ -20,6 +20,11 @@
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
     </style>
 
+    <style name="CustomDialogTheme" parent="android:Theme.Holo.Dialog">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
     <style name="SCBSwitch" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->
         <item name="colorControlActivated">@color/colorPrimary</item>
@@ -149,10 +154,6 @@
 
     </style>
 
-    <style name="CustomDialogTheme" parent="android:Theme.Holo.Dialog">
-        <item name="android:windowMinWidthMajor">90%</item>
-        <item name="android:windowMinWidthMinor">90%</item>
-    </style>
 
     <style name="MyTransparentBottomSheetDialogTheme" parent="Theme.AppCompat.Light">
         <item name="android:background">@android:color/transparent</item>
@@ -178,5 +179,6 @@
     </style>
 
     <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
     <color name="india_green">#138808</color>
 </resources>

@@ -2,11 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <import type="android.view.View" />
-
-    </data>
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,22 +9,22 @@
 
         <com.instaconnect.android.widget.RoundImageView
             android:id="@+id/ivUserImage"
-            android:layout_width="@dimen/_30sdp"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
             android:src="@drawable/usericon"
-            app:outerBorderColor="@color/white"
-            app:outerBorderWidth="1dp" />
+            android:scaleType="centerCrop" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="@dimen/_8sdp"
             android:layout_height="@dimen/_8sdp"
             android:layout_alignEnd="@id/ivUserImage"
-            app:civ_border_width="1dp"
-            android:layout_marginEnd="2dp"
+            android:layout_alignBottom="@id/ivUserImage"
+            android:layout_marginStart="2dp"
             android:layout_marginBottom="2dp"
-            android:visibility="gone"
+            android:background="@drawable/drawable_online"
+            android:visibility="visible"
             app:civ_border_color="@color/transparent_100_percent"
-            android:background="@drawable/drawable_online"/>
+            app:civ_border_width="1dp" />
 
     </RelativeLayout>
 

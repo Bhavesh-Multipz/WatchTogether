@@ -36,5 +36,6 @@ data class MessageDataItem(
 	val videoId: String? = null,
 
 	@field:SerializedName("username")
-	val username: String? = null
+	val username: String? = null,
+
 )

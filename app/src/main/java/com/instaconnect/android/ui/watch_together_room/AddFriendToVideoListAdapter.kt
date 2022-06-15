@@ -27,9 +27,6 @@ class AddFriendToVideoListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.textView.text = mUserList[position].username
-        Log.e("ImageUrl", mUserList[position].profileUrl)
-
-        // Glide.with(context).load(mUserList.get(position).getProfileUrl()).placeholder(R.drawable.ic_friend_placeholder).into(holder.getProfileView());
         holder.inviteFriendImage().setOnClickListener { v ->
             listListener.onAddFriendClick(holder.bindingAdapterPosition, mUserList[holder.bindingAdapterPosition], v)
             holder.inviteFriendImage().setTextColor(ContextCompat.getColor(context, R.color.gray))

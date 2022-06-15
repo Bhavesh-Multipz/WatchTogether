@@ -12,9 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.instaconnect.android.R
 import com.instaconnect.android.databinding.ActivityMainBinding
+import com.instaconnect.android.rxBus.BusMessage
+import com.instaconnect.android.rxBus.RxBus
 import com.instaconnect.android.ui.fragment.explore.ExploreFragment
 import com.instaconnect.android.ui.fragment.worldwide.Post
 import com.instaconnect.android.ui.fragment.worldwide.WorldwideFragment
+import com.instaconnect.android.ui.friends.FriendsFragment
 import com.instaconnect.android.utils.FragmentUtil
 import com.instaconnect.android.utils.ManagePermissions
 import com.instaconnect.android.utils.Utils.toast
@@ -59,24 +62,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         setContentView(binding.root)
         initializeVariables()
         setOnClickListener()
-
         showStreamFragment()
-
-        //        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-//            @Override
-//            public boolean verify(String hostname, SSLSession arg1) {
-//                if (hostname.equalsIgnoreCase("http://99.79.19.208/webapp/terms_and_conditions.html")||
-//                        hostname.equalsIgnoreCase("http://99.79.19.208/webapp/dev/api/") ||
-//                        hostname.equalsIgnoreCase("http://99.79.19.208/webapp/dev/uploads/")) {
-//                    return true;
-//                } else {
-//                    return false;
-//                }
-//            }
-//        });
-        //Subscribe for RxBus REFRESH event.
-        //see {@link rana.jatin.core.model.Event#REFRESH}
-        //RxBus.instance!!.subscribe(Event.REFRESH.name, this, String::class.java, refreshConsumer)
     }
 
     private fun showStreamFragment() {
@@ -102,10 +88,10 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         fragmentUtil = FragmentUtil(supportFragmentManager)
 
     }
+
     fun setExploreInitialDialog() {
         exploreFragment!!.setInitialDialog()
     }
-
 
     private fun setOnClickListener() {
         binding.relLive.setOnClickListener(this)
@@ -133,12 +119,13 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                         ) {
                             viewUtil.showPermissionSnack()
                         } else {
+
                             locationManager!!.requestLocationUpdates(
                                 LocationManager.NETWORK_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
                             )
-                            Log.d("Network", "Network Enabled")
+
                             if (locationManager != null) {
                                 location = locationManager!!
                                     .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
@@ -186,7 +173,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -229,8 +216,20 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     }
 
-    private fun showFriendFragment(s: String, s1: String) {
+    private fun showFriendFragment(from: String, title: String) {
 
+        val friendsFragment = FriendsFragment()
+        val bundle = Bundle()
+        bundle.putString("from", from)
+        bundle.putString("title", title)
+        friendsFragment.setArguments(bundle)
+
+//        RxBus.instance!!.publish(BusMessage.SWITCH_CONATINERS.name, R.id.fl_container_home_other)
+        fragmentUtil!!.fragment(friendsFragment, R.id.fl_container_home_other, true).skipStack().commit()
+        binding.relLive.setBackgroundResource(0)
+        binding.relFriend.setBackgroundResource(R.drawable.layout_rounded_white_glass)
+        binding.relPlus.setBackgroundResource(0)
+        binding.relSetting.setBackgroundResource(0)
     }
 
     //    private void showMoreFragment() {

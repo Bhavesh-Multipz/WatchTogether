@@ -157,6 +157,7 @@
                 <RelativeLayout
                     android:id="@+id/rel_text"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:layout_height="wrap_content">
 
                     <com.instaconnect.android.widget.BasicEmojiTextView

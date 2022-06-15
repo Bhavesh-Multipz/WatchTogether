@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/_4sdp"
+    android:gravity="center">
+
+    <!--<FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">-->
+
+    <com.instaconnect.android.widget.RoundImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/temp_profile_pic"
+        app:cornerRadius="@dimen/_10sdp"
+        app:outerBorderColor="@color/white_smoke"
+        app:outerBorderWidth="1dp" />
+
+        <ImageView
+            android:id="@+id/iv_onlilne_offline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            android:layout_alignEnd="@id/iv_profile"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:src="@drawable/ic_online_glass" />
+
+    <ImageView
+        android:id="@+id/iv_unfriend"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:layout_alignEnd="@id/iv_profile"
+        android:layout_gravity="end"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:background="@drawable/layout_rounded_white_glass"
+        android:padding="4dp"
+        android:src="@drawable/ic_remove_friend"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="kelli sent"
+        android:fontFamily="@font/montserrat_medium"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:layout_below="@id/iv_profile"/>
+
+
+   <!-- </FrameLayout>-->
+
+</RelativeLayout>
