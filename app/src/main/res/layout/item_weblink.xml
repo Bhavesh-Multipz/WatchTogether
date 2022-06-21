@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/relLink"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_110sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:background="@drawable/layout_medium_rounded_white_glass">
+
+        <!--<androidx.cardview.widget.CardView
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/transparent_100_percent"
+            app:cardUseCompatPadding="true">-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:background="@color/transparent_100_percent">
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_above="@+id/tvWebName"
+                android:layout_centerHorizontal="true"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_callreceiver" />
+
+            <TextView
+                android:id="@+id/tvWebName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:gravity="center"
+                android:text="name"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+        <!--</androidx.cardview.widget.CardView>-->
+    </RelativeLayout>
+</layout>

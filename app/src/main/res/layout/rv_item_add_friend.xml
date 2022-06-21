@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/_4sdp"
+    android:gravity="center">
+
+
+    <com.instaconnect.android.widget.RoundImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/temp_profile_pic"
+        app:cornerRadius="@dimen/_10sdp"
+        app:outerBorderColor="@color/white_smoke"
+        app:outerBorderWidth="1dp" />
+
+    <ImageView
+        android:id="@+id/iv_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/iv_profile"
+        android:layout_marginEnd="@dimen/_minus10sdp"
+        android:src="@drawable/ic_add_friend_glass" />
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Mark Less"
+        android:fontFamily="@font/montserrat_medium"
+        android:textSize="@dimen/_10sdp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:layout_below="@id/iv_profile"/>
+
+
+   <!-- </FrameLayout>-->
+
+</RelativeLayout>

@@ -25,6 +25,10 @@ class MyFriendsViewModel(private val repository: MyFriendsRepository) : BaseView
     val myFriendsResponse: LiveData<Resource<FriendListModel>>
         get() = _myFriendsResponse
 
+    private val _makeUnfriendResponse: MutableLiveData<Resource<UnfriendResponse>> = MutableLiveData()
+    val makeUnfriendResponse: LiveData<Resource<UnfriendResponse>>
+        get() = _makeUnfriendResponse
+
     suspend fun getMyFriendList(
         userId: String,
         search: String,
@@ -33,6 +37,16 @@ class MyFriendsViewModel(private val repository: MyFriendsRepository) : BaseView
         _myFriendsResponse.value = Resource.Loading
         _myFriendsResponse.value = repository.getMyFriendList(userId, search, page)
     }
+
+    suspend fun makeUnfriendUser(
+        userId: String,
+        otherUserId: String
+    ) = viewModelScope.launch {
+        _makeUnfriendResponse.value = Resource.Loading
+        _makeUnfriendResponse.value = repository.makeUnfriendUser(userId, otherUserId)
+    }
+
+
 
 
 

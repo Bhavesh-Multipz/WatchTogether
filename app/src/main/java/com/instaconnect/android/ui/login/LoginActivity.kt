@@ -102,6 +102,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             startActivity(Intent(this, HomeActivity::class.java))
                             Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
 
+                            Log.d("TAG", "onCreate: $number")
+
                             if (it.value.response!!.username!!.isEmpty()) {
                                 Prefrences.savePreferencesString(
                                     this,

@@ -17,6 +17,7 @@ import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences
+import com.instaconnect.android.utils.Utils.visible
 import io.alterac.blurkit.BlurKit
 import kotlinx.coroutines.launch
 
@@ -27,6 +28,7 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
     var myFriendListAdapter: MyFriendListAdapter? = null
     var searchKeyword = ""
     var page = 0
+    var unFriendPosition : Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,7 +43,8 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
-
+                        binding.recyclerMyFriend.isLoading(false)
+                        binding.progressBar.visible(false)
                         if (it.value.response!!.code == "200") {
                             if (it.value.response!!.userlist == null || it.value.response!!.userlist!!.isEmpty()) {
                                 if (page == 1) {
@@ -58,13 +61,40 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
                             } else {
                                 binding.recyclerMyFriend.setNextScrollingEnabled(false)
                             }
+                        } else {
+                            binding.txtEmpty.visibility = View.VISIBLE
                         }
                     }
                 }
                 is Resource.Loading -> {
-                    binding.recyclerMyFriend.isLoading(true)
                 }
                 is Resource.Failure -> {
+                    binding.progressBar.visible(false)
+                    binding.recyclerMyFriend.isLoading(false)
+                }
+            }
+        }
+
+        // my friends response handler
+        viewModel.makeUnfriendResponse.observe(requireActivity()) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.response != null) {
+
+                        binding.progressBar.visible(false)
+                        if (it.value.response!!.code == "200") {
+                            myFriendListAdapter!!.clear()
+                            getMyFriendList(1, searchKeyword)
+
+                        } else {
+                            binding.txtEmpty.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                is Resource.Loading -> {
+                }
+                is Resource.Failure -> {
+                    binding.progressBar.visible(false)
                     binding.recyclerMyFriend.isLoading(false)
                 }
             }
@@ -80,7 +110,7 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
     }
 
     private fun getMyFriendList(page: Int, searchKeyword: String) {
-        binding.recyclerMyFriend.isLoading(true)
+        binding.progressBar.visible(true)
         viewModel.viewModelScope.launch {
             viewModel.getMyFriendList(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID).toString(),
                 searchKeyword,
@@ -102,11 +132,11 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
     override fun getViewModel() = MyFriendsViewModel::class.java
 
     override fun onMyFriendClick(position: Int, user: FriendListModel.User?, view: View?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onFriendView(position: Int, user: FriendListModel.User?, view: View?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onUnfriendClick(position: Int, user: FriendListModel.User?) {
@@ -149,7 +179,10 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
 
     private fun unfriend(otherUserId: String?, position: Int) {
 
-
+        unFriendPosition = position
+        viewModel.viewModelScope.launch {
+            viewModel.makeUnfriendUser(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, otherUserId!!)
+        }
     }
 
     override fun onScrollNext(page: Int, totalItemsCount: Int): Boolean {

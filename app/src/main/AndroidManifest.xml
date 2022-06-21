@@ -38,9 +38,18 @@
         android:theme="@style/BaseThemeNoTransparent"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.watch_together_room.WatchTogetherVideoActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:name=".ui.video_preview.VideoPreviewsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.trending_websites.TrendingWebsitesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.youtube_webview.YoutubeWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.watch_together_room.WatchTogetherVideoActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".ui.terms_webview.TermsWebViewActivity"
             android:exported="false"
@@ -52,7 +61,7 @@
 
         <activity
             android:name=".ui.profile.PrivateProfileActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"

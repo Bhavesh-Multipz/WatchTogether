@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_100_percent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/ed_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_square_rounded_white_glass"
+                android:drawableStart="@drawable/ic_search_glass2"
+                android:drawablePadding="@dimen/_8sdp"
+                android:fontFamily="@font/montserrat_medium"
+                android:hint="Search"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@drawable/custom_cursor"
+                android:padding="@dimen/_8sdp"
+                android:textColorHint="@color/transparent_white_hex_10"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txt_request_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_search"
+                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:paddingVertical="@dimen/_8sdp"
+                android:text="Friend Request"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/txt_request_title">
+
+                <com.instaconnect.android.widget.recyclerview.BasicRecyclerView
+                    android:id="@+id/recycler_my_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
+                    android:layout_gravity="center"
+                    android:paddingBottom="@dimen/_16sdp"
+                    android:clipToPadding="false"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                </com.instaconnect.android.widget.recyclerview.BasicRecyclerView>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/txtEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:text="No Friend Requests"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
+
+    <include
+        android:id="@+id/progress"
+        layout="@layout/progress_center"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

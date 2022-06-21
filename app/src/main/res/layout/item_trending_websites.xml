@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <io.alterac.blurkit.BlurLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        blurkit:blk_blurRadius="@integer/blur_radius"
+        blurkit:blk_cornerRadius="15dp"
+        blurkit:blk_downscaleFactor="0.12"
+        blurkit:blk_fps="0">
+
+    </io.alterac.blurkit.BlurLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_4sdp"
+        android:background="@drawable/layout_medium_rounded_white_glass"
+        android:padding="@dimen/_4sdp">
+
+        <ImageView
+            android:id="@+id/ivCopyUrl"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/layout_rounded_gradient_white_glass"
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/ic_baseline_content_copy_24" />
+
+        <TextView
+            android:id="@+id/tvWebTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_toStartOf="@+id/ivCopyUrl"
+            android:ellipsize="end"
+            android:fontFamily="@font/montserrat_medium"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textDirection="ltr"
+            android:textSize="@dimen/_16sdp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Facebook" />
+
+        <TextView
+            android:id="@+id/tvWebsite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvWebTitle"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_toStartOf="@+id/ivCopyUrl"
+            android:ellipsize="end"
+            android:fontFamily="@font/montserrat_medium"
+            android:layoutDirection="ltr"
+            android:textDirection="ltr"
+            android:maxLines="2"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp"
+            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

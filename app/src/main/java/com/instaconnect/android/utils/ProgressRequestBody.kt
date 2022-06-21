@@ -2,6 +2,7 @@ package com.instaconnect.android.utils
 
 import android.os.Handler
 import android.os.Looper
+import com.instaconnect.android.data.model.db.ChatMessage
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
@@ -9,13 +10,14 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 
-class ProgressRequestBody(private val mFile: File, type: Int) : RequestBody() {
+class ProgressRequestBody(private val mFile: File, type: Int,private val chatMessage: ChatMessage?) : RequestBody() {
     var length = 0
     private var mListener: UploadCallbacks? = null
     private val type: Int
     private var mUploaded: Long = 0
     private var mTotal: Long = 0
     private var progress = 0
+
 
     override fun contentType(): MediaType? {
         return when (type) {
@@ -47,12 +49,12 @@ class ProgressRequestBody(private val mFile: File, type: Int) : RequestBody() {
                     mUploaded = uploaded
                     mTotal = fileLength
                     progress = (100 * mUploaded / mTotal).toInt()
-                    handler.post { mListener!!.onProgressUpdate(progress) }
+                    handler.post { mListener!!.onProgressUpdate(progress, chatMessage!!) }
                 }
                 uploaded += read.toLong()
                 sink.write(buffer, 0, read)
             }
-            handler.post { mListener?.onFinish() }
+            handler.post { mListener?.onFinish(chatMessage!!) }
         } catch (e: Exception) {
             e.printStackTrace()
             if (mListener != null) {
@@ -64,9 +66,9 @@ class ProgressRequestBody(private val mFile: File, type: Int) : RequestBody() {
     }
 
     interface UploadCallbacks {
-        fun onProgressUpdate(percentage: Int)
-        fun onError()
-        fun onFinish()
+        fun onProgressUpdate(percentage: Int, chatMessage: ChatMessage)
+        fun onError(chatMessage: ChatMessage)
+        fun onFinish(chatMessage: ChatMessage)
     }
 
     companion object {

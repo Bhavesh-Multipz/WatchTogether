@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".ui.capture.CaptureActivity">
+
+            <com.instaconnect.android.widget.FrameViewLayout
+                android:id="@+id/fr_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:progressView="@layout/progress_center">
+
+                <SurfaceView
+                    android:id="@+id/surface_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/iv_cancel"
+                    android:layout_width="@dimen/_65sdp"
+                    android:layout_height="@dimen/_65sdp"
+                    android:layout_gravity="left|top"
+                    android:layout_marginStart="-5dp"
+                    android:layout_marginLeft="-5dp"
+                    android:layout_marginTop="-5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/call_cross" />
+
+                <com.instaconnect.android.widget.BasicTextView
+                    android:id="@+id/tv_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|right"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/round_transparent_fill"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="@dimen/_4sdp"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="@dimen/_4sdp"
+                    android:text="30:00"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:visibility="invisible"
+                    app:typeFace="@string/regular" />
+
+                <com.instaconnect.android.widget.FlashView
+                    android:id="@+id/flashView"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_gravity="right|top"
+                    android:layout_margin="8dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="@dimen/_60sdp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="@dimen/_16sdp">
+
+                        <ImageView
+                            android:id="@+id/iv_switch_camera"
+                            android:layout_width="@dimen/_65sdp"
+                            android:layout_height="@dimen/_65sdp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/flip_camera_icon" />
+
+                        <ImageView
+                            android:id="@+id/iv_gallery"
+                            android:layout_width="@dimen/_55sdp"
+                            android:layout_height="@dimen/_55sdp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/image_gallery" />
+
+                    </RelativeLayout>
+
+                    <!--<instaconnect.android.ui.widget.PulsatorLayout
+                        android:id="@+id/audio_pulsator"
+                        android:layout_width="@dimen/dp_150"
+                        android:layout_height="@dimen/dp_150"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_marginBottom="-10dp"
+                        android:visibility="visible"
+                        app:pulse_color="@color/colorAccent"
+                        app:pulse_count="4"
+                        app:pulse_duration="3000"
+                        app:pulse_interpolator="Linear"
+                        app:pulse_repeat="0"
+                        app:pulse_startFromScratch="true">
+
+                        <Button
+                            android:id="@+id/btn_capture"
+                            android:layout_width="@dimen/dp_60"
+                            android:layout_height="@dimen/dp_60"
+                            android:layout_centerInParent="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/capture_selecter" />
+
+                        <Button
+                            android:id="@+id/btn_videoCapture"
+                            android:layout_width="@dimen/dp_60"
+                            android:layout_height="@dimen/dp_60"
+                            android:layout_centerInParent="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/capture_selecter"
+                            android:visibility="gone" />
+
+                    </instaconnect.android.ui.widget.PulsatorLayout>-->
+
+                    <TextView
+                        android:id="@+id/tvCaptureText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:gravity="center"
+                        android:text="Tap for Photo"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </FrameLayout>
+
+            </com.instaconnect.android.widget.FrameViewLayout>
+
+            <RelativeLayout
+                android:id="@+id/relText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/relTextHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary">
+
+                    <ImageView
+                        android:id="@+id/iv_cancelText"
+                        android:layout_width="@dimen/_45sdp"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_gravity="left|top"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/call_cross" />
+
+                    <TextView
+                        android:id="@+id/textPostTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="Text Post"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTextPost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="12dp"
+                        android:padding="8dp"
+                        android:text="POST"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/linCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relTextHeader"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_22sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:background="@drawable/round_transparent_foutline"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp">
+
+                    <ImageView
+                        android:id="@+id/ivCategoryImage"
+                        android:layout_width="60dp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:background="@drawable/round_transparent_foutline"
+                        android:padding="4dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_image" />
+
+                    <TextView
+                        android:id="@+id/edtTextPostCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:ellipsize="end"
+                        android:hint="Choose Category"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/edtTextPostTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linCategory"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:background="@drawable/round_transparent_foutline"
+                    android:ellipsize="end"
+                    android:hint="A Fascinating title"
+                    android:padding="12dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtTextPostText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edtTextPostTitle"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:background="@drawable/round_transparent_foutline"
+                    android:ellipsize="end"
+                    android:hint="Your Text Post (optional)"
+                    android:padding="12dp"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relWatchTogether"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layout_anchor="@+id/linearLayout"
+                app:layout_anchorGravity="center">
+
+                <include layout="@layout/include_main_bg_trans" />
+
+                <RelativeLayout
+                    android:id="@+id/relWatchHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_24sdp">
+
+                    <TextView
+                        android:id="@+id/watchPostTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:lineSpacingExtra="6dp"
+                        android:text="Create \nWatch Together \nRoom"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_cancelWatch"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="left|top"
+                        android:layout_marginTop="8dp"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_close_watch"
+                        android:visibility="gone"
+                        app:tint="@color/white" />
+
+                    <io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/watchPostTitle"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_16sdp"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_toStartOf="@+id/tvGo"
+                        android:visibility="visible"
+                        blurkit:blk_blurRadius="@integer/blur_radius"
+                        blurkit:blk_cornerRadius="0dp"
+                        blurkit:blk_downscaleFactor="0.12"
+                        blurkit:blk_fps="0">
+
+                        <EditText
+                            android:id="@+id/edtWebUrl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/layout_square_rounded_white_glass"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:hint="@string/paste_or_type_video_url"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="12dp"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/transparent_white_hex_11"
+                            android:textSize="16sp" />
+                    </io.alterac.blurkit.BlurLayout>
+
+                    <TextView
+                        android:id="@+id/tvGo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/watchPostTitle"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="12dp"
+                        android:text="@string/go"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+                <io.alterac.blurkit.BlurLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"
+                    android:layout_centerVertical="true"
+                    android:layout_below="@+id/relWatchHeader"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:layout_marginBottom="@dimen/_16sdp"
+                    app:blk_blurRadius="@integer/blur_radius"
+                    app:blk_cornerRadius="0dp"
+                    app:blk_downscaleFactor="0.12"
+                    android:layout_above="@id/lin_bottom"
+                    app:blk_fps="0">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/layout_square_rounded_white_glass">
+
+                    <TextView
+                        android:id="@+id/tvOr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:text="OR"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textPopularSites"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvOr"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginVertical="@dimen/_12sdp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="Trending Searches"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/linIcons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textPopularSites"
+                        android:gravity="center_horizontal"
+                        android:layout_marginHorizontal="@dimen/_14sdp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/webLinkRecyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:visibility="visible" />
+
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/linIcons"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_16sdp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Disclaimer: Watch Together does not store or host any web streaming files or content on its server. For any issues please contact the appropriate non-affiliated web stream hosting sites."
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+                </io.alterac.blurkit.BlurLayout>
+
+                <LinearLayout
+                    android:id="@+id/lin_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:padding="@dimen/_8sdp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/gallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_12sdp"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
+                        android:background="@drawable/layout_rounded_gradient_white_glass">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/ic_image_solid_glass" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rel_drive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_12sdp"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
+                        android:background="@drawable/layout_rounded_gradient_white_glass">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/ic_googledrive_glass" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rel_popular_websites"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_12sdp"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
+                        android:background="@drawable/layout_rounded_gradient_white_glass">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/ic_website"
+                            app:tint="#D8D8D8" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -9,7 +9,9 @@ import com.instaconnect.android.R
 import com.instaconnect.android.base.BaseFragment
 import com.instaconnect.android.databinding.FragmentFriendsBinding
 import com.instaconnect.android.network.MyApi
+import com.instaconnect.android.ui.friends.add_friend_fragment.AddFriendFragment
 import com.instaconnect.android.ui.friends.contact_fragment.ContactFragmentNew
+import com.instaconnect.android.ui.friends.friend_request_fragment.FriendRequestFragment
 import com.instaconnect.android.ui.friends.my_friends.MyFriendFragment
 
 class FriendsFragment : BaseFragment<FriendsFragmentViewModel, FragmentFriendsBinding, FriendsRepository>(),
@@ -69,8 +71,11 @@ class FriendsFragment : BaseFragment<FriendsFragmentViewModel, FragmentFriendsBi
     }
 
     private fun showAddFriendFragment() {
+        val bundle = Bundle()
+        val frg = AddFriendFragment()
+        frg.arguments = bundle
 
-
+        childFragmentManager.beginTransaction().replace(R.id.invite_contact_frg, frg, "add_friend_frg").commit()
     }
 
     override fun onResume() {
@@ -96,10 +101,10 @@ class FriendsFragment : BaseFragment<FriendsFragmentViewModel, FragmentFriendsBi
     }
 
     private fun showFriendRequestFragment() {
-        /*val bundle = Bundle()
+        val bundle = Bundle()
         val frg = FriendRequestFragment()
-        frg.setArguments(bundle)
-        childFragmentManager.beginTransaction().replace(R.id.invite_contact_frg, frg, "friend_request_frg").commit()*/
+        frg.arguments = bundle
+        childFragmentManager.beginTransaction().replace(R.id.invite_contact_frg, frg, "friend_request_frg").commit()
     }
 
     override fun getViewModel() = FriendsFragmentViewModel::class.java

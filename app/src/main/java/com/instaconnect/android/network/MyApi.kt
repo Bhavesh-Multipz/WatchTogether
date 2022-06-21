@@ -3,14 +3,20 @@ package com.instaconnect.android.network
 import com.google.gson.GsonBuilder
 import com.instaconnect.android.data.model.BlockUser
 import com.instaconnect.android.data.model.FriendListModel
+import com.instaconnect.android.data.model.PublicPost
 import com.instaconnect.android.data.model.ReportPost
+import com.instaconnect.android.ui.fragment.add_post.WebLinkResponse
 import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogether
 import com.instaconnect.android.ui.fragment.worldwide.Post
+import com.instaconnect.android.ui.friends.my_friends.UnfriendResponse
 import com.instaconnect.android.ui.login.SendOtp
 import com.instaconnect.android.ui.profile.ProfileResponse
+import com.instaconnect.android.ui.trending_websites.models.TrendingWebsiteResponseModel
 import com.instaconnect.android.ui.watch_together_room.PostReaction
+import com.instaconnect.android.ui.youtube_webview.YoutubeVideoDetails
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -94,6 +100,87 @@ interface MyApi {
         @Field("status") status: String?,
         @Field("user_id") userId: String?,
     ): BlockUser
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_FRIEND_REQUEST_RESPONSE)
+    suspend fun getFriendRequestResponse(
+        @Field("user_id") user_id: String?,
+        @Field("other_user_id") other_user_is: String?,
+        @Field("response_type") response_type: String?,
+    ): FriendListModel
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_FRIEND_REQUEST)
+    suspend fun getFriendRequest(
+        @Field("user_id") user_id: String?,
+        @Field("search") search: String?,
+        @Field("page") page: Int,
+    ): FriendListModel
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_SEND_FRIEND_REQUEST)
+    suspend fun sendFriendRequest(
+        @Field("user_id") user_id: String?,
+        @Field("other_user_id") other_user_is: String?,
+    ): FriendListModel
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_UNFRIEND_USER)
+    suspend fun makeUnfriendUser(
+        @Field("user_id") user_id: String?,
+        @Field("unfriend_user_id") unfriend_user_id: String?,
+    ): UnfriendResponse
+
+    @GET(ApiEndPoint.ENDPOINT_GET_TRENDING_WEBSITES)
+    suspend fun getTrendingWebsites(): TrendingWebsiteResponseModel
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_GET_WEB_LINKS)
+    suspend fun getWebLinks(@Field("device_type") device_type: String?):
+            WebLinkResponse
+
+    @GET("embed")
+    suspend fun getYoutubeVideoDetails(@Query("url") url: String?): YoutubeVideoDetails
+
+    @Multipart
+    @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)
+    suspend fun publicPostWatchTogether(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("media") media: RequestBody?,
+        @Part("category") category: RequestBody?,
+        @Part("lat") lat: RequestBody?,
+        @Part("lng") lng: RequestBody?,
+        @Part("caption") caption: RequestBody?,
+        @Part("country") country: RequestBody?,
+        @Part("datatype") datatype: RequestBody?,
+        @Part("hyperlink") hyperlink: RequestBody?,
+        @Part("mediaType") mediaType: RequestBody?,
+        @Part("media_ratio") mediaRatio: RequestBody?,
+        @Part("youTubeVideoId") youTubeVideoId: RequestBody?,
+        @Part("is_video_link") isVideoLink: RequestBody?,
+        @Part("group_password") groupPassword: RequestBody?,
+        @Part("group_name") groupName: RequestBody?,
+        @Part("uniquecode") uniquecode: RequestBody?,
+        @Part file: MultipartBody.Part?,
+    ): PublicPost
+
+    @Multipart
+    @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)
+    suspend fun publicPostYoutube(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("media") media: RequestBody?,
+        @Part("category") category: RequestBody?,
+        @Part("lat") lat: RequestBody?,
+        @Part("lng") lng: RequestBody?,
+        @Part("caption") caption: RequestBody?,
+        @Part("country") country: RequestBody?,
+        @Part("datatype") datatype: RequestBody?,
+        @Part("hyperlink") hyperlink: RequestBody?,
+        @Part("mediaType") mediaType: RequestBody?,
+        @Part("media_ratio") mediaRatio: RequestBody?,
+        @Part("youTubeVideoId") youTubeVideoId: RequestBody?,
+        @Part file: MultipartBody.Part?,
+    ): PublicPost
 
     companion object {
 

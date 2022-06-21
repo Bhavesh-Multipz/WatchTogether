@@ -159,7 +159,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                     val mediaFile = File(mCurrentPhotoPath!!)
                     val mediaFileBody: ProgressRequestBody = ProgressRequestBody(
                         mediaFile,
-                        ProgressRequestBody.IMAGE
+                        ProgressRequestBody.IMAGE,null
                     )
                     filePart = createFormData(
                         "image",

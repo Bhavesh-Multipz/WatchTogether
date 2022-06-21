@@ -22,6 +22,7 @@ import org.json.JSONObject
 import java.util.*
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
     override fun onCreate() {
         super.onCreate()
     }

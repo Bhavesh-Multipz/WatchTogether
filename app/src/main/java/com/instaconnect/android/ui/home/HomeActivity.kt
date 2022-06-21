@@ -8,26 +8,30 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseApp
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.installations.InstallationTokenResult
 import com.instaconnect.android.R
 import com.instaconnect.android.databinding.ActivityMainBinding
-import com.instaconnect.android.rxBus.BusMessage
-import com.instaconnect.android.rxBus.RxBus
+import com.instaconnect.android.ui.fragment.add_post.CaptureFragment
 import com.instaconnect.android.ui.fragment.explore.ExploreFragment
 import com.instaconnect.android.ui.fragment.worldwide.Post
 import com.instaconnect.android.ui.fragment.worldwide.WorldwideFragment
 import com.instaconnect.android.ui.friends.FriendsFragment
-import com.instaconnect.android.utils.FragmentUtil
-import com.instaconnect.android.utils.ManagePermissions
+import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.Utils.toast
-import com.instaconnect.android.utils.ViewUtil
+
 
 class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener {
     private val permissionsRequestCode = 112
     private val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
 
-    companion object{
+    companion object {
         var userLocation: Location? = null
 
     }
@@ -45,7 +49,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     var longitude = 0.0
     lateinit var viewUtil: ViewUtil
     private var exploreFragment: ExploreFragment? = null
-    private var fragmentUtil : FragmentUtil? = null
+    private var fragmentUtil: FragmentUtil? = null
     var list = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -58,15 +62,26 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initializeVariables()
         setOnClickListener()
         showStreamFragment()
+
+        FirebaseInstallations.getInstance().getToken(false)
+            .addOnCompleteListener(object : OnCompleteListener<InstallationTokenResult?> {
+                override fun onComplete(@NonNull task: Task<InstallationTokenResult?>) {
+                    if (!task.isSuccessful) {
+                        return
+                    }
+                    val token: String = task.result!!.token
+                    Prefrences.savePreferencesString(this@HomeActivity, Constants.PREF_DEVICE_TOKEN, token)
+                }
+            })
     }
 
     private fun showStreamFragment() {
-//        dataManager.prefHelper().setWatchList(true)
         fragmentUtil!!.removeFragment(exploreFragment)
         isONECHAT = false
         isStream = true
@@ -77,6 +92,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         binding.relPlus.setBackgroundResource(0)
         binding.relSetting.setBackgroundResource(0)
     }
+
     private fun initializeVariables() {
         viewUtil = ViewUtil(this)
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
@@ -86,7 +102,6 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         }
         exploreFragment = ExploreFragment()
         fragmentUtil = FragmentUtil(supportFragmentManager)
-
     }
 
     fun setExploreInitialDialog() {
@@ -101,17 +116,44 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     }
 
     private fun detectLocation(): Location? {
-            try {
-                locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-                isGPSEnabled = locationManager!!
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER)
-                isNetworkEnabled = locationManager!!
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-                if (!isGPSEnabled && !isNetworkEnabled) {
-                    // no network provider is enabled
-                } else {
-                    this.canGetLocation = true
-                    if (isNetworkEnabled) {
+        try {
+            locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+            isGPSEnabled = locationManager!!
+                .isProviderEnabled(LocationManager.GPS_PROVIDER)
+            isNetworkEnabled = locationManager!!
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                // no network provider is enabled
+            } else {
+                this.canGetLocation = true
+                if (isNetworkEnabled) {
+                    if (ActivityCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        viewUtil.showPermissionSnack()
+                    } else {
+
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
+                        )
+
+                        if (locationManager != null) {
+                            location = locationManager!!
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                            if (location != null) {
+                                latitude = location!!.latitude
+                                longitude = location!!.longitude
+                                userLocation = location
+                            }
+                        }
+                    }
+                }
+                if (isGPSEnabled) {
+                    if (location == null) {
                         if (ActivityCompat.checkSelfPermission(
                                 this,
                                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -119,16 +161,14 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                         ) {
                             viewUtil.showPermissionSnack()
                         } else {
-
                             locationManager!!.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER,
+                                LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
                             )
-
+                            Log.d("GPS", "GPS Enabled")
                             if (locationManager != null) {
-                                location = locationManager!!
-                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                                location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                                 if (location != null) {
                                     latitude = location!!.latitude
                                     longitude = location!!.longitude
@@ -137,38 +177,13 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                             }
                         }
                     }
-                    if (isGPSEnabled) {
-                        if (location == null) {
-                            if (ActivityCompat.checkSelfPermission(
-                                    this,
-                                    Manifest.permission.ACCESS_FINE_LOCATION
-                                ) != PackageManager.PERMISSION_GRANTED
-                            ) {
-                                viewUtil.showPermissionSnack()
-                            } else {
-                                locationManager!!.requestLocationUpdates(
-                                    LocationManager.GPS_PROVIDER,
-                                    MIN_TIME_BW_UPDATES,
-                                    MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
-                                )
-                                Log.d("GPS", "GPS Enabled")
-                                if (locationManager != null) {
-                                    location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                                    if (location != null) {
-                                        latitude = location!!.latitude
-                                        longitude = location!!.longitude
-                                        userLocation = location
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-            return location
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+        return location
+    }
 
 
     override fun onRequestPermissionsResult(
@@ -195,18 +210,21 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
-            R.id.relPlus ->{
+        when (v!!.id) {
+
+            R.id.relPlus -> {
                 showAddPostFragment()
             }
-            R.id.relSetting ->{
+
+            R.id.relSetting -> {
                 showSettingFragment()
             }
-            R.id.relFriend ->{
-                showFriendFragment("","")
+
+            R.id.relFriend -> {
+                showFriendFragment("", "")
             }
 
-            R.id.relLive ->{
+            R.id.relLive -> {
                 showStreamFragment()
             }
         }
@@ -224,7 +242,6 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         bundle.putString("title", title)
         friendsFragment.setArguments(bundle)
 
-//        RxBus.instance!!.publish(BusMessage.SWITCH_CONATINERS.name, R.id.fl_container_home_other)
         fragmentUtil!!.fragment(friendsFragment, R.id.fl_container_home_other, true).skipStack().commit()
         binding.relLive.setBackgroundResource(0)
         binding.relFriend.setBackgroundResource(R.drawable.layout_rounded_white_glass)
@@ -240,26 +257,28 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     //    }
 
     private fun showExploreFragment() {
-
         val bundle = Bundle()
         exploreFragment!!.arguments = bundle
-
-//        RxBus.instance!!.publish(BusMessage.SWITCH_CONATINERS.name, R.id.fl_container_home_other)
-
         fragmentUtil!!.fragment(
             exploreFragment,
             R.id.fl_container_home_other,
             !exploreFragment!!.isAdded
         ).skipStack().commit()
-
-       /* worldwideFragment = WorldwideFragment()
-        val bundle = Bundle()
-        worldwideFragment.setArguments(bundle)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fl_container_home_other, worldwideFragment, "worldwide_frg").commit()*/
     }
 
     private fun showAddPostFragment() {
 
+        val captureFragment = CaptureFragment()
+        val bundle = Bundle()
+        bundle.putString("CaptureType", "WatchTogether")
+        bundle.putString("PostType", "")
+        captureFragment.arguments = bundle
+//        RxBus.getInstance().publish(BusMessage.SWITCH_CONATINERS.name(), R.id.fl_container_home_other)
+        fragmentUtil!!.fragment(captureFragment, R.id.fl_container_home_other, true).skipStack().commit()
+        binding.relLive.setBackgroundResource(0)
+        binding.relFriend.setBackgroundResource(0)
+        binding.relPlus.setBackgroundResource(R.drawable.layout_rounded_white_glass)
+        binding.relSetting.setBackgroundResource(0)
     }
+
 }

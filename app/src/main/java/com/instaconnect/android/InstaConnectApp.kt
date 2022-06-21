@@ -8,6 +8,7 @@ import com.allattentionhere.autoplayvideos.ExoMediaPlayer
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.google.firebase.FirebaseApp
 import com.instaconnect.android.utils.SocketConnector
 import io.alterac.blurkit.BlurKit
 import java.io.File
@@ -45,6 +46,7 @@ class InstaConnectApp : BaseApp() {
         super.onCreate()
         instance = this
         BlurKit.init(this)
+        FirebaseApp.initializeApp(this)
         loadEmojiCompat()
         disableDeathOnFileUriExposure()
         SocketConnector.initSocket(instance)

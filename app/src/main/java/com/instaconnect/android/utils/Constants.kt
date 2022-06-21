@@ -6,6 +6,7 @@ import android.Manifest
  * Created by Bhavesh on 20-04-2022.
  */
 object Constants {
+
     const val PORT = "5005"
     const val FOR_CHAT_HOST_NAME = "http://15.222.88.69/"
     const val APP_NAME = "Watch Together"
@@ -26,6 +27,7 @@ object Constants {
     const val RECEIPT_DEL_TYPE = "deliverreceipt"
     const val RECEIPT_REC_TYPE = "receipt"
     const val WATCH_TOGETHER_CHAT = "watchTogetherChat"
+    const val CHAT_MESSAGE_MODEL: String = "chat_message_model"
 
     const val visiblePercent = 80f
 

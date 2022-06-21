@@ -14,5 +14,12 @@ class MyFriendsRepository constructor(private val api : MyApi): BaseRepository()
             api.getMyFriendList(userId, search, page)
     }
 
+    suspend fun makeUnfriendUser(
+        userId: String,
+        otherUserId: String
+    ) = safeApiCall {
+            api.makeUnfriendUser(userId, otherUserId)
+    }
+
 
 }

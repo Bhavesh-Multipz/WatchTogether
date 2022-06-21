@@ -52,6 +52,15 @@ class Util {
             return finalTimerString
         }
 
+        fun createUniqueCode(): String {
+            val min = 100
+            val max = 1000000000
+            val r = Random()
+            val random = r.nextInt(max - min + 1) + min
+            val time = System.currentTimeMillis()
+            return (random + time).toString()
+        }
+
         fun blur(context: Context?, image: Bitmap): Bitmap {
             val width = Math.round(image.width * 0.4f)
             val height = Math.round(image.height * 0.4f)
@@ -112,15 +121,6 @@ class Util {
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         val height = displayMetrics.heightPixels
         return displayMetrics.widthPixels
-    }
-
-    fun createUniqueCode(): String {
-        val min = 100
-        val max = 1000000000
-        val r = Random()
-        val random = r.nextInt(max - min + 1) + min
-        val time = System.currentTimeMillis()
-        return (random + time).toString()
     }
 
     fun getGooglePlaceImage(lat: String, longitude: String): String {

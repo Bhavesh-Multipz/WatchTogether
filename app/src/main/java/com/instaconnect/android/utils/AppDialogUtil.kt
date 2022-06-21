@@ -15,6 +15,7 @@ import android.util.Patterns
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.TextView
@@ -212,7 +213,7 @@ class AppDialogUtil(private val context: Context) {
     }
 
     /* create and show vertical list dialog*/
-    /*fun createAddHyperlinkDialog(dialogCallback: DialogCallback): Dialog {
+    fun createAddHyperlinkDialog(dialogCallback: DialogCallback): Dialog {
         val dialog = Dialog(context)
         dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_add_hyperlink)
@@ -252,7 +253,7 @@ class AppDialogUtil(private val context: Context) {
         })
         dialog.show()
         return dialog
-    }*/
+    }
 
     fun createListDialog(
         dialogItems: ArrayList<DialogItem>?,

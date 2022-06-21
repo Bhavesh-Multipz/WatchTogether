@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="android.view.View" />
+
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:paddingTop="@dimen/_26sdp"
+        android:background="@color/black">
+
+        <com.instaconnect.android.widget.FrameViewLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/player"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_45sdp"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:visibility="gone"
+                app:controller_layout_id="@layout/custom_exo_playback_control_view"
+                app:hide_on_touch="true"
+                app:show_buffering="true"
+                app:show_timeout="2000"
+                app:surface_type="texture_view"
+                app:use_controller="true" />
+
+            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                android:id="@+id/youtubePlayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_40sdp"
+                android:visibility="gone"
+                app:showFullScreenButton="false"
+                app:showYouTubeButton="false"
+                app:useWebUi="true" />
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="@dimen/_65sdp"
+                android:layout_height="@dimen/_65sdp"
+                android:layout_gravity="left|top"
+                android:layout_marginStart="-10dp"
+                android:layout_marginTop="-15dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/call_cross" />
+
+        </com.instaconnect.android.widget.FrameViewLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/captionCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_55sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="8dp">
+
+                <com.instaconnect.android.widget.BasicEditText
+                    android:id="@+id/et_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/type_caption"
+                    android:inputType="textMultiLine"
+                    android:maxHeight="@dimen/_80sdp"
+                    android:padding="@dimen/_8sdp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/grey"
+                    android:textCursorDrawable="@drawable/white_cursor"
+                    android:textSize="14sp"
+                    app:typeFace="@string/regular" />
+
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/iv_send"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:src="@drawable/send2" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</layout>

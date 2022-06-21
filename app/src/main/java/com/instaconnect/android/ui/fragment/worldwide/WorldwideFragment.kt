@@ -250,7 +250,7 @@ ${post_item.caption}"""
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         worldWideView = inflater.inflate(R.layout.fragment_worldwide_new, container, false)
@@ -876,7 +876,7 @@ ${post_item.caption}"""
         post: PostsList?,
         imageView: ImageView?,
         type: Int,
-        position: Int
+        position: Int,
     ) {
         if (type == VideoListAdapter.VIDEO) {
             makeServerCallForIncreaseView(post!!.id!!, position)
@@ -1038,7 +1038,7 @@ ${post_item.caption}"""
         mediaType: String?,
         password: String?,
         hyperLink: String?,
-        type: Int
+        type: Int,
     ) {
         val dialog = Dialog(requireContext(), R.style.CustomDialogTheme)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
@@ -1144,7 +1144,7 @@ ${post_item.caption}"""
         type: String?,
         chatMessage: ChatMessage?,
         flag: Int,
-        trending: Trending?
+        trending: Trending?,
     ) {
         val s = ""
     }
@@ -1227,21 +1227,21 @@ ${post_item.caption}"""
             return if (countryName == null) resources.configuration.locale.displayCountry else countryName!!
         }
 
-    fun onProgressUpdate(percentage: Int, chatMessage: ChatMessage?) {
+    override fun onProgressUpdate(percentage: Int, chatMessage: ChatMessage) {
         println("POST UPLOADING")
         if (dialog == null) return
         val progressBar: ProgressBar = dialog!!.findViewById(R.id.pbProcessing)
         progressBar.setProgress(percentage)
     }
 
-    fun onError(chatMessage: ChatMessage?) {
+    override fun onError(chatMessage: ChatMessage) {
         println("POST FAILED")
         if (dialog == null) return
         dialog!!.dismiss()
         ToastUtil.showToast("Uploading failed")
     }
 
-    fun onFinish(chatMessage: ChatMessage?) {
+    override fun onFinish(chatMessage: ChatMessage) {
         println("POST FINISH")
         if (dialog == null) return
         val progressBar: ProgressBar = dialog!!.findViewById(R.id.pbProcessing)
@@ -1305,7 +1305,7 @@ ${post_item.caption}"""
 
     fun uploadMedia(
         chatMessage: ChatMessage?,
-        uploadCallbacks: ProgressRequestBody.UploadCallbacks
+        uploadCallbacks: ProgressRequestBody.UploadCallbacks,
     ) {
         /* smackManager.sendMessage(chatMessage).subscribeOn(Schedulers.io())
              .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Consumer<Boolean?>() {
@@ -1400,7 +1400,7 @@ ${post_item.caption}"""
         status: String,
         userId: String?,
         position: Int,
-        post: PostsList
+        post: PostsList,
     ) {
         //  getBridge().showLoading();
         /* val call: Call<FollowUser> = dataManager.apiHelper().followUser(followingId, status, userId)
@@ -1443,7 +1443,7 @@ ${post_item.caption}"""
         loggedInUserId: String?,
         postId: String?,
         position: Int,
-        post: PostsList
+        post: PostsList,
     ) {
         //  getBridge().showLoading();
         /*val call: Call<FaouritePost> =
@@ -1485,7 +1485,7 @@ ${post_item.caption}"""
         reaction: String?,
         postId: String?,
         position: Int,
-        post: PostsList
+        post: PostsList,
     ) {
         /*val call: Call<PostReaction> =
             dataManager.apiHelper().addPostReaction(postId, reaction, userId)
@@ -1545,20 +1545,11 @@ ${post_item.caption}"""
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ) = FragmentWorldWideBinding.inflate(inflater, container, false)
 
     override fun getFragmentRepository() = WorldWideRepository(MyApi.getInstance())
 
-
-    override fun onProgressUpdate(percentage: Int) {
-    }
-
-    override fun onError() {
-    }
-
-    override fun onFinish() {
-    }
 
     override fun onContactSelected(contactsList: List<ContactsContract.Contacts?>?) {
     }
@@ -1566,4 +1557,6 @@ ${post_item.caption}"""
     override fun increaseViewCount(postId: String?, position: Int) {
         makeServerCallForIncreaseView(postId!!, position)
     }
+
+
 }
