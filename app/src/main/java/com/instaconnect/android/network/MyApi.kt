@@ -6,10 +6,12 @@ import com.instaconnect.android.data.model.FriendListModel
 import com.instaconnect.android.data.model.PublicPost
 import com.instaconnect.android.data.model.ReportPost
 import com.instaconnect.android.ui.fragment.add_post.WebLinkResponse
+import com.instaconnect.android.ui.fragment.more_setting.EnableDisbaleNotificationModel
 import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogether
 import com.instaconnect.android.ui.fragment.worldwide.Post
 import com.instaconnect.android.ui.friends.my_friends.UnfriendResponse
 import com.instaconnect.android.ui.login.SendOtp
+import com.instaconnect.android.ui.notification_list.NotificationListModelNew
 import com.instaconnect.android.ui.profile.ProfileResponse
 import com.instaconnect.android.ui.trending_websites.models.TrendingWebsiteResponseModel
 import com.instaconnect.android.ui.watch_together_room.PostReaction
@@ -33,6 +35,13 @@ interface MyApi {
         @Field("device_token") device_token: String, @Field("device_type") device_type: String,
         @Field("username") userName: String, @Field("user_profile_url") userProfileUrl: String,
     ): SendOtp
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_NOTIFICATION_LIST)
+    suspend fun getNotificationList(
+        @Field("user_id") user_id: String?,
+        @Field("page") page: Int,
+    ): NotificationListModelNew
 
     @FormUrlEncoded
     @POST(ApiEndPoint.ENDPOINT_GET_MY_FRIEND)
@@ -141,6 +150,13 @@ interface MyApi {
 
     @GET("embed")
     suspend fun getYoutubeVideoDetails(@Query("url") url: String?): YoutubeVideoDetails
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.CHANGE_NOTIFICATION_STATUS)
+    suspend fun enableDisableNotification(
+        @Field("user_id") user_id: String?,
+        @Field("notification_status") notification_status: String?,
+    ): EnableDisbaleNotificationModel
 
     @Multipart
     @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)

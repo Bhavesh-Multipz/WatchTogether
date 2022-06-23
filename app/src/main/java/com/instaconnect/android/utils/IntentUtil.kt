@@ -49,6 +49,14 @@ class IntentUtil {
                 appCompatActivity.startActivity(intent)
             }
         }
+        fun emailIntent(activity: Activity, address: String, subject: String?, body: String?) {
+            val emailIntent = Intent(Intent.ACTION_SENDTO)
+            emailIntent.data = Uri.parse("mailto:") // only email apps should handle this
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
+            emailIntent.putExtra(Intent.EXTRA_TEXT, body)
+            activity.startActivity(Intent.createChooser(emailIntent, "Send email..."))
+        }
     }
     fun imageIntent(activity: Activity, requestCode: Int): Intent {
         val pickPhoto = Intent(Intent.ACTION_GET_CONTENT)
@@ -94,17 +102,5 @@ class IntentUtil {
         )
         activity.startActivityForResult(contactPickerIntent, requestCode)
     }
-
-    fun emailIntent(activity: Activity, address: String, subject: String?, body: String?) {
-        val emailIntent = Intent(Intent.ACTION_SENDTO)
-        emailIntent.data = Uri.parse("mailto:") // only email apps should handle this
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        emailIntent.putExtra(Intent.EXTRA_TEXT, body)
-        activity.startActivity(Intent.createChooser(emailIntent, "Send email..."))
-    }
-
-
-
 
 }

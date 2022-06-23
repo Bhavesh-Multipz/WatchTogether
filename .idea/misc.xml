@@ -8,32 +8,57 @@
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/drawable/round_corner_green.xml" value="0.1215" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/drawable/rounded_corner_green.xml" value="0.1215" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/drawable/rounded_corner_light_green_bg.xml" value="0.1215" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/drawable/square_transparent_outline.xml" value="0.262" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/drawable/underline_grey.xml" value="0.262" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_block_user.xml" value="0.3" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_login.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_main.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_more_settings_new.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_notification.xml" value="0.3" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_private_profile.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_terms_webview.xml" value="0.3" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_trending_websites.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_video_previews.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_watch_together_video.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/activity_youtube_web_view.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/bottom_add_friend_to_watch_video.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/bottom_feedback_app_dialog.xml" value="0.3" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/conetxt_pop_up_window.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/custom_exo_playback_control_view.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_add_hyperlink.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_add_password_for_watch_together_video.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_post_public.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_private_room_video_password_new.xml" value="0.2968988307066599" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_public_terms.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_send_friend_request.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_share_app_custome_layout_new.xml" value="0.3" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_signout_new.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/dialog_watch_video_notification.xml" value="0.3" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/empty_public_post.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/error.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/exo_video_image.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/explore_fragment.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_add_friend.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_capture.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_contact_new.xml" value="0.30416666666666664" />
-        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_friends.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_friend_request.xml" value="0.25" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_friends.xml" value="0.25" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_my_friend.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_world_wide.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/fragment_worldwide_new.xml" value="0.2" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/ic_comments.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/item_notification_new.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/item_share_app_dialog.xml" value="0.3" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/item_trending_websites.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/item_weblink.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/layout_trending_dialog.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/pop_up_window.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_contact_header.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_contact_item.xml" value="0.3" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_contact_item_new.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_dialog_item.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_friend_request_item.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_item_add_friend.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_item_add_friend_to_watch_video_new.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_item_my_friend_new.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_pop_up_item.xml" value="0.30416666666666664" />
@@ -51,6 +76,7 @@
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_text_post_header.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_watch_together_chat_message.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/rv_watch_together_video_chat_message2.xml" value="0.30416666666666664" />
+        <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/app/src/main/res/layout/widget_flash_view.xml" value="0.30416666666666664" />
         <entry key="..\:/Bhavesh Workshop/Projects/Running Project/WatchTogather/autoplayvideos/src/main/res/layout/exo_video_image.xml" value="0.30416666666666664" />
         <entry key="..\:/Multipz Work/WatchTogather/app/src/main/res/drawable-nodpi/blue_round_edge.xml" value="0.146" />
         <entry key="..\:/Multipz Work/WatchTogather/app/src/main/res/drawable-nodpi/bottom_stroke.xml" value="0.146" />

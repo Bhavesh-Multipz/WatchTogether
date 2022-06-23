@@ -20,6 +20,7 @@ import com.instaconnect.android.R
 import com.instaconnect.android.databinding.ActivityMainBinding
 import com.instaconnect.android.ui.fragment.add_post.CaptureFragment
 import com.instaconnect.android.ui.fragment.explore.ExploreFragment
+import com.instaconnect.android.ui.fragment.more_setting.MoreSettingsFragment
 import com.instaconnect.android.ui.fragment.worldwide.Post
 import com.instaconnect.android.ui.fragment.worldwide.WorldwideFragment
 import com.instaconnect.android.ui.friends.FriendsFragment
@@ -231,7 +232,16 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     }
 
     private fun showSettingFragment() {
+        val moreSettingsFragment = MoreSettingsFragment()
+        val bundle = Bundle()
+        moreSettingsFragment.setArguments(bundle)
 
+        fragmentUtil!!.fragment(moreSettingsFragment, R.id.fl_container_home_other, true).skipStack().commit()
+
+        binding.relLive.setBackgroundResource(0)
+        binding.relFriend.setBackgroundResource(0)
+        binding.relPlus.setBackgroundResource(0)
+        binding.relSetting.setBackgroundResource(R.drawable.layout_rounded_white_glass)
     }
 
     private fun showFriendFragment(from: String, title: String) {
@@ -273,7 +283,6 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         bundle.putString("CaptureType", "WatchTogether")
         bundle.putString("PostType", "")
         captureFragment.arguments = bundle
-//        RxBus.getInstance().publish(BusMessage.SWITCH_CONATINERS.name(), R.id.fl_container_home_other)
         fragmentUtil!!.fragment(captureFragment, R.id.fl_container_home_other, true).skipStack().commit()
         binding.relLive.setBackgroundResource(0)
         binding.relFriend.setBackgroundResource(0)

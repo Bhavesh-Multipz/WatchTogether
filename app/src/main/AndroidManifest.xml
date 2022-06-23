@@ -37,6 +37,14 @@
         android:supportsRtl="true"
         android:theme="@style/BaseThemeNoTransparent"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".ui.notification_list.NotificationListActivity"
+            android:screenOrientation="fullSensor" />
+
+        <activity
+            android:name=".ui.block_user.BlockUserActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.video_preview.VideoPreviewsActivity"
             android:exported="false" />

@@ -6,6 +6,8 @@ import com.instaconnect.android.ui.fragment.add_post.CaptureFragmentRepository
 import com.instaconnect.android.ui.fragment.add_post.CaptureFragmentViewModel
 import com.instaconnect.android.ui.fragment.explore.ExploreRepository
 import com.instaconnect.android.ui.fragment.explore.ExploreViewModel
+import com.instaconnect.android.ui.fragment.more_setting.MoreSettingRepository
+import com.instaconnect.android.ui.fragment.more_setting.MoreSettingViewModel
 import com.instaconnect.android.ui.friends.FriendsFragmentViewModel
 import com.instaconnect.android.ui.friends.FriendsRepository
 import com.instaconnect.android.ui.friends.add_friend_fragment.AddFriendFragmentViewModel
@@ -29,6 +31,7 @@ class ViewModelFactory(private val repository: BaseRepository) :
             modelClass.isAssignableFrom(FriendsRequestViewModel::class.java) -> FriendsRequestViewModel(repository as FriendsRequestRepository) as T
             modelClass.isAssignableFrom(AddFriendFragmentViewModel::class.java) -> AddFriendFragmentViewModel(repository as AddFriendRepository) as T
             modelClass.isAssignableFrom(CaptureFragmentViewModel::class.java) -> CaptureFragmentViewModel(repository as CaptureFragmentRepository) as T
+            modelClass.isAssignableFrom(MoreSettingViewModel::class.java) -> MoreSettingViewModel(repository as MoreSettingRepository) as T
 
             else -> throw IllegalAccessException("ViewModel Class Not Found!")
         }

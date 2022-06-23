@@ -25,10 +25,13 @@ import com.instaconnect.android.utils.models.User
 import gun0912.tedimagepicker.builder.TedImagePicker
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.createFormData
+import okhttp3.RequestBody
 import java.io.File
 import java.util.concurrent.Executors
+import java.util.prefs.Preferences
 
 class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private val permissionsRequestCode = 111
@@ -68,12 +71,13 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
-
                         if(it.value.response!!.code == "200"){
                             val user = User()
                             user.phone = userId
                             user.name = it.value.response!!.username!!
                             user.avatar = it.value.response!!.image!!
+                            Prefrences.savePreferencesString(this,Constants.PREF_USER_NAME, it.value.response!!.username!!)
+                            Prefrences.savePreferencesString(this,Constants.PREF_USER_PROFILE_PIC, it.value.response!!.image!!)
                             Prefrences.setUser(user)
                             Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
                             val intent = Intent(this, HomeActivity::class.java)
@@ -101,7 +105,6 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
         val bn = intent.extras
         val name = bn!!.getString("userName")
         val email = bn.getString("profilePhoto")
-
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -166,6 +169,14 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                         mediaFile.name,
                         mediaFileBody
                     )
+                } else {
+
+                    val attachmentEmpty: RequestBody = RequestBody.create(MediaType.parse("text/plain"), "")
+                    filePart = createFormData(
+                        "image",
+                        "",
+                        attachmentEmpty
+                    )
                 }
 
                 params["user_id"] = userId
@@ -192,7 +203,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {

@@ -41,6 +41,8 @@ object Constants {
     const val PREF_HAS_DISTANCE = "pref_has_distance"
     const val PREF_SEARCH_BY_DISTANCE = "pref_search_by_distance"
 
+    const val PREF_NOTIFICATION_STATUS = "pref_search_by_distance"
+
     var appPermissionsForHomeScreen = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -58,4 +60,8 @@ object Constants {
 
     const val CHAT_MODE_ONE_TO_ONE = "single"
     const val CHAT_MODE_CONFERENCE = "conference"
+
+    const val NOTIFICATION_TYPE_SEND_REQUEST = "send_request"
+    const val NOTIFICATION_TYPE_SEND_INVITATION = "send_invitation"
+    const val NOTIFICATION_TYPE_POST_LIKED = "post_liked"
 }
