@@ -384,6 +384,7 @@
     <string name="msg_microphone_permision">Microphone permission needed for recording. Please allow in App Settings for additional functionality</string>
     <string name="msg_strorage_permission">External Storage permission needed. Please allow in App Settings for additional functionality.</string>
     <string name="msg_camera_permission">Camera permission needed. Please allow in App Settings for additional functionality.</string>
+    <string name="delete_account">Delete Account</string>
     <integer name="fragment_transition_time">250</integer>
 
 </resources>

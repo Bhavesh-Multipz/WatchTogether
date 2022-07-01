@@ -29,7 +29,7 @@ class TrendingWebsiteListAdapter internal constructor(var context: Context, var 
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Copied Url", websitesItem.link)
             clipboard.setPrimaryClip(clip)
-            Toast.makeText(context, "Url Copied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Website URL Link Copied. You may paste this to create a room", Toast.LENGTH_LONG).show()
         }
     }
 

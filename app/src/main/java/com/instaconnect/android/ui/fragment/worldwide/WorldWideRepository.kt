@@ -33,4 +33,18 @@ class WorldWideRepository constructor(private val api : MyApi): BaseRepository()
     ) = safeApiCall {
         api.blockUser(blocUserId, status, userId)
     }
+
+    suspend fun deletePost(
+        postId: String
+    ) = safeApiCall {
+        api.deletePost(postId)
+    }
+
+    suspend fun loadPreference(
+        version: String,
+        device_type: String,
+        userId: String,
+    ) = safeApiCall {
+        api.loadPreference(version, device_type, userId)
+    }
 }

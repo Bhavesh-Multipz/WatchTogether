@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -54,7 +55,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     var userPhotoUri = ""
     var number = ""
     var deviceToken = ""
-
+    var currentVersion = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         setClickListener()
         setUpIntroScreen()
+
+        currentVersion = packageManager.getPackageInfo(packageName, 0).versionName
 
         deviceToken = Prefrences.getPreferences(this@LoginActivity, Constants.PREF_DEVICE_TOKEN).toString()
         callbackManager = create()
@@ -94,62 +97,77 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
-                        if (it.value.response!!.code.equals("200")) {
 
-                            Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
+                        viewModel.viewModelScope.launch {
+                            viewModel.loadPreference(currentVersion, "android", Prefrences.getPreferences(this@LoginActivity, Constants.PREF_USER_ID)!!)
+                        }
 
-                            val user = User()
-                            startActivity(Intent(this, HomeActivity::class.java))
-                            Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
+                        when {
+                            it.value.response!!.code.equals("200") -> {
 
-                            Log.d("TAG", "onCreate: $number")
+                                /*if(it.value.response!!.message!!.contains("deactivated")){
+                                                    ToastUtil.showToast(it.value.response!!.message!!)
+                                                } else {*/
 
-                            if (it.value.response!!.username!!.isEmpty()) {
-                                Prefrences.savePreferencesString(
-                                    this,
-                                    Constants.PREF_USER_NAME,
-                                    userName
-                                )
-                                Prefrences.savePreferencesString(
-                                    this,
-                                    Constants.PREF_USER_PROFILE_PIC,
-                                    userPhotoUri
-                                )
+                                /*if(it.value.response!!.username != null && it.value.response!!.userProfileUrl != null &&
+                                                        !it.value.response!!.userProfileUrl!!.contains(""))*/
 
-                                user.phone = number
-                                user.name = userName
-                                user.avatar = userPhotoUri
+                                Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
+                                val user = User()
+                                startActivity(Intent(this, HomeActivity::class.java))
+                                Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
 
-                            } else {
-                                Prefrences.savePreferencesString(
-                                    this,
-                                    Constants.PREF_USER_NAME,
-                                    it.value.response!!.username!!
-                                )
-                                Prefrences.savePreferencesString(
-                                    this,
-                                    Constants.PREF_USER_PROFILE_PIC,
-                                    it.value.response!!.userProfileUrl!!
-                                )
+                                if (it.value.response!!.username!!.isEmpty()) {
+                                    Prefrences.savePreferencesString(
+                                        this,
+                                        Constants.PREF_USER_NAME,
+                                        userName
+                                    )
+                                    Prefrences.savePreferencesString(
+                                        this,
+                                        Constants.PREF_USER_PROFILE_PIC,
+                                        userPhotoUri
+                                    )
 
-                                user.phone = number
-                                user.name = it.value.response!!.username!!
-                                user.avatar = it.value.response!!.userProfileUrl!!
+                                    user.phone = number
+                                    user.name = userName
+                                    user.avatar = userPhotoUri
+
+                                } else {
+                                    Prefrences.savePreferencesString(
+                                        this,
+                                        Constants.PREF_USER_NAME,
+                                        it.value.response!!.username!!
+                                    )
+                                    Prefrences.savePreferencesString(
+                                        this,
+                                        Constants.PREF_USER_PROFILE_PIC,
+                                        it.value.response!!.userProfileUrl!!
+                                    )
+
+                                    user.phone = number
+                                    user.name = it.value.response!!.username!!
+                                    user.avatar = it.value.response!!.userProfileUrl!!
+                                }
+
+                                Prefrences.setUser(user)
+                    //                            }
+
+
                             }
-
-                            Prefrences.setUser(user)
-
-                        } else if (it.value.response!!.code.equals("201")) {
-                            Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
-                            val intent = Intent(this, PrivateProfileActivity::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            intent.putExtra("userName", userName)
-                            intent.putExtra("profilePhoto", userPhotoUri)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            ToastUtil.showToast(getString(R.string.msg_something_wrong))
+                            it.value.response!!.code.equals("201") -> {
+                                Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
+                                val intent = Intent(this, PrivateProfileActivity::class.java)
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                intent.putExtra("userName", userName)
+                                intent.putExtra("profilePhoto", userPhotoUri)
+                                startActivity(intent)
+                                finish()
+                            }
+                            else -> {
+                                ToastUtil.showToast(getString(R.string.msg_something_wrong))
+                            }
                         }
 
                     }
@@ -160,6 +178,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 else -> {}
             }
         }
+
+        viewModel.loadPreferenceResponse.observe(this, Observer {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.response != null) {}
+                }
+                is Resource.Failure -> {}
+                else -> {}
+            }
+        })
     }
 
     private fun setClickListener() {
@@ -239,7 +267,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 )
             }
             R.id.tv_terms -> {
-                startActivity(Intent(this, TermsWebViewActivity::class.java))
+                val intent = Intent(this, TermsWebViewActivity::class.java)
+                intent.putExtra("TYPE", "Terms")
+                startActivity(intent)
             }
             R.id.tv_help -> {}
         }

@@ -70,6 +70,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         setOnClickListener()
         showStreamFragment()
 
+        // notification status by default ON
+        Prefrences.savePreferencesString(this, Constants.PREF_NOTIFICATION_STATUS,"1")
+
         FirebaseInstallations.getInstance().getToken(false)
             .addOnCompleteListener(object : OnCompleteListener<InstallationTokenResult?> {
                 override fun onComplete(@NonNull task: Task<InstallationTokenResult?>) {
@@ -250,7 +253,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         val bundle = Bundle()
         bundle.putString("from", from)
         bundle.putString("title", title)
-        friendsFragment.setArguments(bundle)
+        friendsFragment.arguments = bundle
 
         fragmentUtil!!.fragment(friendsFragment, R.id.fl_container_home_other, true).skipStack().commit()
         binding.relLive.setBackgroundResource(0)
@@ -258,13 +261,6 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         binding.relPlus.setBackgroundResource(0)
         binding.relSetting.setBackgroundResource(0)
     }
-
-    //    private void showMoreFragment() {
-    //        pager_headers_flv.setVisibility(View.GONE);
-    //        explorii_header_inc.setVisibility(View.GONE);
-    //        RxBus.getInstance().publish(BusMessage.SWITCH_CONATINERS.name(), R.id.fl_container_home_other);
-    //        fragmentUtil.fragment(new MoreFragment(), R.id.fl_container_home_other, true).commit();
-    //    }
 
     private fun showExploreFragment() {
         val bundle = Bundle()

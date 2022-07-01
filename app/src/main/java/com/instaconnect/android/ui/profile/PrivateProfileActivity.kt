@@ -21,6 +21,7 @@ import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.Utils.toast
+import com.instaconnect.android.utils.helper_classes.GlideHelper
 import com.instaconnect.android.utils.models.User
 import gun0912.tedimagepicker.builder.TedImagePicker
 import gun0912.tedimagepicker.util.ToastUtil
@@ -31,7 +32,6 @@ import okhttp3.MultipartBody.Part.createFormData
 import okhttp3.RequestBody
 import java.io.File
 import java.util.concurrent.Executors
-import java.util.prefs.Preferences
 
 class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private val permissionsRequestCode = 111
@@ -44,7 +44,8 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     var userId = ""
     var list = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,18 +100,20 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private fun setOnClickListener() {
         binding.btnContinue.setOnClickListener(this)
         binding.cardImg.setOnClickListener(this)
+        binding.ivBack.setOnClickListener(this)
     }
 
     private fun setUserData() {
         val bn = intent.extras
         val name = bn!!.getString("userName")
-        val email = bn.getString("profilePhoto")
+        val userProfile = bn.getString("profilePhoto")
 
-        val executor = Executors.newSingleThreadExecutor()
+        GlideHelper.loadFromUrl(this, userProfile, R.drawable.loader, binding.imgProfile)
+        /*val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
         var image: Bitmap? = null
         executor.execute {
-            val imageURL = email
+            val imageURL = userProfile
             try {
                 val openStream = java.net.URL(imageURL).openStream()
                 image = BitmapFactory.decodeStream(openStream)
@@ -120,7 +123,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
+        }*/
 
         binding.etName.setText(name)
 
@@ -144,6 +147,10 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                     TedImagePicker.with(this)
                         .start { uri -> showSingleImage(uri) }
                 }
+            }
+
+            R.id.iv_back ->{
+                finish()
             }
         }
     }

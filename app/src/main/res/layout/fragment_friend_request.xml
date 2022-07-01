@@ -73,6 +73,7 @@
         android:layout_centerInParent="true"
         android:fontFamily="@font/montserrat_medium"
         android:gravity="center"
+        android:visibility="gone"
         android:text="No Friend Requests"
         android:textColor="@color/white"
         android:textSize="20sp"/>

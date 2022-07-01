@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:blurkit="http://schemas.android.com/apk/res-auto">
+    xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    app:ignore="NamespaceTypo">
 
     <data>
 
@@ -13,6 +15,15 @@
         android:layout_height="match_parent">
 
         <include layout="@layout/include_main_bg_trans" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:indeterminateTint="@color/white"/>
 
         <RelativeLayout
             android:id="@+id/rel_top"
@@ -355,6 +366,36 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
+                            android:id="@+id/lin_account_delete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_8sdp"
+                            android:layout_weight="1"
+                            android:background="@drawable/layout_item_setting_rounded"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:paddingVertical="@dimen/_16sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_margin="@dimen/_6sdp"
+                                android:src="@drawable/ic_delete_account"
+                                blurkit:tint="@color/white" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_4sdp"
+                                android:fontFamily="@font/montserrat_medium"
+                                android:text="@string/delete_account"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/lin_setting_logout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -380,19 +421,6 @@
                                 android:text="Logout"
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/_8sdp"
-                            android:layout_weight="1"
-                            android:background="@drawable/layout_medium_rounded_white_glass"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/_16sdp"
-                            android:visibility="invisible">
 
                         </LinearLayout>
 

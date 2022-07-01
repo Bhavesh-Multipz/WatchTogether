@@ -43,6 +43,7 @@ import com.instaconnect.android.utils.DateUtil
 import com.instaconnect.android.utils.DoubleClickListener
 import com.instaconnect.android.utils.ScreenUtils
 import com.instaconnect.android.utils.Util
+import com.instaconnect.android.utils.Utils.visible
 import com.instaconnect.android.utils.helper_classes.GlideHelper
 import com.instaconnect.android.utils.models.User
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -265,7 +266,8 @@ class VideoListAdapter(
         if (((postsLists[position].thumbnail != null) && !postsLists[position].thumbnail!!.isEmpty() &&
                     !postsLists[position].thumbnail!!.contains("http"))
         ) {
-            if (postsLists.get(position).mediaType != "web") {
+            if (postsLists[position].mediaType != "web") {
+
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
@@ -274,7 +276,7 @@ class VideoListAdapter(
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
-                        ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
+                        ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
                         R.drawable.gridview_image,
                         viewHolder.imageView
                     )
@@ -288,7 +290,7 @@ class VideoListAdapter(
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
-                        ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
+                        ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
                         0,
                         viewHolder.imageView
                     )
@@ -297,14 +299,14 @@ class VideoListAdapter(
             if (postsLists[position].blurBitmap == null) {
                 getBitmapFromUrl(
                     position,
-                    ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
+                    ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
                     viewHolder.iv_imageBlur
                 )
             } else {
                 viewHolder.iv_imageBlur.setImageBitmap(postsLists[position].blurBitmap)
             }
         } else if (postsLists[position].thumbnail != null && !postsLists[position].thumbnail!!.isEmpty()) {
-            if (postsLists.get(position).mediaType != "web") {
+            if (postsLists[position].mediaType != "web") {
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
@@ -313,7 +315,7 @@ class VideoListAdapter(
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
-                        ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
+                        ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
                         R.drawable.gridview_image,
                         viewHolder.imageView
                     )
@@ -327,7 +329,7 @@ class VideoListAdapter(
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
-                        ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
+                        ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
                         R.drawable.gridview_image,
                         viewHolder.imageView
                     )
@@ -367,14 +369,15 @@ class VideoListAdapter(
                 viewHolder.ivAudio.setImageResource(R.drawable.mute)
             }
         }
-        viewHolder.tvText.setOnClickListener(View.OnClickListener {
+        viewHolder.tvText.setOnClickListener {
             listListener.onItemSingleClick(
                 postsLists[position], viewHolder.imageView, VIDEO, position
             )
-        })
+        }
         viewHolder.itemView.setOnClickListener(object : DoubleClickListener() {
             override fun onSingleClick(v: View?) {
-                if (((postsLists[position].mediaType == "web") && postsLists[position].groupPassword != "" && (postsLists[position].hyperlink != null))
+                if (((postsLists[position].mediaType == "web") && postsLists[position].groupPassword != ""
+                            && (postsLists[position].hyperlink != null))
                 ) {
                     listListener.onPrivateRoomVideoClick(
                         postsLists[position], postsLists[position].mediaType,
@@ -451,13 +454,15 @@ class VideoListAdapter(
                 viewHolder.relWatchTogetherView.visibility = View.VISIBLE
                 viewHolder.ivVideoGif.visibility = View.GONE
                 viewHolder.iv_imageBlur.visibility = View.GONE
+                screenWidth / 2
                 val params = RelativeLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    550
+                    screenWidth / 2
                 )
                 params.setMargins(4, 4, 4, 4)
                 viewHolder.relWatchTogetherView.layoutParams = params
                 viewHolder.tvWatchTogetherCaption.text = postsLists[position].caption
+
                 if (postsLists[position].groupPassword!!.isEmpty()) {
                     // watch together
                     if (postsLists[position].caption!!.isEmpty()) {
@@ -481,7 +486,7 @@ class VideoListAdapter(
                 viewHolder.ivVideoGif.visibility = View.VISIBLE
                 val params = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
-                    550
+                    screenWidth / 2
                 )
                 params.setMargins(4, 4, 4, 4)
                 viewHolder.ivVideoGif.layoutParams = params
@@ -493,15 +498,29 @@ class VideoListAdapter(
                         .placeholder(R.drawable.gridview_image)
                         .into(viewHolder.ivVideoGif)
                 } else {
-                    Log.e(
-                        "ivVideoGif",
-                        ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].gif + "..."
-                    )
-                    Glide.with(context!!)
+
+                    Glide.with(context)
                         .asGif()
-                        .load(ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].gif)
+                        .load(ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].gif)
                         .placeholder(R.drawable.gridview_image)
                         .into(viewHolder.ivVideoGif)
+                }
+            }
+
+            viewHolder.tvWatchTogetherCaption.text = postsLists[position].caption
+            if (postsLists[position].groupPassword!!.isEmpty()) {
+                // watch together
+                if (postsLists[position].caption!!.isEmpty()) {
+                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_watch_together_glass)
+                } else {
+                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_watch_with_name)
+                }
+            } else {
+                // private room
+                if (postsLists[position].caption!!.isEmpty()) {
+                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_private_room_glass)
+                } else {
+                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_private_witt_name)
                 }
             }
             hideVideoLayouts(viewHolder)
@@ -574,31 +593,6 @@ class VideoListAdapter(
 
     fun setLayout(grid: String) {
         currentLayoutType = grid
-    }
-
-    inner class DownloadImage(position: Int) : AsyncTask<String?, Void?, Bitmap?>() {
-        var position: Int
-
-        override fun onPostExecute(result: Bitmap?) {
-            postsLists[position].blurBitmap = Util.blur(context, (result)!!)
-            //            notifyDataSetChanged();
-        }
-
-        init {
-            this.position = position
-        }
-
-        override fun doInBackground(vararg params: String?): Bitmap? {
-            val urldisplay = params[0]
-            var mIcon11: Bitmap? = null
-            try {
-                val `in` = URL(urldisplay).openStream()
-                mIcon11 = BitmapFactory.decodeStream(`in`)
-            } catch (e: Exception) {
-                Log.d("Error", e.stackTrace.toString())
-            }
-            return mIcon11
-        }
     }
 
     fun increasePostView(position: Int, videoViewHolder: VideoViewHolder) {
@@ -893,7 +887,7 @@ class VideoListAdapter(
         if ((currentLayoutType == "Grid")) {
             val params2 = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                550
+                screenWidth / 2
             )
             params2.setMargins(4, 4, 4, 4)
             viewHolder.ivYoutubeClick.layoutParams = params2
@@ -910,13 +904,36 @@ class VideoListAdapter(
             viewHolder.iv_imageBlur.visibility = View.GONE
             val params = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                550
+                screenWidth / 2
             )
             params.setMargins(4, 4, 4, 4)
             viewHolder.youTubePlayerView.layoutParams = params
+            viewHolder.videoCardView.visible(false)
+            viewHolder.relYoutubeGridView.visible(true)
+            viewHolder.relYoutubeGridView.layoutParams = params
             hideYoutubeVideoLayouts(viewHolder, postsLists[position])
 
+            viewHolder.tvYoutubeGridCaption.text = postsLists[position].caption
+
+            if (postsLists[position].groupPassword!!.isEmpty()) {
+                // watch together
+                if (postsLists[position].caption!!.isEmpty()) {
+                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_grid_watch_together_glass)
+                } else {
+                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_watch_with_name)
+                }
+            } else {
+                // private room
+                if (postsLists[position].caption!!.isEmpty()) {
+                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_grid_private_room_glass)
+                } else {
+                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_private_witt_name)
+                }
+            }
         } else {
+
+            viewHolder.videoCardView.visible(true)
+            viewHolder.relYoutubeGridView.visible(false)
 
             viewHolder.tvYoutubeGridViewCaption.visibility = View.GONE
             if (!postsLists[position].groupPassword!!.isEmpty()) {
@@ -1115,7 +1132,7 @@ class VideoListAdapter(
             viewHolder.iv_imageBlur.visibility = View.GONE
             val params = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                550
+                screenWidth / 2
             )
             params.setMargins(4, 4, 4, 4)
             viewHolder.mCover.layoutParams = params
@@ -1298,7 +1315,7 @@ class VideoListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        Log.e("viewTypeName", postsLists[position].username + ".." + postsLists[position].mediaType)
+        Log.e("viewTypeName", postsLists[position].username + ".." + postsLists[position].caption)
         if (postsLists[position].mediaType.equals("youTube", ignoreCase = true)) {
             //   Log.e("viewType","Youtube");
             return YOUTUBE

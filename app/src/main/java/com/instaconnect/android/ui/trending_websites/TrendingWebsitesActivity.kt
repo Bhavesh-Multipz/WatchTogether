@@ -37,7 +37,6 @@ class TrendingWebsitesActivity : AppCompatActivity(), View.OnClickListener {
             )
         )[TrendingWebsitesViewModel::class.java]
 
-
         setView()
         setAdapter()
         getTrendingWebsiteList()

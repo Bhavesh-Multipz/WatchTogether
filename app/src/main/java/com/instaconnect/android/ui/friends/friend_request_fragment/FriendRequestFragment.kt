@@ -7,27 +7,19 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.allattentionhere.autoplayvideos.recyclerview.BasicRecyclerView
 import com.allattentionhere.autoplayvideos.recyclerview.LazyLoadListener
-import com.instaconnect.android.R
 import com.instaconnect.android.base.BaseFragment
 import com.instaconnect.android.data.model.FriendListModel
 import com.instaconnect.android.databinding.FragmentFriendRequestBinding
-import com.instaconnect.android.fileHelper.DataManager
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.friends.friend_request_fragment.FriendRequestListAdapter.FriendRequestListener
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import javax.inject.Inject
 
 class FriendRequestFragment : BaseFragment<FriendsRequestViewModel, FragmentFriendRequestBinding, FriendsRequestRepository>(),
     OnRefreshListener, FriendRequestListener, LazyLoadListener {
@@ -39,11 +31,6 @@ class FriendRequestFragment : BaseFragment<FriendsRequestViewModel, FragmentFrie
     var searchKeyword = ""
     var page = 1
     var postToRemove : Int? = null
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -97,27 +84,13 @@ class FriendRequestFragment : BaseFragment<FriendsRequestViewModel, FragmentFrie
                 is Resource.Success -> {
                     binding.swipeRefresh.isRefreshing = false
                     if (it.value.response!!.code.equals("200")) {
-                        if (it.value.response!!.userlist == null || it.value.response!!.userlist!!.isEmpty()) {
-                            if (page == 1) {
-                                //txtEmpty.setVisibility(View.VISIBLE);
-                                //txtEmpty.setText(it.value.response.getMessage());
-                            }
-                        } else {
-                            // txtEmpty.setVisibility(View.GONE);
-                            myFriendList = it.value.response!!.userlist!!
-                            myFriendListAdapter!!.removeUser(postToRemove!!)
-                        }
-                        if (it.value.response!!.isLastPage == 0) {
-                            binding.recyclerMyFriend.isLoading(false)
-                        } else {
-                            binding.recyclerMyFriend.isNestedScrollingEnabled = false
-                        }
-                    } else if (it.value.response!!.code.equals("301")) {
-                        if (page == 1) {
-                            binding.txtEmpty.visibility = View.VISIBLE
-                        } else {
-                            binding.txtEmpty.visibility = View.GONE
-                        }
+                        myFriendListAdapter!!.removeUser(postToRemove!!)
+                    }
+
+                    if(myFriendListAdapter!!.userList.isEmpty()){
+                        binding.txtEmpty.visibility = View.VISIBLE
+                    } else {
+                        binding.txtEmpty.visibility = View.GONE
                     }
                 }
                 is Resource.Loading -> {
@@ -132,11 +105,8 @@ class FriendRequestFragment : BaseFragment<FriendsRequestViewModel, FragmentFrie
         }
     }
 
-    fun onBackPress(fragmentCount: Int) {}
 
     private fun setListeners() {
-
-
         binding.swipeRefresh.isRefreshing = false
         binding.recyclerMyFriend.setLazyLoadListener(this)
         binding.swipeRefresh.setOnRefreshListener(this)
@@ -171,15 +141,11 @@ class FriendRequestFragment : BaseFragment<FriendsRequestViewModel, FragmentFrie
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 searchKeyword = s.toString()
                 Handler().postDelayed({
-                    /*if (call != null) {
-                        call!!.cancel()
-                    }*/
                     binding.recyclerMyFriend.resetLazyLoadListener()
                     myFriendListAdapter!!.clear()
                     getFriendRequestList(1, searchKeyword)
                 }, 400)
             }
-
             override fun afterTextChanged(s: Editable) {}
         })
     }

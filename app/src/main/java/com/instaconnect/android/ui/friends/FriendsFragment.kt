@@ -88,7 +88,7 @@ class FriendsFragment : BaseFragment<FriendsFragmentViewModel, FragmentFriendsBi
             binding.txtInviteFriend.setTextColor(ContextCompat.getColor(requireContext(), R.color.transparent_white_hex_10))
             showFriendRequestFragment()
         } else {
-            showMyFriendFragment()
+            showAddFriendFragment()
         }
     }
 

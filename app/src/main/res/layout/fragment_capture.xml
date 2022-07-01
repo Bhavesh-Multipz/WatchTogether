@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
-        
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -320,42 +317,53 @@
                         android:layout_centerVertical="true"
                         android:layout_marginTop="@dimen/_16sdp"
                         android:layout_marginEnd="@dimen/_4sdp"
-                        android:layout_toStartOf="@+id/tvGo"
                         android:visibility="visible"
                         blurkit:blk_blurRadius="@integer/blur_radius"
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
                         blurkit:blk_cornerRadius="0dp"
                         blurkit:blk_downscaleFactor="0.12"
                         blurkit:blk_fps="0">
 
-                        <EditText
-                            android:id="@+id/edtWebUrl"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/layout_square_rounded_white_glass"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/montserrat_medium"
-                            android:hint="@string/paste_or_type_video_url"
-                            android:paddingHorizontal="14dp"
-                            android:paddingVertical="12dp"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/transparent_white_hex_11"
-                            android:textSize="16sp" />
-                    </io.alterac.blurkit.BlurLayout>
+                            android:layout_height="@dimen/_35sdp"
+                            android:background="@drawable/layout_rounded_gradient_white_glass">
 
-                    <TextView
-                        android:id="@+id/tvGo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/watchPostTitle"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:fontFamily="@font/montserrat_medium"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:padding="12dp"
-                        android:text="@string/go"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                            <EditText
+                                android:id="@+id/edtWebUrl"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toStartOf="@+id/tvGo"
+                                android:background="@null"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/montserrat_medium"
+                                android:hint="Paste or type Video or Website URL"
+                                android:lineSpacingExtra="2dp"
+                                android:maxLines="1"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="12dp"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/transparent_white_hex_11"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tvGo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="end"
+                                android:background="@drawable/drawable_right_rounded_corner_white_bg"
+                                android:fontFamily="@font/montserrat_medium"
+                                android:foreground="?attr/selectableItemBackgroundBorderless"
+                                android:padding="12dp"
+                                android:text="Go"
+                                android:textColor="#2A0E5B"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </RelativeLayout>
+
+                    </io.alterac.blurkit.BlurLayout>
 
                 </RelativeLayout>
                 <io.alterac.blurkit.BlurLayout
@@ -471,6 +479,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/_12sdp"
+                        android:visibility="gone"
                         android:layout_marginHorizontal="@dimen/_8sdp"
                         android:background="@drawable/layout_rounded_gradient_white_glass">
 

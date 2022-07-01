@@ -39,14 +39,12 @@ class Prefrences {
             return key
         }
 
-
-
         fun getPreferences(context: Context, key: String): String? {
             val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
             return sharedPreferences.getString(key, "")
         }
 
-        fun getBooleanPreferences(context: Context, key: String): Boolean? {
+        fun getBooleanPreferences(context: Context, key: String): Boolean {
             val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
             return sharedPreferences.getBoolean(key, false)
         }
@@ -56,23 +54,22 @@ class Prefrences {
             val editor = sharedPreferences.edit()
             editor.putBoolean(key, value)
             editor.apply()
-
             return key
         }
 
         fun removePreferences(context: Activity, key: String) {
-
             val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.remove(key)
             editor.apply()
-
         }
+
         fun clearPreferences(context: Context) {
             val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME",Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.clear()
             editor.apply()
         }
+
     }
 }

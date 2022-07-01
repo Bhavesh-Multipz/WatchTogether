@@ -3,7 +3,9 @@ package com.instaconnect.android.ui.fragment.worldwide
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
@@ -30,6 +32,7 @@ import com.instaconnect.android.base.BaseFragment
 import com.instaconnect.android.base.BaseIntent
 import com.instaconnect.android.data.model.db.ChatMessage
 import com.instaconnect.android.databinding.FragmentWorldWideBinding
+import com.instaconnect.android.model.Response1
 import com.instaconnect.android.network.ApiEndPoint
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
@@ -74,7 +77,7 @@ class WorldwideFragment : BaseFragment<WorldWideViewModel, FragmentWorldWideBind
     private var frameViewLayout: FrameViewLayout? = null
     private val currentLayoutType = "List"
     private val mainDialogItem: ArrayList<DialogItem> = ArrayList()
-    private var videoListAdapter: VideoListAdapter? = null
+    var videoListAdapter: VideoListAdapter? = null
     private var index = 0
     private var post: PostsList? = null
     private var filter = 0
@@ -88,6 +91,7 @@ class WorldwideFragment : BaseFragment<WorldWideViewModel, FragmentWorldWideBind
     private var pageType = ""
     var user_id: String? = null
     var page = "0"
+    var currentVersion = ""
     var emptyTextViewMsg: TextView? = null
 
     var proxyCacheServer: HttpProxyCacheServer? = null
@@ -95,7 +99,7 @@ class WorldwideFragment : BaseFragment<WorldWideViewModel, FragmentWorldWideBind
 
     private var spacesItemDecoration1: SpacesItemDecoration? = null
     private var spacesItemDecoration2: SpacesItemDecoration? = null
-    private val postsLists: List<PostsList> = ArrayList()
+    val postsLists: List<PostsList> = ArrayList()
 
     private val reportDialogCallback: DialogCallback = object : DialogCallback {
         override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
@@ -167,7 +171,7 @@ class WorldwideFragment : BaseFragment<WorldWideViewModel, FragmentWorldWideBind
                 }
                 mainDialogItem[position].name
                     .equals(resources.getString(R.string.delete_post), true) -> {
-                    //deletePost()
+                    deletePost()
                 }
                 mainDialogItem[position].name
                     .equals(resources.getString(R.string.report_concern), true) -> {
@@ -208,6 +212,13 @@ class WorldwideFragment : BaseFragment<WorldWideViewModel, FragmentWorldWideBind
             resumeAnyPlayback()
         }
     }
+
+    private fun deletePost() {
+        viewModel.viewModelScope.launch {
+            viewModel.deletePost(post!!.id!!)
+        }
+    }
+
     private var dialog: Dialog? = null
     private var countryName: String? = null
     var refreshLayout: SwipeRefreshLayout? = null
@@ -269,7 +280,7 @@ ${post_item.caption}"""
 
         BlurKit.init(requireContext())
         proxyCacheServer = InstaConnectApp.instance!!.getProxy(requireContext())
-
+        currentVersion = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName;
         spacesItemDecoration1 = SpacesItemDecoration(0)
         spacesItemDecoration2 = SpacesItemDecoration(4)
         if (bundle != null) {
@@ -288,6 +299,8 @@ ${post_item.caption}"""
         viewModel.getWatchlistResponse.observe(requireActivity()) {
             when (it) {
                 is Resource.Success -> {
+                    refreshLayout!!.isRefreshing = false
+                    recyclerView!!.isLoading = false
                     if (it.value.response != null) {
                         if (it.value.response != null && it.value.response!!.code.equals("200", true)) {
                             if (it.value.response!!.postsList!!.isEmpty()) {
@@ -310,8 +323,7 @@ ${post_item.caption}"""
                             emptyTextViewMsg!!.text = "No Streams Available.\n Check Back Later"
                             frameViewLayout!!.showEmpty()
                         }
-                        refreshLayout!!.isRefreshing = false
-                        recyclerView!!.isLoading = false
+
                     }
                 }
                 is Resource.Loading -> {
@@ -322,10 +334,6 @@ ${post_item.caption}"""
                     refreshLayout!!.isRefreshing = false
                     recyclerView!!.isLoading = false
                 }
-                else -> {
-                    refreshLayout!!.isRefreshing = false
-                    recyclerView!!.isLoading = false
-                }
             }
         }
 
@@ -333,6 +341,8 @@ ${post_item.caption}"""
         viewModel.reportPostResponse.observe(requireActivity()) {
             when (it) {
                 is Resource.Success -> {
+                    refreshLayout!!.isRefreshing = false
+                    recyclerView!!.isLoading = false
                     if (it.value.response != null) {
                         // Toast.makeText(getContext(), response.body().getResponse().getMessage()+"..."+response.body().getResponse().getCode(), Toast.LENGTH_SHORT).show();
                         if (it.value.response!!.code.equals("200")) {
@@ -374,10 +384,6 @@ ${post_item.caption}"""
                     refreshLayout!!.isRefreshing = false
                     recyclerView!!.isLoading = false
                 }
-                else -> {
-                    refreshLayout!!.isRefreshing = false
-                    recyclerView!!.isLoading = false
-                }
             }
 
         }
@@ -386,6 +392,8 @@ ${post_item.caption}"""
         viewModel.blockUserResponse.observe(requireActivity()) {
             when (it) {
                 is Resource.Success -> {
+                    refreshLayout!!.isRefreshing = false
+                    recyclerView!!.isLoading = false
                     if (it.value.response != null) {
                         // Toast.makeText(getContext(), response.body().getResponse().getMessage()+"..."+response.body().getResponse().getCode(), Toast.LENGTH_SHORT).show();
                         if (it.value.response!!.code.equals("200")) {
@@ -402,23 +410,92 @@ ${post_item.caption}"""
                         ).show();
                     }
                 }
+
                 is Resource.Loading -> {
-                    refreshLayout!!.isRefreshing = false
+                    refreshLayout!!.isRefreshing = true
                     recyclerView!!.isLoading = true
                 }
+
                 is Resource.Failure -> {
                     refreshLayout!!.isRefreshing = false
                     recyclerView!!.isLoading = false
                 }
-                else -> {
+            }
+        }
+
+        // delete post response handler
+        viewModel.deletePostResponse.observe(requireActivity()) {
+            when (it) {
+                is Resource.Success -> {
+                    refreshLayout!!.isRefreshing = false
+                    recyclerView!!.isLoading = false
+
+                    Toast.makeText(context, "Room deleted", Toast.LENGTH_SHORT).show()
+                    videoListAdapter!!.delete(index)
+                }
+
+                is Resource.Loading -> {
+                    refreshLayout!!.isRefreshing = true
+                    recyclerView!!.isLoading = true
+                }
+
+                is Resource.Failure -> {
                     refreshLayout!!.isRefreshing = false
                     recyclerView!!.isLoading = false
                 }
             }
+        }
 
+        // load Preference response handler
+        viewModel.loadPreferenceResponse.observe(requireActivity()) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.response != null) {
+                        if(it.value.response.alertArr!!.status == 1){
+                            openForceUpdateAppDialog(it.value.response)
+                        }
+                    }
+                }
+                is Resource.Failure -> {}
+                else -> {}
+            }
         }
 
         return worldWideView
+    }
+
+    private fun openForceUpdateAppDialog(response: Response1) {
+
+        val dialog = Dialog(requireContext(), R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setContentView(R.layout.dialog_update_app)
+        val tvOk = dialog.findViewById<TextView>(R.id.tvOk)
+        val imageView = dialog.findViewById<ImageView>(R.id.img_bg)
+        val relMain = dialog.findViewById<View>(R.id.rel_main)
+        val vto = relMain.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width = relMain.measuredWidth
+                val height = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                imageView.setImageBitmap(BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat()))
+            }
+        })
+
+        tvOk.setOnClickListener { v: View? ->
+
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(response.alertArr!!.button1Link))
+            startActivity(browserIntent)
+            dialog.dismiss()
+        }
+        dialog.show()
+
     }
 
     @Subscribe
@@ -485,18 +562,6 @@ ${post_item.caption}"""
             stopYoutubeVideo()
         }
     }
-
-    /*fun getOtherUserProfile(id: String?) {
-        if (getActivity() is HomeActivity) {
-            if ((getActivity() as HomeActivity).userProfile != null) {
-                (getActivity() as HomeActivity).userProfile.setUserProfileData(true)
-                (getActivity() as HomeActivity).userProfile.setUserId(id)
-                val intent = BaseIntent(getActivity(), MyFavouriteActivity::class.java, false)
-                intent.putExtra("USER_ID", id)
-                startActivity(intent)
-            }
-        }
-    }*/
 
     fun setLayoutManagerForVideo(layoutType: String) {
         if (layoutType == "List") {
@@ -652,26 +717,6 @@ ${post_item.caption}"""
         )
         mainDialogItem.add(DialogItem(getString(R.string.cancel), R.color.red))
     }
-
-    /*private fun deletePost() {
-
-        val call: Call<Response> = dataManager.apiHelper().deletePost(post!!.id)
-        call.enqueue(object : Callback<Response>() {
-            fun onResponse(
-                call: Call<Response?>?,
-                response: Response<Response?>?
-            ) {
-                //viewUtil.showSnack("Room deleted");
-                Toast.makeText(getContext(), "Room deleted", Toast.LENGTH_SHORT).show()
-                videoListAdapter!!.delete(index)
-                //RxBus.getInstance().publish(BusMessage.REFRESH_PUBLIC.name(), true);
-            }
-
-            fun onFailure(call: Call<Response?>?, t: Throwable?) {
-                ToastUtil.showToast("Failed to delete")
-            }
-        })
-    }*/
 
     private fun showReportDialog() {
         val dialogItems: ArrayList<DialogItem> = ArrayList()
@@ -1257,7 +1302,14 @@ ${post_item.caption}"""
         recyclerView!!.resetLazyLoadListener()
         videoListAdapter!!.clear()
         getPosts("0")
+        loadPreference()
         resumeAnyPlayback()
+    }
+
+    private fun loadPreference() {
+        viewModel.viewModelScope.launch {
+            viewModel.loadPreference(currentVersion, "android", user_id!!)
+        }
     }
 
     override fun onResume() {

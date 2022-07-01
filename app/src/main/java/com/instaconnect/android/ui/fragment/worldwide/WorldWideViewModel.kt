@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.instaconnect.android.base.BaseViewModel
 import com.instaconnect.android.data.model.BlockUser
 import com.instaconnect.android.data.model.ReportPost
+import com.instaconnect.android.model.LoadPreferenceResponse
 import com.instaconnect.android.network.Resource
+import com.instaconnect.android.utils.models.Response
 import kotlinx.coroutines.launch
 
 class WorldWideViewModel(private val repository: WorldWideRepository) : BaseViewModel(repository) {
@@ -22,6 +24,14 @@ class WorldWideViewModel(private val repository: WorldWideRepository) : BaseView
     private val _blockUserResponse: MutableLiveData<Resource<BlockUser>> = MutableLiveData()
     val blockUserResponse: LiveData<Resource<BlockUser>>
         get() = _blockUserResponse
+
+    private val _deletePostResponse: MutableLiveData<Resource<Response>> = MutableLiveData()
+    val deletePostResponse: LiveData<Resource<Response>>
+        get() = _deletePostResponse
+
+    private val _loadPreferenceResponse: MutableLiveData<Resource<LoadPreferenceResponse>> = MutableLiveData()
+    val loadPreferenceResponse: LiveData<Resource<LoadPreferenceResponse>>
+        get() = _loadPreferenceResponse
 
     suspend fun getWatchList(
         userId: String,
@@ -54,4 +64,19 @@ class WorldWideViewModel(private val repository: WorldWideRepository) : BaseView
         _blockUserResponse.value = repository.blocUser(blocUserId, status, userId)
     }
 
+    suspend fun deletePost(
+        postId: String
+    ) = viewModelScope.launch {
+        _deletePostResponse.value = Resource.Loading
+        _deletePostResponse.value = repository.deletePost(postId)
+    }
+
+    suspend fun loadPreference(
+        version: String,
+        device_type: String,
+        userId: String,
+    ) = viewModelScope.launch {
+        _loadPreferenceResponse.value = Resource.Loading
+        _loadPreferenceResponse.value = repository.loadPreference(version, device_type,userId)
+    }
 }

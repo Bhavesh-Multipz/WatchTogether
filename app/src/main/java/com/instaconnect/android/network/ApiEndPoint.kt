@@ -91,4 +91,10 @@ object ApiEndPoint {
             + "send_invitation_watch_togather")
     const val ENDPOINT_UNFRIEND_USER = (SERVER_BASE_URL
             + "unfriend_user")
+
+    const val DELETE_USER_ACCOUNT = (SERVER_BASE_URL
+            + "delete_user")
+
+    const val LOAD_PREFERENCE = (SERVER_BASE_URL
+            + "loadprefreance")
 }

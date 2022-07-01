@@ -12,4 +12,10 @@ class MoreSettingRepository constructor(private val api : MyApi): BaseRepository
             api.enableDisableNotification(userId,noti_status)
     }
 
+    suspend fun deleteUserAccount(
+        userId: String
+    )= safeApiCall {
+        api.deleteUserAccount(userId)
+    }
+
 }

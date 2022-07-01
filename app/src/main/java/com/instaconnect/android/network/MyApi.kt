@@ -5,6 +5,10 @@ import com.instaconnect.android.data.model.BlockUser
 import com.instaconnect.android.data.model.FriendListModel
 import com.instaconnect.android.data.model.PublicPost
 import com.instaconnect.android.data.model.ReportPost
+import com.instaconnect.android.model.CommonResponse
+import com.instaconnect.android.model.LoadPreferenceResponse
+import com.instaconnect.android.ui.block_user.BlockUserResponse
+import com.instaconnect.android.ui.block_user.FollowUser
 import com.instaconnect.android.ui.fragment.add_post.WebLinkResponse
 import com.instaconnect.android.ui.fragment.more_setting.EnableDisbaleNotificationModel
 import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogether
@@ -16,6 +20,7 @@ import com.instaconnect.android.ui.profile.ProfileResponse
 import com.instaconnect.android.ui.trending_websites.models.TrendingWebsiteResponseModel
 import com.instaconnect.android.ui.watch_together_room.PostReaction
 import com.instaconnect.android.ui.youtube_webview.YoutubeVideoDetails
+import com.instaconnect.android.utils.models.Response
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -111,6 +116,10 @@ interface MyApi {
     ): BlockUser
 
     @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_DEL_POST)
+    suspend fun deletePost(@Field("post_id") post_id: String?): Response
+
+    @FormUrlEncoded
     @POST(ApiEndPoint.ENDPOINT_FRIEND_REQUEST_RESPONSE)
     suspend fun getFriendRequestResponse(
         @Field("user_id") user_id: String?,
@@ -158,6 +167,12 @@ interface MyApi {
         @Field("notification_status") notification_status: String?,
     ): EnableDisbaleNotificationModel
 
+    @FormUrlEncoded
+    @POST(ApiEndPoint.DELETE_USER_ACCOUNT)
+    suspend fun deleteUserAccount(
+        @Field("user_id") user_id: String?,
+    ): CommonResponse
+
     @Multipart
     @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)
     suspend fun publicPostWatchTogether(
@@ -197,6 +212,28 @@ interface MyApi {
         @Part("youTubeVideoId") youTubeVideoId: RequestBody?,
         @Part file: MultipartBody.Part?,
     ): PublicPost
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_BLOCK_USER_LIST)
+    suspend fun getBlockUserList(
+        @Field("user_id") userId: String?,
+    ): BlockUserResponse
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.ENDPOINT_UNBLOCK_USER)
+    suspend fun callUnblockUser(
+        @Field("block_user_id") blockedUserId: String?,
+        @Field("status") status: String?,
+        @Field("user_id") userId: String?,
+    ): FollowUser
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.LOAD_PREFERENCE)
+    suspend fun loadPreference(
+        @Field("version") blockedUserId: String?,
+        @Field("device_type") status: String?,
+        @Field("userId") userId: String?,
+    ): LoadPreferenceResponse
 
     companion object {
 

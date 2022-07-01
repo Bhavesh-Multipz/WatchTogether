@@ -16,4 +16,12 @@ class LoginRepository constructor(private val api: MyApi) : BaseRepository() {
         api.sendSocialId(phone, code, device_token, device_type, userName, userProfileUrl
         )
     }
+
+    suspend fun loadPreference(
+        version: String,
+        device_type: String,
+        userId: String,
+        ) = safeApiCall {
+        api.loadPreference(version, device_type, userId)
+    }
 }

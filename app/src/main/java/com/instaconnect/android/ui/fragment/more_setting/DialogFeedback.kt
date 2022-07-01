@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.instaconnect.android.R
 import com.instaconnect.android.utils.IntentUtil
+import gun0912.tedimagepicker.util.ToastUtil
 import io.alterac.blurkit.BlurKit
 
 class DialogFeedback(var ctx: Context) : BottomSheetDialogFragment() {
@@ -58,6 +59,8 @@ class DialogFeedback(var ctx: Context) : BottomSheetDialogFragment() {
                 if (dialog != null) {
                     dialog!!.cancel()
                 }
+
+                ToastUtil.showToast("Thank You for submitting your feedback.")
             }
         }
         return v

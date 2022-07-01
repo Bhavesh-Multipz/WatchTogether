@@ -71,7 +71,7 @@
                 android:id="@+id/relVideo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/_24sdp">
+                android:paddingTop="@dimen/_12sdp">
 
                 <RelativeLayout
                     android:id="@+id/relUserDetail"
@@ -179,7 +179,7 @@
                 <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
                     android:id="@+id/youtubeplayer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_170sdp"
                     android:layout_below="@+id/rvLiveUsers"
                     android:layout_marginTop="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -194,7 +194,7 @@
                 <com.google.android.exoplayer2.ui.SimpleExoPlayerView
                     android:id="@+id/exoPlayer"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_200sdp"
+                    android:layout_height="@dimen/_170sdp"
                     android:layout_below="@+id/rvLiveUsers"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="@dimen/_100sdp"
@@ -203,8 +203,7 @@
                     android:visibility="gone"
                     app:controller_layout_id="@layout/custom_exo_playback_control_view"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:resize_mode="zoom"
-
+                    app:resize_mode="fill"
                     app:show_shuffle_button="false"
                     app:surface_type="texture_view"
                     app:useWebUi="true"
@@ -350,7 +349,7 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_40sdp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/layout_rounded_white_glass"
                         android:visibility="visible">
@@ -358,7 +357,7 @@
                         <com.instaconnect.android.widget.BasicEditText
                             android:id="@+id/et_message_box"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/_4sdp"
                             android:layout_marginRight="@dimen/_4sdp"
@@ -366,9 +365,9 @@
                             android:background="@null"
                             android:drawablePadding="@dimen/_5sdp"
                             android:hint="@string/type_a_message"
-                            android:maxLines="4"
-                            android:minLines="1"
-                            android:padding="@dimen/_8sdp"
+                            android:maxLines="1"
+                            android:paddingHorizontal="@dimen/_8sdp"
+                            android:scrollbarStyle="insideInset"
                             android:scrollbars="vertical"
                             android:textColor="@color/white"
                             android:textColorHint="@color/transparent_white_hex_11"

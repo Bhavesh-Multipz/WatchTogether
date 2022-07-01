@@ -170,8 +170,7 @@ class AddFriendFragment : BaseFragment<AddFriendFragmentViewModel, FragmentAddFr
         dialogAskFriendRequest(addImageView!!, user!!.userId, user.username!!)
     }
 
-    override fun onFriendView(position: Int, user: FriendListModel.User?, imageView: View?) {
-
+    override fun onFriendView(position: Int, user: FriendListModel.User?, view: View?) {
     }
 
     private fun dialogAskFriendRequest(addImageView: View, other_user_id: String?, userName: String) {
@@ -208,7 +207,8 @@ class AddFriendFragment : BaseFragment<AddFriendFragmentViewModel, FragmentAddFr
 
     override fun onScrollNext(page: Int, totalItemsCount: Int): Boolean {
         Log.e("AddFragment1", "$page....$totalItemsCount")
-        getAddFriendList(page, searchKeyword)
+        this.page = page
+        getAddFriendList(page+1, searchKeyword)
         return true
     }
 

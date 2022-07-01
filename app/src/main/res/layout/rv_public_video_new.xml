@@ -34,8 +34,7 @@
             android:id="@+id/iv_videoGridImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_grid_watch_together_glass" />
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tvWatchTogetherCaption"
@@ -147,7 +146,6 @@
                 android:visibility="gone"
                 app:typeFace="@string/bold" />
 
-
             <RelativeLayout
                 android:id="@+id/relLabels"
                 android:layout_width="match_parent"
@@ -225,20 +223,8 @@
                 android:textSize="@dimen/_28sdp"
                 android:visibility="gone" />
 
-            <!--<ImageView
-                android:id="@+id/ivAudio"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_below="@+id/constlay"
-                android:src="@drawable/mute"/>-->
-
         </com.instaconnect.android.widget.RelativeViewLayout>
-    </androidx.cardview.widget.CardView>
 
+    </androidx.cardview.widget.CardView>
 
 </com.instaconnect.android.widget.RelativeViewLayout>

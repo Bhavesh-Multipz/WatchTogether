@@ -9,18 +9,14 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.facebook.login.LoginManager
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.android.play.core.tasks.OnSuccessListener
 import com.google.android.play.core.tasks.Task
 import com.instaconnect.android.R
 import com.instaconnect.android.base.BaseFragment
-import com.instaconnect.android.base.BaseIntent
-import com.instaconnect.android.data.model.Profile
 import com.instaconnect.android.databinding.ActivityMoreSettingsNewBinding
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
@@ -34,23 +30,24 @@ import com.instaconnect.android.utils.Prefrences
 import com.instaconnect.android.utils.Utils.visible
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.prefs.Preferences
 
 class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSettingsNewBinding, MoreSettingRepository>(),
     View.OnClickListener {
 
     var reviewManager: ReviewManager? = null
+    var notificationStatus : String= ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        notificationStatus = Prefrences.getPreferences(requireContext(), Constants.PREF_NOTIFICATION_STATUS)!!
         setView()
 
         viewModel.toggleNotificationResponse.observe(requireActivity()) {
+
             when (it) {
                 is Resource.Success -> {
+                    binding.progressBar.visible(false)
                     if (it.value.response != null && it.value.response!!.code.equals("200")) {
                         Prefrences.savePreferencesString(requireContext(), Constants.PREF_NOTIFICATION_STATUS,it.value.response!!.notificationStatus!!)
                         binding.notificationSwitch.isChecked = it.value.response!!.notificationStatus
@@ -60,9 +57,36 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
                         } else {
                             Toast.makeText(context, "Notifications Off", Toast.LENGTH_SHORT).show()
                         }
+                    } else if( it.value.response!!.code.equals("301")){
+                        if(it.value.response!!.message!!.contains("ON")){
+                            Prefrences.savePreferencesString(requireContext(), Constants.PREF_NOTIFICATION_STATUS,"1")
+                        }
                     }
                 }
                 is Resource.Failure -> {
+                    binding.progressBar.visible(false)
+                }
+                else -> {}
+            }
+        }
+
+        viewModel.deleteAccountResponse.observe(requireActivity()) {
+            when (it) {
+                is Resource.Success -> {
+                    binding.progressBar.visible(false)
+                    if (it.value.response != null && it.value.response.code.equals("200")) {
+                        ToastUtil.showToast(it.value.response.message!!)
+
+                        Prefrences.savePreferencesBoolean(requireContext(), Constants.LOGIN_STATUS, false)
+                        Prefrences.getBooleanPreferences(requireContext(), Constants.LOGIN_STATUS)!!
+                        val intent = Intent(activity, LoginActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
+                }
+                is Resource.Failure -> {
+                    binding.progressBar.visible(false)
                 }
                 else -> {}
             }
@@ -80,14 +104,15 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
         binding.linSettingShareApp.setOnClickListener(this)
         binding.linSettingProfile.setOnClickListener(this)
         binding.linSettingBlockUser.setOnClickListener(this)
-        binding.notificationSwitch.isChecked = Prefrences.getPreferences(requireContext(), Constants.PREF_NOTIFICATION_STATUS).equals("1")
+        binding.linAccountDelete.setOnClickListener(this)
+        binding.notificationSwitch.isChecked = notificationStatus == "1"
         binding.notificationSwitch.setOnCheckedChangeListener {
                 _, isChecked -> enableDisableNotification(if (isChecked) "1" else "0")
         }
     }
 
     private fun enableDisableNotification(notificationStatus: String) {
-
+        binding.progressBar.visible(true)
         viewModel.viewModelScope.launch {
             viewModel.enableDisableNotification(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, notificationStatus)
         }
@@ -97,35 +122,73 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
         when (v.id) {
             R.id.img_back -> {}
             R.id.lin_setting_logout -> showDialogForLogout()
+            R.id.lin_account_delete -> showDialogForAccountDelete()
             R.id.lin_setting_notification -> {
                 val intent = Intent(context, NotificationListActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
+
             R.id.lin_setting_rate_app ->
                 showRateApp()
+
             R.id.lin_setting_feednack -> {
                 val feedbackdialog = DialogFeedback(requireContext())
                 feedbackdialog.show(childFragmentManager, "DialogFeedback")
             }
+
             R.id.lin_setting_privacy -> {
                 val intent = Intent(requireActivity(), TermsWebViewActivity::class.java)
                 intent.putExtra("TYPE", "Privacy")
                 startActivity(intent)
             }
+
             R.id.lin_terms_condition -> {
                 val intent = Intent(requireActivity(), TermsWebViewActivity::class.java)
                 intent.putExtra("TYPE", "Terms")
                 startActivity(intent)
             }
+
             R.id.lin_setting_profile -> callPrivateProfile()
+
             R.id.lin_setting_share_app -> {
                 val dialogShareApp = DialogShareApp(requireContext())
                 dialogShareApp.show(parentFragmentManager, "DialogRateApp")
             }
+
             R.id.lin_setting_block_user -> {
-                startActivity(BaseIntent(requireActivity(), BlockUserActivity::class.java, false))
+                startActivity(Intent(requireActivity(), BlockUserActivity::class.java))
             }
+        }
+    }
+
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        super.startActivityForResult(intent, requestCode)
+    }
+    private fun showDialogForAccountDelete() {
+        val dialog = Dialog(requireActivity(), R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_delete_your_account)
+        val tvCancel = dialog.findViewById<TextView>(R.id.tvCancel)
+        val tvDelete = dialog.findViewById<TextView>(R.id.tvDelete)
+        tvDelete.setOnClickListener { v: View? ->
+
+            deleteUserAccount()
+
+            dialog.dismiss()
+        }
+        tvCancel.setOnClickListener { v: View? -> dialog.dismiss() }
+        dialog.show()
+    }
+
+    private fun deleteUserAccount() {
+        binding.progressBar.visible(true)
+        viewModel.viewModelScope.launch {
+            viewModel.deleteUserAccount(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!)
         }
     }
 
@@ -190,7 +253,9 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
                 val flow: Task<Void> = reviewManager!!.launchReviewFlow(requireActivity(), reviewInfo)
                 flow.addOnSuccessListener {
                     if (task.isSuccessful) {
+
                     } else {
+
                     }
                     Toast.makeText(activity, "InAppReviewSuccess", Toast.LENGTH_SHORT).show()
                 }
@@ -200,24 +265,17 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
         }
     }
 
-    fun showRateApp() {
+    private fun showRateApp() {
         reviewManager = ReviewManagerFactory.create(requireContext())
         val request: Task<ReviewInfo> = reviewManager!!.requestReviewFlow()
         request.addOnCompleteListener { task ->
-            if (task.isSuccessful()) {
-                // We can get the ReviewInfo object
-                val reviewInfo: ReviewInfo = task.getResult()
+            if (task.isSuccessful) {
+                val reviewInfo: ReviewInfo = task.result
                 val flow: Task<Void> = reviewManager!!.launchReviewFlow(requireActivity(), reviewInfo)
-                flow.addOnCompleteListener { task1 ->
-                    // The flow has finished. The API does not indicate whether the user
-                    // reviewed or not, or even whether the review dialog was shown. Thus, no
-                    // matter the result, we continue our app flow.
-                    Toast.makeText(activity, "InAppReviewSuccess", Toast.LENGTH_SHORT).show()
+                flow.addOnCompleteListener {
+                    Toast.makeText(activity, "Already Submitted", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                // There was some problem, continue regardless of the result.
-                // show native rate app dialog on error
-                // showRateAppFallbackDialog();
                 Toast.makeText(activity, "InAppReviewFailed", Toast.LENGTH_SHORT).show()
             }
         }

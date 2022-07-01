@@ -22,7 +22,7 @@ import com.instaconnect.android.utils.models.DialogItem
 import gun0912.tedimagepicker.util.ToastUtil
 import io.reactivex.functions.Consumer
 
-class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, ExploreRepository>(),
+class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, ExploreRepository>(),
     View.OnClickListener {
 
     private var mGoogleApiClient: GoogleApiClient? = null
@@ -31,9 +31,9 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
     //private val trendingFragment: TrendingFragment = TrendingFragment(this)
 
     var isPlayVideoDueToChat = false
-    private var permissionUtil : PermissionUtil? = null
+    private var permissionUtil: PermissionUtil? = null
     var selectedItem = "Worldwide"
-    var appDialogUtil:AppDialogUtil? = null
+    var appDialogUtil: AppDialogUtil? = null
 
     private val refresh =
         Consumer<Boolean> { refresh ->
@@ -44,6 +44,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
                 }
             }
         }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,7 +52,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
         createMainPopUp()
         permissionUtil = PermissionUtil(requireActivity())
         appDialogUtil = AppDialogUtil(requireContext())
-        Prefrences.savePreferencesString(requireContext(), Constants.PREF_SEARCH_BY_DISTANCE,"0")
+        Prefrences.savePreferencesString(requireContext(), Constants.PREF_SEARCH_BY_DISTANCE, "0")
 
     }
 
@@ -62,6 +63,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
         )*/
 //        getViewModel().dataManager.prefHelper().putBoolean(AppPreferencesHelper.Key.PUBLIC_FIRST_RUN.name(), true)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.communityIv.setOnClickListener(this)
@@ -89,6 +91,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
         mainDialogItem.add(DialogItem(getString(R.string.reset_public), R.color.sky_blue, true))
         mainDialogItem.add(DialogItem(getString(R.string.cancel), R.color.colorAccent))
     }
+
     private fun showMainFragment() {
         if (!worldwideFragment.isAdded) {
             println("EXPLORE ADD: IN SHOW WORLD WIDE")
@@ -108,6 +111,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
         Log.e("ExploreAdd", "IN SHOW WORLD WIDE")
         //  fragmentUtil.fragment(new WorldwideFragment(), R.id.main_frg_fl, false).skipStack().commit();
     }
+
     override fun getViewModel() = ExploreViewModel::class.java
 
     fun rePlayVideo() {
@@ -116,6 +120,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
             isPlayVideoDueToChat = false
         }
     }
+
     fun resumePlayback() {
         try {
             val handler = Handler()
@@ -127,10 +132,10 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
+        container: ViewGroup?,
     ) = ExploreFragmentBinding.inflate(inflater, container, false)
 
-    override fun getFragmentRepository()= ExploreRepository(
+    override fun getFragmentRepository() = ExploreRepository(
         MyApi.getInstance()
     )
 
@@ -157,24 +162,30 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
                     PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE
                 )
             }
-            R.id.mypage_iv -> { /*startActivity(Intent(activity, MoreActivity::class.java))*/ }
+            R.id.mypage_iv -> { /*startActivity(Intent(activity, MoreActivity::class.java))*/
+            }
             R.id.myfav_iv -> {}
             R.id.ivGrid -> {
-                binding.ivGrid.clearColorFilter()
-                binding.ivList.setColorFilter(resources.getColor(R.color.dark_gray))
-                worldwideFragment.setLayoutManagerForVideo("Grid")
+                if (worldwideFragment.videoListAdapter!!.postsLists.isNotEmpty()) {
+                    binding.ivGrid.clearColorFilter()
+                    binding.ivList.setColorFilter(resources.getColor(R.color.dark_gray))
+                    worldwideFragment.setLayoutManagerForVideo("Grid")
+                }
+
             }
             R.id.ivList -> {
-                binding.ivList.clearColorFilter()
-                binding.ivGrid.setColorFilter(resources.getColor(R.color.dark_gray))
-                worldwideFragment.setLayoutManagerForVideo("List")
+                if (worldwideFragment.videoListAdapter!!.postsLists.isNotEmpty()) {
+                    binding.ivList.clearColorFilter()
+                    binding.ivGrid.setColorFilter(resources.getColor(R.color.dark_gray))
+                    worldwideFragment.setLayoutManagerForVideo("List")
+                }
             }
             R.id.shareIv -> {
                 val pop_list = java.util.ArrayList<DialogItem>()
                 pop_list.add(DialogItem("Share with others", R.color.sky_blue, true))
                 pop_list.add(DialogItem("Invite Contacts", R.color.sky_blue, true))
                 pop_list.add(DialogItem("Cancel", R.color.red, true))
-                DialogUtil.createListDialog(requireContext(),pop_list, object : DialogCallback {
+                DialogUtil.createListDialog(requireContext(), pop_list, object : DialogCallback {
                     override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
                         when (position) {
                             0 -> {
@@ -225,7 +236,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
                 )
                 binocular_list.add(DialogItem(false, "Cancel", R.color.red, true))
 
-                DialogUtil.createListDialog(requireContext(),binocular_list, object : DialogCallback {
+                DialogUtil.createListDialog(requireContext(), binocular_list, object : DialogCallback {
 
                     override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
                         when (position) {
@@ -273,8 +284,12 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
 
             override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
                 if (position == 1) {
-                    Prefrences.savePreferencesString(requireContext(), "explore_country",(v as CountryCodePicker).selectedCountryName)
-                    Prefrences.savePreferencesString(requireContext(), "explore_country_code",(v as CountryCodePicker).selectedCountryNameCode)
+                    Prefrences.savePreferencesString(requireContext(),
+                        "explore_country",
+                        (v as CountryCodePicker).selectedCountryName)
+                    Prefrences.savePreferencesString(requireContext(),
+                        "explore_country_code",
+                        (v as CountryCodePicker).selectedCountryNameCode)
                     /*dataManager.prefHelper().setCountry(
                         "explore_country",
                         (v as CountryCodePicker).getSelectedCountryNameCode(),
@@ -311,7 +326,9 @@ class ExploreFragment : BaseFragment<ExploreViewModel,ExploreFragmentBinding, Ex
 
                 override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
                     if (position == 1) {
-                        Prefrences.savePreferencesString(requireContext(),Constants.PREF_SEARCH_BY_DISTANCE, (v as AppCompatSeekBar).progress.toString())
+                        Prefrences.savePreferencesString(requireContext(),
+                            Constants.PREF_SEARCH_BY_DISTANCE,
+                            (v as AppCompatSeekBar).progress.toString())
                         println("IN EXPLORE DISTANCE")
                         Prefrences.savePreferencesBoolean(requireContext(), Constants.PREF_HAS_COUNTRY, false)
                         Prefrences.savePreferencesBoolean(requireContext(), Constants.PREF_HAS_DISTANCE, true)

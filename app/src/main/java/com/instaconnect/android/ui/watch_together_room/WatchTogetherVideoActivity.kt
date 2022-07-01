@@ -79,6 +79,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     var chatAdapter: WatchTogetherChatAdapter? = null
     var roomLiveUsersAdapter: RoomLiveUsersAdapter? = null
     var liveUsersList: ArrayList<LiveUsersItem> = ArrayList()
+    private var viewUtil: ViewUtil? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +88,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         context = this
 
         chatDataList = ArrayList()
+        viewUtil = ViewUtil(this)
         videoId = intent.getStringExtra("VIDEO_ID")
         postId = intent.getStringExtra("POST_ID")!!
         userId = Prefrences.getPreferences(this, Constants.PREF_USER_ID)
@@ -413,9 +415,49 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
     override fun onDestroy() {
         super.onDestroy()
+
         onLeavePostRoom()
+
+        binding.youtubeplayer.release()
+        binding.youtubeplayer2.release()
+        simpleExoPlayer!!.release()
+        InstaConnectApp.instance!!.mediaPlayer()!!.release()
+
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding.blurLayout.startBlur()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (mute) {
+            VideoRecyclerView.setMute(true)
+            InstaConnectApp.instance!!.mediaPlayer()!!.mute()
+            binding.ivAudio.setImageResource(R.drawable.mute)
+        } else {
+            VideoRecyclerView.setMute(false)
+            InstaConnectApp.instance!!.mediaPlayer()!!.unMute()
+            binding.ivAudio.setImageResource(R.drawable.audio_play)
+        }
+
+        Handler().postDelayed({
+            if (ViewUtil.isActivityDead(this@WatchTogetherVideoActivity)) return@postDelayed
+            if (mute) {
+                VideoRecyclerView.setMute(true)
+            } else {
+                VideoRecyclerView.setMute(false)
+            }
+        }, 2000)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mute = true
+        binding.blurLayout.pauseBlur()
+    }
     private fun onLeavePostRoom() {
         val jsonObject = JSONObject()
         try {
@@ -431,6 +473,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
         when (v!!.id) {
             R.id.iv_send -> {
+                viewUtil!!.hideKeyboard()
                 sendTextMessage()
             }
             R.id.iv_endStreaming ->
@@ -667,6 +710,11 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         Log.d("TAG", "onLoadingChanged: $isLoading")
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        InstaConnectApp.instance!!.mediaPlayer()!!.play(false)
+    }
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
             binding.play.visibility = View.GONE

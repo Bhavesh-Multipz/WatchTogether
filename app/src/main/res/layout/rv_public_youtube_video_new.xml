@@ -20,7 +20,6 @@
         android:layout_alignBottom="@+id/videoCardView"
         android:alpha="0.7"
         android:background="@color/grey"
-        android:scaleType="centerCrop"
         android:visibility="gone" />
 
     <RelativeLayout
@@ -32,10 +31,10 @@
 
         <ImageView
             android:id="@+id/iv_youtubeGridImage"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_private_room_new" />
+            android:src="@drawable/ic_grid_watch_together_glass" />
 
         <TextView
             android:id="@+id/tvYoutubeGridCaption"
@@ -43,7 +42,7 @@
             android:layout_height="@dimen/_50sdp"
             android:layout_centerHorizontal="true"
             android:layout_marginHorizontal="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_60sdp"
             android:ellipsize="end"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
@@ -122,8 +121,7 @@
                     android:layout_alignTop="@+id/youtubeplayer"
                     android:layout_alignEnd="@+id/youtubeplayer"
                     android:layout_alignBottom="@+id/youtubeplayer"
-                    android:layout_marginEnd="@dimen/_32sdp"
-                    android:scaleType="centerCrop" />
+                    android:layout_marginEnd="@dimen/_32sdp" />
 
                 <TextView
                     android:id="@+id/tvYoutubeGridViewCaption"
@@ -136,6 +134,7 @@
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
                     android:maxLines="3"
+
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="gone"
@@ -180,8 +179,8 @@
                 android:id="@+id/relLabels"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_6sdp"
-                android:layout_below="@+id/tvLbl">
+                android:layout_below="@+id/tvLbl"
+                android:layout_marginTop="@dimen/_6sdp">
 
                 <com.instaconnect.android.widget.BasicEmojiTextView
                     android:id="@+id/tvText"

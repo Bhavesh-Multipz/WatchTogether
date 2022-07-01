@@ -97,6 +97,8 @@ class YoutubeViewHolder(
     var videoCardView: CardView
     @JvmField
     var tvYoutubeGridViewCaption: TextView
+
+    var tvYoutubeGridCaption: TextView
     @JvmField
     var currentPosition = 0
     @JvmField
@@ -175,6 +177,7 @@ class YoutubeViewHolder(
         ivOption = view.findViewById(R.id.iv_option)
         ivAudio = view.findViewById<View>(R.id.ivAudio) as ImageView
         ivAudio.visibility = View.GONE
+        tvYoutubeGridCaption = view.findViewById(R.id.tvYoutubeGridCaption)
         tvUserName = view.findViewById(R.id.tvUserName)
         tvDate = view.findViewById(R.id.tvdate)
         tvTime = view.findViewById(R.id.tv_timer)
@@ -205,6 +208,7 @@ class YoutubeViewHolder(
         youtube_player_seekbar = view.findViewById(com.pierfrancescosoffritti.androidyoutubeplayer.R.id.youtube_player_seekbar)
         mute_unmute_button = view.findViewById(R.id.mute_unmute_button)
         relLabels = view.findViewById(R.id.relLabels)
+        iv_youtubeGridImage = view.findViewById(R.id.iv_youtubeGridImage)
         /*iv_youtubeGridImage = view.findViewById(R.id.iv_youtubeGridImage);*/
         // lifecycle.addObserver(youTubePlayerView);
         exoMediaPlayer = ExoMediaPlayer(context, InstaConnectApp.instance!!.getDownloadCache())

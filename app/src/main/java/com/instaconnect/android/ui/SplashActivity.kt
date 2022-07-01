@@ -40,7 +40,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun setUpNavigation() {
 
-        isLogin = Prefrences.getBooleanPreferences(application, LOGIN_STATUS)!!
+        isLogin = Prefrences.getBooleanPreferences(application, LOGIN_STATUS)
 
         if (isLogin) {
             // Log.e(TAG,it.uid.toString() +".."+ it.name)

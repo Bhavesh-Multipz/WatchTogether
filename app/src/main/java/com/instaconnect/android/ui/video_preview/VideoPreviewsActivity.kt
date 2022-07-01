@@ -45,7 +45,6 @@ import javax.inject.Inject
 class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerControlView.VisibilityListener,
     ProgressRequestBody.UploadCallbacks {
 
-
     private var viewUtil: ViewUtil? = null
     private lateinit var binding: ActivityVideoPreviewsBinding
     private lateinit var viewModel: VideoPreviewViewModel

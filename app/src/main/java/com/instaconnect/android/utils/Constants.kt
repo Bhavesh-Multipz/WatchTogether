@@ -41,7 +41,7 @@ object Constants {
     const val PREF_HAS_DISTANCE = "pref_has_distance"
     const val PREF_SEARCH_BY_DISTANCE = "pref_search_by_distance"
 
-    const val PREF_NOTIFICATION_STATUS = "pref_search_by_distance"
+    const val PREF_NOTIFICATION_STATUS = "pref_notification_status"
 
     var appPermissionsForHomeScreen = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,

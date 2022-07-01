@@ -147,6 +147,7 @@ class YoutubeWebViewActivity : AppCompatActivity(), View.OnClickListener {
             } else ""
         }
     }
+
     fun showVideoPreview(youtubeVideoId: String?, hyperLink: String?, from: String) {
         Thread {
             val chatMessage = ChatMessage()
@@ -161,6 +162,7 @@ class YoutubeWebViewActivity : AppCompatActivity(), View.OnClickListener {
             val intent = Intent(this@YoutubeWebViewActivity, VideoPreviewsActivity::class.java)
             intent.putExtra(Constants.CHAT_MESSAGE_MODEL, chatMessage)
             startActivity(intent)
+            finish()
         }.start()
     }
 
