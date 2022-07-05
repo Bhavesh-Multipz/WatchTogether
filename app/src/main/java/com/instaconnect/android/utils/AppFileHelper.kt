@@ -253,7 +253,7 @@ class AppFileHelper(private val context: Context) : FileHelper {
         return File("$userDir/$filename.jpeg")
     }
 
-    override fun createUniqueFilename(): String? {
+    override fun createUniqueFilename(): String {
         val min = 100
         val max = 1000000000
         val r = Random()

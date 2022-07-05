@@ -1,16 +1,26 @@
 package com.instaconnect.android.ui.home
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.PendingResult
+import com.google.android.gms.common.api.Status
+import com.google.android.gms.location.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
@@ -34,7 +44,6 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     companion object {
         var userLocation: Location? = null
-
     }
 
     var userProfile: Post.UserProfile? = null
@@ -58,6 +67,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     var isONECHAT = false
     var isCall = false
     var isStream = false
+    var permissionUtil:PermissionUtil? = null
 
     private var worldwideFragment: WorldwideFragment = WorldwideFragment()
 
@@ -69,7 +79,6 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         initializeVariables()
         setOnClickListener()
         showStreamFragment()
-
         // notification status by default ON
         Prefrences.savePreferencesString(this, Constants.PREF_NOTIFICATION_STATUS,"1")
 
@@ -100,9 +109,12 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     private fun initializeVariables() {
         viewUtil = ViewUtil(this)
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
-
+        permissionUtil = PermissionUtil(this)
         if (managePermissions.checkPermissions()) {
             detectLocation()
+        } else {
+            permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
+                PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
         }
         exploreFragment = ExploreFragment()
         fragmentUtil = FragmentUtil(supportFragmentManager)
@@ -128,6 +140,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 .isProviderEnabled(LocationManager.NETWORK_PROVIDER)
             if (!isGPSEnabled && !isNetworkEnabled) {
                 // no network provider is enabled
+                displayLocationSettingsRequest(this)
             } else {
                 this.canGetLocation = true
                 if (isNetworkEnabled) {
@@ -189,6 +202,52 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         return location
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            123456 -> when (resultCode) {
+                Activity.RESULT_OK -> {
+                    Log.i("TAG", "User agreed to make required location settings changes.")
+
+                    Handler().postDelayed({
+                        detectLocation()
+                    },500)
+
+                }
+                Activity.RESULT_CANCELED -> Log.i("TAG",
+                    "User chose not to make required location settings changes.")
+            }
+        }
+    }
+
+    private fun displayLocationSettingsRequest(context: Context) {
+        val googleApiClient = GoogleApiClient.Builder(context)
+            .addApi(LocationServices.API).build()
+        googleApiClient.connect()
+        val locationRequest: LocationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 10000 / 2
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        builder.setAlwaysShow(true)
+        val result: PendingResult<LocationSettingsResult> =
+            LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build())
+        result.setResultCallback { result ->
+            val status: Status = result.status
+            when (status.statusCode) {
+                LocationSettingsStatusCodes.SUCCESS -> Log.i("TAG", "All location settings are satisfied.")
+                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                    Log.i("TAG","Location settings are not satisfied. Show the user a dialog to upgrade location settings")
+                    try {
+                        status.startResolutionForResult(this@HomeActivity, 123456)
+                    } catch (e: IntentSender.SendIntentException) {
+                        Log.i("TAG","PendingIntent unable to execute request.")
+                    }
+                }
+                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> Log.i("TAG","Location settings are inadequate, and cannot be fixed here. Dialog not created.")
+            }
+        }
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,

@@ -1,4 +1,4 @@
-package com.instaconnect.android.ui.watch_together_room
+package com.instaconnect.android.ui.watch_together_room.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

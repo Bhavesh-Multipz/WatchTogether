@@ -1,12 +1,19 @@
 package com.instaconnect.android.ui.watch_together_room
 
+import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.Window
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -24,6 +31,10 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.*
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.tasks.Task
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.instaconnect.android.InstaConnectApp
@@ -33,6 +44,7 @@ import com.instaconnect.android.data.model.MessageDataItem
 import com.instaconnect.android.databinding.ActivityWatchTogetherVideoBinding
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
+import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.heart_view.HeartsRenderer
 import com.instaconnect.android.utils.heart_view.HeartsView
@@ -69,10 +81,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     private var groupName: String? = null
     private var to: String? = null
     private var from: String? = null
+    private var comingFrom: String? = null
     private var myPostReaction = ""
     private var actualPostId = ""
     private var currentUserAvtar = ""
     private val screenWidth = 0
+    var reviewManager: ReviewManager? = null
     private lateinit var binding: ActivityWatchTogetherVideoBinding
     private var isScroll: Boolean? = true
     private var chatDataList: ArrayList<MessageDataItem>? = null
@@ -91,6 +105,8 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         viewUtil = ViewUtil(this)
         videoId = intent.getStringExtra("VIDEO_ID")
         postId = intent.getStringExtra("POST_ID")!!
+        comingFrom = intent.getStringExtra("COMING_FROM")!!
+
         userId = Prefrences.getPreferences(this, Constants.PREF_USER_ID)
         currentUserAvtar = Prefrences.getUser()!!.avatar
 
@@ -114,6 +130,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             if (videoId != null && postId != null && postId != "web" && !videoId!!.contains("http")) {
                 binding.youtubeplayer.visibility = View.VISIBLE
                 binding.exoPlayer.visibility = View.GONE
+                binding.relExo.visibility = View.GONE
                 binding.youtubeplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                     override fun onReady(youTubePlayer: YouTubePlayer) {
                         youTubePlayer.loadVideo(videoId!!, 0f)
@@ -136,6 +153,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     //hyperLink = extractYTId(videoId);
                     binding.youtubeplayer.visibility = View.VISIBLE
                     binding.exoPlayer.visibility = View.GONE
+                    binding.relExo.visibility = View.GONE
                     Log.d("TAG", "run: $videoId")
                     binding.youtubeplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                         override fun onReady(youTubePlayer: YouTubePlayer) {
@@ -156,6 +174,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 } else {
                     binding.youtubeplayer.visibility = View.GONE
                     binding.exoPlayer.visibility = View.VISIBLE
+                    binding.relExo.visibility = View.VISIBLE
                     show()
                     binding.progressBar.visibility = View.VISIBLE
                     if (videoId!!.contains("http")) {
@@ -458,6 +477,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         mute = true
         binding.blurLayout.pauseBlur()
     }
+
     private fun onLeavePostRoom() {
         val jsonObject = JSONObject()
         try {
@@ -476,9 +496,13 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 viewUtil!!.hideKeyboard()
                 sendTextMessage()
             }
-            R.id.iv_endStreaming ->
-//              deleteWatchTogetherPost(postId);
-                finish()
+            R.id.iv_endStreaming -> {
+//                deleteWatchTogetherPost(postId)
+                feedbackDialog()
+
+
+            }
+
             R.id.play -> {
                 InstaConnectApp.instance!!.mediaPlayer()!!.play(true)
                 binding.play.visibility = View.GONE
@@ -523,6 +547,109 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 addFriendDialog.show(supportFragmentManager, "AddFriendDialog")
             }
         }
+    }
+
+    private fun feedbackDialog() {
+        val dialog = Dialog(this, R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_feedback_from_room)
+        val tvYes = dialog.findViewById<TextView>(R.id.tvYes)
+        val tvNo = dialog.findViewById<TextView>(R.id.tvNo)
+        val tvDismiss = dialog.findViewById<TextView>(R.id.tvDismiss)
+
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
+
+        tvYes.setOnClickListener { v: View? ->
+            showRateApp()
+            dialog.dismiss()
+        }
+        tvNo.setOnClickListener { v: View? ->
+            closeDialog()
+            dialog.dismiss()
+        }
+        tvDismiss.setOnClickListener { v: View? ->
+
+            closeDialog()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showRateApp() {
+        reviewManager = ReviewManagerFactory.create(this)
+        val request: Task<ReviewInfo> = reviewManager!!.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo: ReviewInfo = task.result
+                val flow: Task<Void> = reviewManager!!.launchReviewFlow(this, reviewInfo)
+                flow.addOnCompleteListener {
+                    Toast.makeText(this, "Already Submitted", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "InAppReviewFailed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun closeDialog() {
+        val dialog = Dialog(this, R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_close_live_room)
+        val tvYes = dialog.findViewById<TextView>(R.id.tvYes)
+        val tvNo = dialog.findViewById<TextView>(R.id.tvNo)
+
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
+        tvNo.setOnClickListener { v: View? ->
+            dialog.dismiss()
+        }
+        tvYes.setOnClickListener { v: View? ->
+
+            if(comingFrom == "Home"){
+                finish()
+            } else {
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
     }
 
     private fun postLike(actualPostId: String, myPostReaction: String, userId: String?) {
@@ -581,8 +708,8 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
     private fun callHeart(mils: Int) {
         Handler().postDelayed({
-                showHeart()
-            }, mils.toLong())
+            showHeart()
+        }, mils.toLong())
     }
 
     private fun showHeart() {
@@ -715,6 +842,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         super.onPause()
         InstaConnectApp.instance!!.mediaPlayer()!!.play(false)
     }
+
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
             binding.play.visibility = View.GONE

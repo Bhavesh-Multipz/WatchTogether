@@ -7,8 +7,8 @@ import com.instaconnect.android.base.BaseViewModel
 import com.instaconnect.android.data.model.FriendListModel
 import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogether
+import com.instaconnect.android.ui.watch_together_room.model.PostReaction
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 
 class WatchTogetherVideoViewModel constructor(private val repository : WatchTogetherVideoRepository) : BaseViewModel(repository) {
 

@@ -3,10 +3,9 @@ package com.instaconnect.android.ui.fragment.more_setting
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.util.Log
+import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.viewModelScope
@@ -175,6 +174,24 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
         dialog.setContentView(R.layout.dialog_delete_your_account)
         val tvCancel = dialog.findViewById<TextView>(R.id.tvCancel)
         val tvDelete = dialog.findViewById<TextView>(R.id.tvDelete)
+
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
         tvDelete.setOnClickListener { v: View? ->
 
             deleteUserAccount()
@@ -218,6 +235,23 @@ class MoreSettingsFragment : BaseFragment<MoreSettingViewModel,ActivityMoreSetti
         dialog.setContentView(R.layout.dialog_signout_new)
         val tvCancel = dialog.findViewById<TextView>(R.id.tvCancel)
         val tvLogOut = dialog.findViewById<TextView>(R.id.tvLogout)
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
         tvLogOut.setOnClickListener { v: View? ->
             Prefrences.savePreferencesBoolean(requireContext(), Constants.LOGIN_STATUS, false)
             Prefrences.getBooleanPreferences(requireContext(), Constants.LOGIN_STATUS)!!

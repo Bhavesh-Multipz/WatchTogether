@@ -268,7 +268,7 @@ class AddFriendToWatchVideoDialog(
 
     private fun setAdapter() {
         myFriendListAdapter = AddFriendToVideoListAdapter(myFriendList as MutableList<FriendListModel.User>, ctx, this)
-        recyclerView!!.layoutManager = GridLayoutManager(activity, 4)
+        recyclerView!!.layoutManager = GridLayoutManager(activity, 3)
         recyclerView!!.adapter = myFriendListAdapter
     }
 

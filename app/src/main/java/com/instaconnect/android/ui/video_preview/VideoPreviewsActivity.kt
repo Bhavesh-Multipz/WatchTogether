@@ -2,7 +2,9 @@ package com.instaconnect.android.ui.video_preview
 
 import android.app.Dialog
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,12 +17,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerControlView
+import com.google.gson.Gson
 import com.instaconnect.android.InstaConnectApp
 import com.instaconnect.android.R
 import com.instaconnect.android.data.model.db.ChatMessage
 import com.instaconnect.android.databinding.ActivityVideoPreviewsBinding
-import com.instaconnect.android.fileHelper.DataManager
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.home.HomeActivity
@@ -30,7 +38,9 @@ import com.instaconnect.android.ui.youtube_webview.VideoPreviewRepository
 import com.instaconnect.android.ui.youtube_webview.VideoPreviewViewModel
 import com.instaconnect.android.ui.youtube_webview.VideoPreviewViewModelFactory
 import com.instaconnect.android.utils.*
+import com.instaconnect.android.utils.dialog_helper.AlertDialogCallback
 import com.instaconnect.android.utils.dialog_helper.DialogCallback
+import com.instaconnect.android.utils.dialog_helper.DialogUtil
 import com.instaconnect.android.utils.models.Trending
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -40,10 +50,9 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
-import javax.inject.Inject
 
 class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerControlView.VisibilityListener,
-    ProgressRequestBody.UploadCallbacks {
+    ProgressRequestBody.UploadCallbacks, Player.EventListener {
 
     private var viewUtil: ViewUtil? = null
     private lateinit var binding: ActivityVideoPreviewsBinding
@@ -113,6 +122,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                 .setOnClickListener { viewUtil!!.hideKeyboard() }
         }
 
+        setVideoPreview()
         viewModel.youtubeVideoDetailsResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
@@ -151,6 +161,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                         intent.putExtra("GROUP_NAME", it.value.response!!.group_name)
                         intent.putExtra("ACTUAL_POST_ID", java.lang.String.valueOf(it.value.response!!.id))
                         intent.putExtra("POST_REACTION", "0")
+                        intent.putExtra("COMING_FROM", "CreatePost")
                         startActivity(intent)
                         InstaConnectApp.instance!!.mediaPlayer()!!.release()
                         finish()
@@ -180,6 +191,18 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
 
     }
 
+    private fun setVideoPreview() {
+        val url: String
+        if (chatMessage!!.videoType != "null") {
+            url = chatMessage!!.videoType
+        } else {
+            url = chatMessage!!.messageBody
+        }
+
+        InstaConnectApp.instance!!.mediaPlayer()!!.initPlayer(Uri.parse(url), binding.player, true, this)
+
+    }
+
     private fun getYoutubeVideoDetails(videoId: String?) {
         if (videoId != null) {
             viewModel.viewModelScope.launch {
@@ -200,6 +223,20 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             }
 
             R.id.iv_send -> {
+
+                if (HomeActivity.userLocation == null) {
+                    DialogUtil.showAlertDialog(this, getString(R.string.location_off),
+                        getString(R.string.please_on_location),
+                        getString(R.string.ok_caps),
+                        "",
+                        object : AlertDialogCallback {
+                            override fun onPositiveButton(dialog: DialogInterface?) {
+                                startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                            }
+                            override fun onNegativeButton(dialog: DialogInterface?) {}
+                        })
+                    return
+                }
                 if (chatMessage!!.postType == "My Community") {
                     if (chatMessage!!.captureType != "Video") {
                         if (chatMessage!!.captureType == "WatchTogether") {
@@ -208,7 +245,8 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                         } else {
                             chatMessage!!.caption = binding.etCaption.text.toString()
 
-                            publicPostYoutube(chatMessage!!.caption,
+                            publicPostYoutube(
+                                chatMessage!!.caption,
                                 "My Community",
                                 HomeActivity.userLocation!!.latitude,
                                 HomeActivity.userLocation!!.longitude,
@@ -335,7 +373,8 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                     .show()
             } else {
                 if (chatMessage!!.postType == "My Community") {
-                    publicPostWatchTogether(chatMessage!!.caption,
+                    publicPostWatchTogether(
+                        chatMessage!!.caption,
                         chatMessage!!.postType,
                         HomeActivity.userLocation!!.latitude,
                         HomeActivity.userLocation!!.longitude,
@@ -482,19 +521,43 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             progressDialog!!.setMessage("Uploading...")
             progressDialog!!.show()
             chatMessage!!.caption = binding.etCaption.text.toString()
-            if (chatMessage!!.videoType.contains("http")) {
-                publicPostWatchTogether(chatMessage!!.caption,
-                    chatMessage!!.postType,
-                    HomeActivity.userLocation!!.latitude,
-                    HomeActivity.userLocation!!.longitude,
-                    getCountry(),
-                    chatMessage!!.videoType,
-                    "web",
-                    "empty",
-                    uploadCallbacks,
-                    thumbImage,
-                    mediaRatioF,
-                    enteredPassword)
+
+            Gson().toJson(chatMessage)
+            if (chatMessage!!.videoType == "null" || chatMessage!!.videoType.contains("http")) {
+
+                if (chatMessage!!.videoType.contains("http")) {
+                    publicPostWatchTogether(
+                        chatMessage!!.caption,
+                        chatMessage!!.postType,
+                        HomeActivity.userLocation!!.latitude,
+                        HomeActivity.userLocation!!.longitude,
+                        getCountry(),
+                        chatMessage!!.videoType,
+                        "web",
+                        "empty",
+                        uploadCallbacks,
+                        thumbImage,
+                        mediaRatioF,
+                        enteredPassword
+                    )
+                } else {
+                    publicPostGalleryVideoPost(
+                        chatMessage!!.caption,
+                        chatMessage!!.postType,
+                        HomeActivity.userLocation!!.latitude,
+                        HomeActivity.userLocation!!.longitude,
+                        getCountry(),
+                        "",
+                        "web",
+                        "empty",
+                        uploadCallbacks,
+                        thumbImage,
+                        mediaRatioF,
+                        enteredPassword,
+                        chatMessage!!.filePath
+                    )
+                }
+
             } else {
                 // new changes for youtube watch together video, when youtube video watch together youtubevideoId = videoId and hyperLink = youtubevideoId
                 publicPostWatchTogether(chatMessage!!.caption,
@@ -520,6 +583,68 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                 previewCallbacks!!.onPreviewActivityCallback(chatMessage!!.dataType, chatMessage, 0, trending)
             }
         }
+    }
+
+    private fun publicPostGalleryVideoPost(
+        caption: String,
+        category: String,
+        latitude: Double,
+        longitude: Double,
+        country: String?,
+        videoType: String,
+        mediaType: String?,
+        videoId: String,
+        uploadCallbacks: ProgressRequestBody.UploadCallbacks,
+        thumbImage: String?,
+        mediaRatioF: Float,
+        enteredPassword: String?,
+        filePath: String,
+    ) {
+        var thumbImage = thumbImage
+        val user_id: RequestBody =
+            RequestBody.create(MediaType.parse("multipart/form-data"), Prefrences.getPreferences(this, Constants.PREF_USER_ID)!!)
+        val media = RequestBody.create(MediaType.parse("multipart/form-data"), "1")
+        val lat = RequestBody.create(MediaType.parse("multipart/form-data"), latitude.toString())
+        val lng = RequestBody.create(MediaType.parse("multipart/form-data"), longitude.toString())
+        val rCat = RequestBody.create(MediaType.parse("multipart/form-data"), category)
+        val videoCaption = RequestBody.create(MediaType.parse("multipart/form-data"), caption)
+        val country = RequestBody.create(MediaType.parse("multipart/form-data"), country)
+        val youtubeVideoId = RequestBody.create(MediaType.parse("multipart/form-data"), videoId)
+        val hyperLinkBody = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+        val dataType = RequestBody.create(MediaType.parse("multipart/form-data"), "video")
+        val mediaTypeBody = RequestBody.create(MediaType.parse("multipart/form-data"), mediaType)
+        val mediaRatioBody = RequestBody.create(MediaType.parse("multipart/form-data"), mediaRatioF.toString())
+        val videoLinkBody = RequestBody.create(MediaType.parse("multipart/form-data"), "YES")
+        val groupPasswordBody: RequestBody = if (enteredPassword == null) {
+            RequestBody.create(MediaType.parse("multipart/form-data"), "")
+        } else {
+            RequestBody.create(MediaType.parse("multipart/form-data"), enteredPassword)
+        }
+        val groupNameBody = RequestBody.create(MediaType.parse("multipart/form-data"), "01121993" + System.currentTimeMillis())
+        val uniqueCode = RequestBody.create(MediaType.parse("multipart/form-data"), "01121993" + Util.createUniqueCode())
+        if (thumbImage == null) {
+            thumbImage = "http://99.79.19.208/webapp/dev/uploads/1608380830thumbimage.jpeg"
+        }
+        val videoFile = RequestBody.create(MediaType.parse("video/mp4"), File(filePath))
+        var videoBody = MultipartBody.Part.createFormData("video", File(filePath).name, videoFile)
+
+        DownloadFileHelper(this, thumbImage) { saveFilePath ->
+            val thumb: RequestBody
+            var thumbBody: MultipartBody.Part? = null
+            if (saveFilePath != null) {
+                thumb = RequestBody.create(MediaType.parse("image/*"), File(saveFilePath))
+                thumbBody = MultipartBody.Part.createFormData("thumb_image", File(saveFilePath).name, thumb)
+            }
+
+            viewModel.viewModelScope.launch {
+                viewModel.publicPostWatchTogether(
+                    user_id, media, rCat, lat, lng,
+                    videoCaption, country, dataType, hyperLinkBody, mediaTypeBody, mediaRatioBody,
+                    youtubeVideoId, videoLinkBody, groupPasswordBody, groupNameBody, uniqueCode, videoBody
+                )
+            }
+        }.execute()
+
     }
 
     fun publicPostWatchTogether(
@@ -582,18 +707,44 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
     }
 
     override fun onVisibilityChange(visibility: Int) {
-
     }
 
     override fun onProgressUpdate(percentage: Int, chatMessage: ChatMessage) {
-
     }
 
     override fun onError(chatMessage: ChatMessage) {
-
     }
 
     override fun onFinish(chatMessage: ChatMessage) {
+    }
 
+    override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
+    }
+
+    override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
+    }
+
+    override fun onLoadingChanged(isLoading: Boolean) {
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+    }
+
+    override fun onRepeatModeChanged(repeatMode: Int) {
+    }
+
+    override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException?) {
+    }
+
+    override fun onPositionDiscontinuity(reason: Int) {
+    }
+
+    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
+    }
+
+    override fun onSeekProcessed() {
     }
 }

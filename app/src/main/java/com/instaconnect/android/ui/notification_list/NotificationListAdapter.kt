@@ -111,6 +111,7 @@ class NotificationListAdapter internal constructor(var context: Context, var mNo
         intent.putExtra("GROUP_NAME", messagelistItem.postDetailArr.groupName)
         intent.putExtra("POST_REACTION", messagelistItem.postDetailArr.yourReaction)
         intent.putExtra("TOTAL_LIKES", prettyCount(messagelistItem.postDetailArr.likes.toString().toInt()))
+        intent.putExtra("COMING_FROM", "Home")
         context.startActivity(intent)
     }
 

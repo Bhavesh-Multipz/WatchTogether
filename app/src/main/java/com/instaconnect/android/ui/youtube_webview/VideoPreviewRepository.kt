@@ -84,4 +84,44 @@ class VideoPreviewRepository constructor(private val api: MyApi) : BaseRepositor
         )
     }
 
+    suspend fun publicPostGalleryVideos(
+        user_id: RequestBody?,
+        media: RequestBody?,
+        category: RequestBody?,
+        lat: RequestBody?,
+        lng: RequestBody?,
+        caption: RequestBody?,
+        country: RequestBody?,
+        datatype: RequestBody?,
+        hyperlink: RequestBody?,
+        mediaType: RequestBody?,
+        mediaRatio: RequestBody?,
+        youTubeVideoId: RequestBody?,
+        isVideoLink: RequestBody?,
+        groupPassword: RequestBody?,
+        groupName: RequestBody?,
+        uniquecode: RequestBody?,
+        file: MultipartBody.Part?,
+    ) = safeApiCall {
+        api.publicPostGalleryVideos(
+            user_id,
+            media,
+            category,
+            lat,
+            lng,
+            caption,
+            country,
+            datatype,
+            hyperlink,
+            mediaType,
+            mediaRatio,
+            youTubeVideoId,
+            isVideoLink,
+            groupPassword,
+            groupName,
+            uniquecode,
+            file,
+        )
+    }
+
 }

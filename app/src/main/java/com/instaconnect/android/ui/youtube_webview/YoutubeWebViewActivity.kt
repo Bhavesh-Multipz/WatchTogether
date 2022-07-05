@@ -86,6 +86,7 @@ class YoutubeWebViewActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 val requestUrl = request.url.toString()
+                Log.d("TAG", "shouldInterceptRequest xxxxx: $requestUrl")
                 if (!requestUrl.contains("ads") && requestUrl.contains(".m3u8")) {
                     if (m3u8VideoUrlCount == 0) {
                         m3u8VideoUrlCount++

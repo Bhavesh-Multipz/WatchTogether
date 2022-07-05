@@ -451,7 +451,7 @@ ${post_item.caption}"""
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
-                        if(it.value.response.alertArr!!.status == 1){
+                        if (it.value.response.alertArr!!.status == 1) {
                             openForceUpdateAppDialog(it.value.response)
                         }
                     }
@@ -768,9 +768,9 @@ ${post_item.caption}"""
             override fun onScrolled(@NonNull recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisiblePosition =
-                    (Objects.requireNonNull(recyclerView.getLayoutManager()) as LinearLayoutManager).findFirstVisibleItemPosition()
+                    (Objects.requireNonNull(recyclerView.layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
                 val lastVisiblePosition =
-                    (recyclerView.getLayoutManager() as LinearLayoutManager).findLastVisibleItemPosition()
+                    (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                 if (firstVisiblePosition >= 0) {
                     val rect_parent = Rect()
                     recyclerView.getGlobalVisibleRect(rect_parent)
@@ -913,9 +913,7 @@ ${post_item.caption}"""
         onPauseActivity()
     }
 
-    override fun onItemViewClick(post: PostsList?, icon: ImageView?, type: Int) {
-
-    }
+    override fun onItemViewClick(post: PostsList?, icon: ImageView?, type: Int) {}
 
     override fun onItemSingleClick(
         post: PostsList?,
@@ -939,6 +937,7 @@ ${post_item.caption}"""
                 intent.putExtra("ACTUAL_POST_ID", post.id)
                 intent.putExtra("POST_REACTION", post.reaction!!.yourReaction)
                 intent.putExtra("TOTAL_LIKES", VideoListAdapter.prettyCount(post.reaction!!.likes))
+                intent.putExtra("COMING_FROM", "Home")
                 startActivity(intent)
             } else {
                 /*val intent = BaseIntent(requireActivity(), VideoActivity::class.java, false)
@@ -953,8 +952,7 @@ ${post_item.caption}"""
         } else if (type == VideoListAdapter.YOUTUBE) {
             makeServerCallForIncreaseView(post!!.id!!, position)
             if (post.mediaType.equals("web", ignoreCase = true)) {
-                val intent =
-                    BaseIntent(requireActivity(), WatchTogetherVideoActivity::class.java, false)
+                val intent = BaseIntent(requireActivity(), WatchTogetherVideoActivity::class.java, false)
                 intent.putExtra("USER_ID", post.userId)
                 intent.putExtra("VIDEO_ID", post.youTubeVideoId)
                 intent.putExtra("POST_ID", post.mediaType)
@@ -966,6 +964,7 @@ ${post_item.caption}"""
                 intent.putExtra("ACTUAL_POST_ID", post.id)
                 intent.putExtra("POST_REACTION", post.reaction!!.yourReaction)
                 intent.putExtra("TOTAL_LIKES", VideoListAdapter.prettyCount(post.reaction!!.likes))
+                intent.putExtra("COMING_FROM", "Home")
                 startActivity(intent)
             }
         } else if (type == VideoListAdapter.IMAGE) {

@@ -93,6 +93,7 @@
                 android:layout_below="@+id/relVideoHeader"
                 android:visibility="visible"
                 app:layout_constrainedHeight="true"
+                android:background="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

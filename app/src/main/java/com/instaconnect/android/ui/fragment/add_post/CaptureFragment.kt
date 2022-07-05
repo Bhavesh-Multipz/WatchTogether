@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.VideoView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,8 @@ import com.instaconnect.android.base.BaseFragment
 import com.instaconnect.android.base.BaseIntent
 import com.instaconnect.android.data.model.db.ChatMessage
 import com.instaconnect.android.databinding.FragmentCaptureBinding
+import com.instaconnect.android.fileHelper.DataManager
+import com.instaconnect.android.fileHelper.FileUtils
 import com.instaconnect.android.listener.OnCategorySelectedListener
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
@@ -30,6 +33,7 @@ import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.ui.public_chat.videoList.VideoListAdapter.Companion.extractYTId
 import com.instaconnect.android.ui.trending_websites.TrendingWebsitesActivity
 import com.instaconnect.android.ui.youtube_webview.YoutubeWebViewActivity
+import com.instaconnect.android.utils.AppFileHelper
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.LocationUtil
 import com.instaconnect.android.utils.ProgressRequestBody
@@ -38,6 +42,7 @@ import com.instaconnect.android.utils.models.Trending
 import com.instaconnect.android.widget.FlashView.FlashListener
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBinding, CaptureFragmentRepository>(),
 
@@ -54,6 +59,10 @@ class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBi
     private var countryName: String? = null
     private var categoryName: String? = null
     var videoView: VideoView? = null
+
+    var appFileHelper : AppFileHelper? = null
+    var fileUtils : FileUtils? = null
+
     private var progressDialog: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +74,11 @@ class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBi
 
         getAndManageData()
 
-//        viewModel.init(binding.surfaceCamera, binding.surfaceCamera.getHolder())
+        appFileHelper = AppFileHelper(requireContext())
+        fileUtils = FileUtils(requireContext())
+
+        viewModel.init(binding.surfaceCamera, binding.surfaceCamera.holder, appFileHelper!!)
+
         /*binding.btnCapture.setOnLongClickListener(View.OnLongClickListener {
             if (captureType == "Video") {
                 binding.tvTimer.setVisibility(View.VISIBLE)
@@ -242,16 +255,6 @@ class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBi
     }*/
     private var clicked = false
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            if (requestCode == PICK_MEDIA) {
-                binding.frMain.showLoading()
-//                viewModel.onPickMediaResult(fileUtils, data)
-            }
-        }
-    }
-
     fun onBackPress(fragmentCount: Int): Boolean {
         return true
     }
@@ -296,13 +299,13 @@ class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBi
                 pickPhoto.type = "*/*"
                 val mimetypes = arrayOf("video/*")
                 pickPhoto.putExtra("android.intent.extra.MIME_TYPES", mimetypes)
-                startActivityForResult(pickPhoto, PICK_MEDIA)
+                pickUpMediaLauncher.launch(pickPhoto)
             } else if (captureType == "Image") {
                 val pickPhoto = Intent(Intent.ACTION_GET_CONTENT)
                 pickPhoto.type = "*/*"
                 val mimetypes = arrayOf("image/*")
                 pickPhoto.putExtra("android.intent.extra.MIME_TYPES", mimetypes)
-                startActivityForResult(pickPhoto, PICK_MEDIA)
+                pickUpMediaLauncher.launch(pickPhoto)
             }
             R.id.rel_popular_websites -> startActivity(Intent(context, TrendingWebsitesActivity::class.java))
             R.id.iv_cancelWatch, R.id.iv_cancelText, R.id.iv_cancel -> {}
@@ -330,6 +333,14 @@ class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBi
             }
         }
     }
+
+    var pickUpMediaLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                binding.frMain.showLoading()
+                viewModel.onPickMediaResult(fileUtils!!, result.data!!, requireContext())
+            }
+        }
 
     private fun getDataFromYoutubeUrl(enteredLink: String) {
         if (enteredLink.contains("watch?v=") && enteredLink.contains("youtube.com") || enteredLink.contains("youtu.be")) {

@@ -18,14 +18,13 @@ import com.instaconnect.android.ui.login.SendOtp
 import com.instaconnect.android.ui.notification_list.NotificationListModelNew
 import com.instaconnect.android.ui.profile.ProfileResponse
 import com.instaconnect.android.ui.trending_websites.models.TrendingWebsiteResponseModel
-import com.instaconnect.android.ui.watch_together_room.PostReaction
+import com.instaconnect.android.ui.watch_together_room.model.PostReaction
 import com.instaconnect.android.ui.youtube_webview.YoutubeVideoDetails
 import com.instaconnect.android.utils.models.Response
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -194,6 +193,30 @@ interface MyApi {
         @Part("uniquecode") uniquecode: RequestBody?,
         @Part file: MultipartBody.Part?,
     ): PublicPost
+
+
+    @Multipart
+    @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)
+    suspend fun publicPostGalleryVideos(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("media") media: RequestBody?,
+        @Part("category") category: RequestBody?,
+        @Part("lat") lat: RequestBody?,
+        @Part("lng") lng: RequestBody?,
+        @Part("caption") caption: RequestBody?,
+        @Part("country") country: RequestBody?,
+        @Part("datatype") datatype: RequestBody?,
+        @Part("hyperlink") hyperlink: RequestBody?,
+        @Part("mediaType") mediaType: RequestBody?,
+        @Part("media_ratio") mediaRatio: RequestBody?,
+        @Part("youTubeVideoId") youTubeVideoId: RequestBody?,
+        @Part("is_video_link") isVideoLink: RequestBody?,
+        @Part("group_password") groupPassword: RequestBody?,
+        @Part("group_name") groupName: RequestBody?,
+        @Part("uniquecode") uniquecode: RequestBody?,
+        @Part file: MultipartBody.Part?,
+    ): PublicPost
+
 
     @Multipart
     @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)

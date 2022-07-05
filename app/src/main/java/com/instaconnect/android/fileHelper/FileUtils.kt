@@ -265,9 +265,7 @@ class FileUtils     //private constructor to enforce Singleton pattern
          * @return Whether the URI is a local one.
          */
         fun isLocal(url: String?): Boolean {
-            return if (url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
-                true
-            } else false
+            return url != null && !url.startsWith("http://") && !url.startsWith("https://")
         }
 
         /**

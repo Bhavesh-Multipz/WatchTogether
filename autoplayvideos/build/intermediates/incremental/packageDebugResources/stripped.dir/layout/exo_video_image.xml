@@ -23,7 +23,7 @@
                     android:layout_alignEnd="@+id/ivCover"
                     android:layout_alignRight="@+id/ivCover"
                     android:layout_alignBottom="@+id/ivCover"
-                    app:resize_mode="fixed_width"
+                    app:resize_mode="fit"
                     app:show_buffering="false"
                     app:surface_type="surface_view"
                     app:use_controller="false" />

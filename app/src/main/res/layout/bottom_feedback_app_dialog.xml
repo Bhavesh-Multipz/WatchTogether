@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_50sdp"
         android:paddingHorizontal="@dimen/_8sdp"
         android:visibility="visible"
         android:background="@drawable/layout_bottom_dialog_glass">
