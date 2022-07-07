@@ -190,7 +190,10 @@
                 android:drawablePadding="@dimen/_8sdp"
                 android:fontFamily="@font/montserrat_medium"
                 android:hint="Search"
+                android:imeOptions="actionDone"
+                android:lines="1"
                 android:padding="@dimen/_8sdp"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textColorHint="@color/transparent_white_hex_10"
                 android:textCursorDrawable="@drawable/custom_cursor"
@@ -200,8 +203,8 @@
                 android:id="@+id/invite_contact_frg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
-                android:layout_below="@+id/ed_search" />
+                android:layout_below="@+id/ed_search"
+                android:visibility="gone" />
 
             <com.allattentionhere.autoplayvideos.recyclerview.BasicRecyclerView
                 android:id="@+id/recycler_my_friend"
@@ -227,5 +230,14 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/_16sdp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="@color/white"
+        android:visibility="gone" />
+
 
 </RelativeLayout>

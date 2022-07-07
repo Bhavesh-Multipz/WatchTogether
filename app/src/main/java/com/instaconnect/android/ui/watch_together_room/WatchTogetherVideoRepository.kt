@@ -29,4 +29,18 @@ class WatchTogetherVideoRepository constructor(private val api : MyApi) : BaseRe
     ) = safeApiCall {
         api.addPostReaction(post_id, reaction, userId)
     }
+
+    suspend fun userRating(
+        userId: String,
+        appVersion: String,
+        isRated: String,
+    ) = safeApiCall {
+        api.userRating(userId,appVersion,isRated)
+    }
+
+    suspend fun deletePost(
+        postId: String
+    ) = safeApiCall {
+        api.deletePost(postId)
+    }
 }

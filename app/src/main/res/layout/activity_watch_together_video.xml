@@ -3,429 +3,450 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-        <RelativeLayout
+    <RelativeLayout
+        android:id="@+id/relMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/main_bg"
+        android:fitsSystemWindows="true">
+
+        <!--<io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"android:id="@+id/blurLayout"android:layout_width="match_parent"android:layout_height="match_parent"android:layout_centerInParent="true"android:visibility="visible"blurkit:blk_blurRadius="4"blurkit:blk_cornerRadius="0dp"blurkit:blk_fps="0"blurkit:blk_downscaleFactor="0.12"/>-->
+
+        <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/main_bg"
-            android:fitsSystemWindows="true">
+            android:alpha="0.1"
+            android:background="#ffffff" />
 
-            <!--<io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"android:id="@+id/blurLayout"android:layout_width="match_parent"android:layout_height="match_parent"android:layout_centerInParent="true"android:visibility="visible"blurkit:blk_blurRadius="4"blurkit:blk_cornerRadius="0dp"blurkit:blk_fps="0"blurkit:blk_downscaleFactor="0.12"/>-->
+        <RelativeLayout
+            android:id="@+id/frameBlur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent_100_percent"
+            android:visibility="gone">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.1"
-                android:background="#ffffff" />
-
-            <RelativeLayout
-                android:id="@+id/frameBlur"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:background="@color/transparent_100_percent">
-
-                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-                    android:id="@+id/youtubeplayer2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:showYouTubeButton="false"
-                    app:useWebUi="true">
-
-                </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
-
-                <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-                    android:id="@+id/player_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:focusable="true"
-                    app:resize_mode="zoom"
-                    app:show_shuffle_button="false"
-                    app:useWebUi="true"
-                    android:visibility="gone"
-                    app:use_controller="false" />
-
-                <io.alterac.blurkit.BlurLayout
-                    android:id="@+id/blurLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    app:blk_blurRadius="12"
-                    app:blk_downscaleFactor="0.12"
-                    app:blk_fps="60" />
-
-            </RelativeLayout>
-
-            <View
-                android:id="@+id/viewLayer"
+            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                android:id="@+id/youtubeplayer2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
-                android:background="@color/gray" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:showYouTubeButton="false"
+                app:useWebUi="true">
+
+            </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
+
+            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:id="@+id/player_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:visibility="gone"
+                app:resize_mode="zoom"
+                app:show_shuffle_button="false"
+                app:useWebUi="true"
+                app:use_controller="false" />
+
+            <io.alterac.blurkit.BlurLayout
+                android:id="@+id/blurLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:blk_blurRadius="12"
+                app:blk_downscaleFactor="0.12"
+                app:blk_fps="60" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/viewLayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/gray"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/relVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp">
 
             <RelativeLayout
-                android:id="@+id/relVideo"
-                android:layout_width="match_parent"
+                android:id="@+id/relUserDetail"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/_12sdp">
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/layout_square_rounded_white_glass"
+                android:padding="4dp">
+
+                <com.instaconnect.android.widget.RoundImageView
+                    android:id="@+id/ivUserImage"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:scaleType="centerCrop"
+                    app:outerBorderColor="@color/white"
+                    app:outerBorderWidth="1dp" />
 
                 <RelativeLayout
-                    android:id="@+id/relUserDetail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/layout_square_rounded_white_glass"
-                    android:padding="4dp">
-
-                    <com.instaconnect.android.widget.RoundImageView
-                        android:id="@+id/ivUserImage"
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:scaleType="centerCrop"
-                        app:outerBorderColor="@color/white"
-                        app:outerBorderWidth="1dp" />
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_toEndOf="@+id/ivUserImage">
-
-                        <TextView
-                            android:id="@+id/tvUserName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat_regular"
-                            android:textColor="@color/white"
-                            android:textSize="15sp"
-                            tools:text="Millie Brown" />
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tvUserName"
-                            android:layout_marginTop="2dp">
-
-                            <ImageView
-                                android:id="@+id/live"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:src="@drawable/ic_live_stream" />
-
-                            <ImageView
-                                android:id="@+id/eye"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="8dp"
-                                android:layout_toEndOf="@+id/live"
-                                android:src="@drawable/ic_stream_eye" />
-
-                            <TextView
-                                android:id="@+id/tvTotalWatch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="2dp"
-                                android:layout_toEndOf="@+id/eye"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_10sdp"
-                                tools:text="983K" />
-
-                            <ImageView
-                                android:id="@+id/heart"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="8dp"
-                                android:layout_toEndOf="@+id/tvTotalWatch"
-                                android:src="@drawable/ic_stream_heart" />
-
-                            <TextView
-                                android:id="@+id/tvTotalLike"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="2dp"
-                                android:layout_marginEnd="4dp"
-                                android:layout_toEndOf="@+id/heart"
-                                android:fontFamily="@font/montserrat_regular"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/_10sdp"
-                                tools:text="983K" />
-
-                        </RelativeLayout>
-
-                    </RelativeLayout>
-
-                </RelativeLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvLiveUsers"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_below="@+id/relUserDetail"
-                    android:orientation="horizontal" />
-
-                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-                    android:id="@+id/youtubeplayer"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_170sdp"
-                    android:layout_below="@+id/rvLiveUsers"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:showFullScreenButton="true"
-                    app:useWebUi="true">
-
-                </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
-
-                <RelativeLayout
-                    android:id="@+id/relExo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_100sdp"
-                    android:layout_alignParentTop="true"
-                    android:visibility="gone"
-                    android:background="@color/black"
-                    android:layout_below="@+id/rvLiveUsers">
-
-                    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-                        android:id="@+id/exoPlayer"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_170sdp"
-                        android:layout_alignParentTop="true"
-                        android:background="@color/transparent_100_percent"
-                        android:focusable="true"
-                        android:visibility="gone"
-                        app:controller_layout_id="@layout/custom_exo_playback_control_view"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:resize_mode="fit"
-                        app:show_shuffle_button="false"
-                        app:surface_type="texture_view"
-                        app:useWebUi="true"
-                        app:use_controller="true" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/fl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/relExo"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_marginEnd="@dimen/_8sdp"
-                    android:layout_marginBottom="32dp"
-                    android:background="@drawable/transparent_rounded_corner_black_bg"
-                    android:padding="4dp"
-                    android:visibility="gone">
-
-                    <RelativeLayout
-                        android:id="@+id/relPlayPause"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <ImageButton
-                            android:id="@+id/play"
-                            style="@style/ExoMediaButton.MyPlay"
-                            android:layout_width="@dimen/_30sdp"
-                            android:layout_height="@dimen/_30sdp"
-                            android:scaleType="fitCenter"
-                            android:visibility="gone" />
-
-                        <ImageButton
-                            android:id="@+id/pause"
-                            style="@style/ExoMediaButton.MyPause"
-                            android:layout_width="@dimen/_30sdp"
-                            android:layout_height="@dimen/_30sdp"
-                            android:layout_gravity="start"
-                            android:scaleType="fitCenter"
-                            android:visibility="gone" />
-
-                    </RelativeLayout>
-
-                    <ProgressBar
-                        android:id="@+id/progressBar"
-                        android:layout_width="@dimen/_22sdp"
-                        android:layout_height="@dimen/_22sdp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/_4sdp"
-                        android:layout_toEndOf="@+id/relPlayPause"
-                        android:theme="@style/ProgressBarTheme"
-                        android:visibility="gone">
-
-                    </ProgressBar>
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@+id/ivUserImage">
 
                     <TextView
-                        android:id="@+id/tvBroadCast"
+                        android:id="@+id/tvUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/_4sdp"
-                        android:layout_toEndOf="@+id/progressBar"
-                        android:padding="8dp"
-                        android:text="@string/live_broadcast"
+                        android:fontFamily="@font/montserrat_regular"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="15sp"
+                        tools:text="Millie Brown" />
 
-                    <ImageView
-                        android:id="@+id/ivAudio"
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:layout_alignParentEnd="true"
-                        android:background="@drawable/transparent_rounded_corner_black_bg"
-                        android:padding="4dp"
-                        android:src="@drawable/audio_play"
-                        android:visibility="gone"
-                        app:tint="@color/white" />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvUserName"
+                        android:layout_marginTop="2dp">
+
+                        <ImageView
+                            android:id="@+id/live"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_live_stream" />
+
+                        <ImageView
+                            android:id="@+id/eye"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="8dp"
+                            android:layout_toEndOf="@+id/live"
+                            android:src="@drawable/ic_stream_eye" />
+
+                        <TextView
+                            android:id="@+id/tvTotalWatch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="2dp"
+                            android:layout_toEndOf="@+id/eye"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10sdp"
+                            tools:text="983K" />
+
+                        <ImageView
+                            android:id="@+id/heart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="8dp"
+                            android:layout_toEndOf="@+id/tvTotalWatch"
+                            android:src="@drawable/ic_stream_heart" />
+
+                        <TextView
+                            android:id="@+id/tvTotalLike"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_toEndOf="@+id/heart"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10sdp"
+                            android:text="0"
+                            tools:text="983K" />
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/iv_endStreaming"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="left|top"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:padding="@dimen/_8sdp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_close_watch"
-                android:visibility="visible" />
-
-            <com.allattentionhere.autoplayvideos.recyclerview.BasicRecyclerView
-                android:id="@+id/recycler_chat"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLiveUsers"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/bottomRelative"
-                android:layout_below="@+id/relVideo"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="1dp"
-                android:clipToPadding="true"
-                android:paddingLeft="@dimen/_8sdp"
-                android:paddingRight="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_10sdp"
-                android:stackFromBottom="true"
-                app:reverseLayout="true" />
+                android:layout_height="@dimen/_40sdp"
+                android:layout_below="@+id/relUserDetail"
+                android:orientation="horizontal" />
 
-            <com.instaconnect.android.utils.heart_view.HeartsView
-                android:id="@+id/heartView"
-                android:layout_width="90dp"
-                android:layout_height="@dimen/_240sdp"
-                android:layout_above="@+id/bottomRelative"
-                android:layout_alignParentEnd="true"
-                android:background="@color/transparent_100_percent" />
+            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                android:id="@+id/youtubeplayer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_170sdp"
+                android:layout_below="@+id/rvLiveUsers"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:showFullScreenButton="true"
+                app:useWebUi="true">
+
+            </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
+
+            <LinearLayout
+                android:id="@+id/relVideoNotWorking"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_180sdp"
+                android:layout_below="@+id/rvLiveUsers"
+                android:visibility="gone"
+                android:layout_marginTop="20dp"
+                android:background="@color/black">
+
+                <ImageView
+                    android:id="@+id/ivVideoNotWorking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_video_not_working" />
+
+            </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/bottomRelative"
+                android:id="@+id/relExo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginHorizontal="@dimen/_8sdp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center">
+                android:layout_below="@+id/rvLiveUsers"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/_100sdp"
+                android:background="@color/black"
+                android:visibility="gone">
 
-                <io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                    android:id="@+id/exoPlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_170sdp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/transparent_100_percent"
+                    android:focusable="true"
+                    android:visibility="gone"
+                    app:controller_layout_id="@layout/custom_exo_playback_control_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:resize_mode="fit"
+                    app:show_shuffle_button="false"
+                    app:surface_type="texture_view"
+                    app:useWebUi="true"
+                    app:use_controller="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/fl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/relExo"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/transparent_rounded_corner_black_bg"
+                android:padding="4dp"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/relPlayPause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/play"
+                        style="@style/ExoMediaButton.MyPlay"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/pause"
+                        style="@style/ExoMediaButton.MyPause"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_gravity="start"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_toEndOf="@+id/relPlayPause"
+                    android:theme="@style/ProgressBarTheme"
+                    android:visibility="gone">
+
+                </ProgressBar>
+
+                <TextView
+                    android:id="@+id/tvBroadCast"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/_5sdp"
-                    android:layout_toStartOf="@+id/iv_streamUser"
-                    android:visibility="visible"
-                    blurkit:blk_blurRadius="@integer/blur_radius"
-                    blurkit:blk_cornerRadius="50dp"
-                    blurkit:blk_downscaleFactor="0.12"
-                    blurkit:blk_fps="0">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/layout_rounded_white_glass"
-                        android:visibility="visible">
-
-                        <com.instaconnect.android.widget.BasicEditText
-                            android:id="@+id/et_message_box"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/_4sdp"
-                            android:layout_marginRight="@dimen/_4sdp"
-                            android:layout_toStartOf="@+id/iv_send"
-                            android:background="@null"
-                            android:drawablePadding="@dimen/_5sdp"
-                            android:hint="@string/type_a_message"
-                            android:maxLines="1"
-                            android:paddingHorizontal="@dimen/_8sdp"
-                            android:scrollbarStyle="insideInset"
-                            android:scrollbars="vertical"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/transparent_white_hex_11"
-                            android:textCursorDrawable="@drawable/custom_cursor"
-                            android:textSize="@dimen/_13sdp"
-                            app:typeFace="@string/regular" />
-
-                        <ImageView
-                            android:id="@+id/iv_send"
-                            android:layout_width="@dimen/_30sdp"
-                            android:layout_height="@dimen/_30sdp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_margin="@dimen/_5sdp"
-                            android:background="@drawable/layout_rounded_white_glass"
-                            android:padding="@dimen/_8sdp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_send_glass"
-                            android:visibility="visible" />
-
-                    </RelativeLayout>
-                </io.alterac.blurkit.BlurLayout>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_toEndOf="@+id/progressBar"
+                    android:padding="8dp"
+                    android:text="@string/live_broadcast"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
                 <ImageView
-                    android:id="@+id/iv_streamUser"
-                    android:layout_width="@dimen/_35sdp"
-                    android:layout_height="@dimen/_35sdp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/_5sdp"
-                    android:layout_toStartOf="@id/iv_like"
-                    android:background="@drawable/layout_rounded_white_glass"
-                    android:padding="@dimen/_8sdp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_user_plus_glass" />
-
-                <ImageView
-                    android:id="@+id/iv_like"
-                    android:layout_width="@dimen/_35sdp"
-                    android:layout_height="@dimen/_35sdp"
+                    android:id="@+id/ivAudio"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/layout_rounded_white_glass"
-                    android:padding="@dimen/_8sdp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_heart_glass"
-                    android:visibility="visible" />
+                    android:background="@drawable/transparent_rounded_corner_black_bg"
+                    android:padding="4dp"
+                    android:src="@drawable/audio_play"
+                    android:visibility="gone"
+                    app:tint="@color/white" />
 
             </RelativeLayout>
 
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_endStreaming"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="left|top"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="@dimen/_8sdp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close_watch"
+            android:visibility="visible" />
+
+        <com.allattentionhere.autoplayvideos.recyclerview.BasicRecyclerView
+            android:id="@+id/recycler_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomRelative"
+            android:layout_below="@+id/relVideo"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="1dp"
+            android:clipToPadding="true"
+            android:paddingLeft="@dimen/_8sdp"
+            android:paddingRight="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_10sdp"
+            android:stackFromBottom="true"
+            app:reverseLayout="true" />
+
+        <com.instaconnect.android.utils.heart_view.HeartsView
+            android:id="@+id/heartView"
+            android:layout_width="90dp"
+            android:layout_height="@dimen/_240sdp"
+            android:layout_above="@+id/bottomRelative"
+            android:layout_alignParentEnd="true"
+            android:background="@color/transparent_100_percent" />
+
+        <RelativeLayout
+            android:id="@+id/bottomRelative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center">
+
+            <io.alterac.blurkit.BlurLayout xmlns:blurkit="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_toStartOf="@+id/iv_streamUser"
+                android:visibility="visible"
+                blurkit:blk_blurRadius="@integer/blur_radius"
+                blurkit:blk_cornerRadius="50dp"
+                blurkit:blk_downscaleFactor="0.12"
+                blurkit:blk_fps="0">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/layout_rounded_white_glass"
+                    android:visibility="visible">
+
+                    <com.instaconnect.android.widget.BasicEditText
+                        android:id="@+id/et_message_box"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginRight="@dimen/_4sdp"
+                        android:layout_toStartOf="@+id/iv_send"
+                        android:background="@null"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:hint="@string/type_a_message"
+                        android:maxLines="1"
+                        android:paddingHorizontal="@dimen/_8sdp"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/transparent_white_hex_11"
+                        android:textCursorDrawable="@drawable/custom_cursor"
+                        android:textSize="@dimen/_13sdp"
+                        app:typeFace="@string/regular" />
+
+                    <ImageView
+                        android:id="@+id/iv_send"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:background="@drawable/layout_rounded_white_glass"
+                        android:padding="@dimen/_8sdp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_send_glass"
+                        android:visibility="visible" />
+
+                </RelativeLayout>
+            </io.alterac.blurkit.BlurLayout>
+
+            <ImageView
+                android:id="@+id/iv_streamUser"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_toStartOf="@id/iv_like"
+                android:background="@drawable/layout_rounded_white_glass"
+                android:padding="@dimen/_8sdp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_user_plus_glass" />
+
+            <ImageView
+                android:id="@+id/iv_like"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/layout_rounded_white_glass"
+                android:padding="@dimen/_8sdp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_heart_glass"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </layout>

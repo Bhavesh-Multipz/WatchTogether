@@ -25,7 +25,7 @@ class TrendingWebsiteListAdapter internal constructor(var context: Context, var 
         val websitesItem = websitesItemList[position]
         holder.website.text = websitesItem.name
         holder.webTitleTextView.text = websitesItem.name
-        holder.copyUrlImageview.setOnClickListener { view: View? ->
+        holder.itemView.setOnClickListener { view: View? ->
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Copied Url", websitesItem.link)
             clipboard.setPrimaryClip(clip)

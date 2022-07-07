@@ -18,6 +18,7 @@ import com.instaconnect.android.R
 import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences.Companion.savePreferencesString
+import gun0912.tedimagepicker.util.ToastUtil
 import org.json.JSONObject
 import java.util.*
 
@@ -29,7 +30,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(s: String) {
         super.onNewToken(s)
-        savePreferencesString(this, Constants.PREF_DEVICE_TOKEN, s)
+        Log.d("Token", "onNewToken: $s")
+        //savePreferencesString(this, Constants.PREF_DEVICE_TOKEN, s)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -37,7 +39,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "DataPayload2: " + remoteMessage.getFrom().toString() + "")
         Log.d(TAG, "DataPayload3: $remoteMessage")
         System.out.println("In Messsage Received" + remoteMessage.getData())
-        //
+
         // Check if message contains a data payload. /// before implementing new design (only for chat)
         /*if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Data Payload: " + remoteMessage.getData().toString());
@@ -115,9 +117,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val data = remoteMessage.getData()
         val obj = JSONObject(remoteMessage.getData() as Map<*, *>?)
         var postObject = JSONObject()
-        if (data.get("notify_type").equals("send_invitation") || data.get("notify_type")
-                .equals("post_liked")
-        ) {
+        if (data.get("notify_type").equals("send_invitation") || data.get("notify_type").equals("post_liked")) {
             try {
                 postObject = JSONObject(java.lang.String.valueOf(data.get("post_detail_arr")))
             } catch (t: Throwable) {
@@ -128,6 +128,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 )
             }
         }
+
         try {
             sendNotification(
                 Objects.requireNonNull(data.get("title")).toString(),
@@ -144,7 +145,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         messageBody: String,
         data: Map<String, String>,
         type: String,
-        postObject: JSONObject
+        postObject: JSONObject,
     ) {
         val intent: Intent
         intent = Intent(this, HomeActivity::class.java)
@@ -282,7 +283,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     fun broadcastCalleRespondedNotification(
         isAccepted: Boolean,
         calle: String?,
-        disconnection_msg: String?
+        disconnection_msg: String?,
     ) {
         val intent = Intent()
         intent.putExtra("message", "Calle Disconnected")

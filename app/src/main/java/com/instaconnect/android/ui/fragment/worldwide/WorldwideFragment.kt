@@ -280,7 +280,7 @@ ${post_item.caption}"""
 
         BlurKit.init(requireContext())
         proxyCacheServer = InstaConnectApp.instance!!.getProxy(requireContext())
-        currentVersion = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName;
+        currentVersion = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
         spacesItemDecoration1 = SpacesItemDecoration(0)
         spacesItemDecoration2 = SpacesItemDecoration(4)
         if (bundle != null) {
@@ -446,56 +446,7 @@ ${post_item.caption}"""
             }
         }
 
-        // load Preference response handler
-        viewModel.loadPreferenceResponse.observe(requireActivity()) {
-            when (it) {
-                is Resource.Success -> {
-                    if (it.value.response != null) {
-                        if (it.value.response.alertArr!!.status == 1) {
-                            openForceUpdateAppDialog(it.value.response)
-                        }
-                    }
-                }
-                is Resource.Failure -> {}
-                else -> {}
-            }
-        }
-
         return worldWideView
-    }
-
-    private fun openForceUpdateAppDialog(response: Response1) {
-
-        val dialog = Dialog(requireContext(), R.style.CustomDialogTheme)
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.setContentView(R.layout.dialog_update_app)
-        val tvOk = dialog.findViewById<TextView>(R.id.tvOk)
-        val imageView = dialog.findViewById<ImageView>(R.id.img_bg)
-        val relMain = dialog.findViewById<View>(R.id.rel_main)
-        val vto = relMain.viewTreeObserver
-        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                val width = relMain.measuredWidth
-                val height = relMain.measuredHeight
-                Log.e("View Height", "$width...$height")
-                imageView.layoutParams.height = height
-                imageView.layoutParams.width = width
-                imageView.setImageBitmap(BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat()))
-            }
-        })
-
-        tvOk.setOnClickListener { v: View? ->
-
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(response.alertArr!!.button1Link))
-            startActivity(browserIntent)
-            dialog.dismiss()
-        }
-        dialog.show()
-
     }
 
     @Subscribe
@@ -1301,14 +1252,7 @@ ${post_item.caption}"""
         recyclerView!!.resetLazyLoadListener()
         videoListAdapter!!.clear()
         getPosts("0")
-        loadPreference()
         resumeAnyPlayback()
-    }
-
-    private fun loadPreference() {
-        viewModel.viewModelScope.launch {
-            viewModel.loadPreference(currentVersion, "android", user_id!!)
-        }
     }
 
     override fun onResume() {

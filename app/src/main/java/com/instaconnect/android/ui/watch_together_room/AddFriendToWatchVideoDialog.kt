@@ -6,18 +6,18 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -34,6 +34,7 @@ import com.instaconnect.android.ui.friends.contact_fragment.ContactFragmentNew
 import com.instaconnect.android.ui.watch_together_room.AddFriendToVideoListAdapter.AddFriendListListener
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences
+import com.instaconnect.android.utils.Utils.visible
 import io.alterac.blurkit.BlurKit
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -50,6 +51,7 @@ class AddFriendToWatchVideoDialog(
     //    DataManager dataManager;
     var call: Call<FriendListModel>? = null
     var recyclerView: BasicRecyclerView? = null
+    var progressBar: ProgressBar? = null
     var myFriendListAdapter: AddFriendToVideoListAdapter? = null
     var myFriendList: List<FriendListModel.User> = ArrayList()
     var myContactList = ArrayList<Contacts>()
@@ -108,6 +110,7 @@ class AddFriendToWatchVideoDialog(
         val relMain = v.findViewById<View>(R.id.rel_border)
         //TextView txt_contacts = v.findViewById(R.id.txt_contacts);
         recyclerView = v.findViewById(R.id.recycler_my_friend)
+        progressBar = v.findViewById(R.id.progressBar)
         recyclerView!!.setLazyLoadListener(this)
         linExploriiUsers!!.setOnClickListener(this)
         linContactUsers!!.setOnClickListener(this)
@@ -130,6 +133,7 @@ class AddFriendToWatchVideoDialog(
         viewModel.friendListResponse.observe(requireActivity()) {
             when (it) {
                 is Resource.Success -> {
+                    progressBar!!.visible(false)
                     if (it.value.response!!.code.equals("200")) {
                         if (it.value.response!!.userlist == null || it.value.response!!.userlist!!.isEmpty()
                         ) {
@@ -160,9 +164,7 @@ class AddFriendToWatchVideoDialog(
                     recyclerView!!.isLoading = true
                 }
                 is Resource.Failure -> {
-                    recyclerView!!.isLoading = false
-                }
-                else -> {
+                    progressBar!!.visible(false)
                     recyclerView!!.isLoading = false
                 }
             }
@@ -191,36 +193,6 @@ class AddFriendToWatchVideoDialog(
 
         }
 
-        /*ViewTreeObserver txtCon = txt_contacts.getViewTreeObserver();
-        txtCon.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                txt_contacts.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int width  = txt_contacts.getMeasuredWidth();
-                int height = txt_contacts.getMeasuredHeight();
-
-                Log.e("View Height",width+"..."+height);
-                imageViewContact.getLayoutParams().height = height;
-                imageViewContact.getLayoutParams().width = width;
-                imageViewContact.setImageBitmap(BlurKit.getInstance().fastBlur(imageViewContact, 12, (float) 0.12));
-
-            }
-        });*/
-        /*ViewTreeObserver txtExpo = txt_contacts.getViewTreeObserver();
-        txtExpo.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                txt_explorii.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int width  = txt_explorii.getMeasuredWidth();
-                int height = txt_explorii.getMeasuredHeight();
-
-                Log.e("View Height",width+"..."+height);
-                imageViewExplorii.getLayoutParams().height = height;
-                imageViewExplorii.getLayoutParams().width = width;
-                imageViewExplorii.setImageBitmap(BlurKit.getInstance().fastBlur(imageViewExplorii, 12, (float) 0.12));
-
-            }
-        });*/
         return v
     }
 
@@ -237,7 +209,7 @@ class AddFriendToWatchVideoDialog(
             recyclerView!!.visibility = View.VISIBLE
             inviteContactFrg!!.visibility = View.GONE
             ed_search!!.visibility = View.VISIBLE
-            getAddFriendList(1, searchKeyword)
+            getAddFriendList(page, searchKeyword)
         } else {
             recyclerView!!.visibility = View.GONE
             inviteContactFrg!!.visibility = View.VISIBLE
@@ -247,23 +219,21 @@ class AddFriendToWatchVideoDialog(
     }
 
     private fun searchProfile() {
-        ed_search!!.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                searchKeyword = s.toString()
-                Handler().postDelayed({
-                    if (call != null) {
-                        call!!.cancel()
-                    }
+
+        ed_search!!.setOnEditorActionListener { v, actionId, event ->
+            if (event != null && event.keyCode === KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+
+                progressBar!!.visible(true)
+                searchKeyword = ed_search!!.text.toString()
+                Handler(Looper.myLooper()!!).postDelayed({
+
                     recyclerView!!.resetLazyLoadListener()
                     myFriendListAdapter!!.clear()
-                    if (searchKeyword.isNotEmpty())
-                        getAddFriendList(1, searchKeyword)
+                    getAddFriendList(1, searchKeyword)
                 }, 400)
             }
-
-            override fun afterTextChanged(s: Editable) {}
-        })
+            false
+        }
     }
 
     private fun setAdapter() {
@@ -273,62 +243,14 @@ class AddFriendToWatchVideoDialog(
     }
 
     fun getAddFriendList(page: Int, search: String?) {
+        this.page = page
         recyclerView!!.isLoading = true
         viewModel.viewModelScope.launch {
-            viewModel.getAddFriendList(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, search!!, page)
+            viewModel.getAddFriendList(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, search!!, page+1)
         }
     }
 
-    /// my friends
-    /*public void getAddFriendList(final int page,String search) {
 
-        call = dataManager.apiHelper().getMyFriendList(dataManager.prefHelper().getUser().getPhone(),search,page);
-
-        call.enqueue(new Callback<FriendListModel>() {
-            @Override
-            public void onResponse(Call<FriendListModel> call, Response<FriendListModel> response) {
-
-                if (response.body().getResponse().getCode().equalsIgnoreCase("200")) {
-
-                    if (response.body().getResponse().getUserlist() == null || response.body().getResponse().getUserlist().isEmpty()) {
-                        if(page == 1) {
-                            //txtEmpty.setVisibility(View.VISIBLE);
-                           // txtEmpty.setText(response.body().getResponse().getMessage());
-                        }
-                    }
-                    else {
-                        //txtEmpty.setVisibility(View.GONE);
-                        myFriendList = response.body().getResponse().getUserlist();
-                        myFriendListAdapter.addUser(myFriendList);
-                    }
-
-                    if(response.body().getResponse().getIsLastPage() == 0){
-                        recyclerView.isLoading(false);
-                    }
-                    else
-                        {
-                        recyclerView.setNextScrollingEnabled(false);
-                    }
-
-                } else if(response.body().getResponse().getCode().equalsIgnoreCase("301")) {
-                    if(page == 1) {
-                       // txtEmpty.setVisibility(View.VISIBLE);
-                       // txtEmpty.setText(response.body().getResponse().getMessage());
-                    }
-                    else{
-                       // txtEmpty.setVisibility(View.GONE);
-                    }
-                }
-              //  refreshLayout.setRefreshing(false);
-
-            }
-
-            @Override
-            public void onFailure(Call<FriendListModel> call, Throwable t) {
-                recyclerView.isLoading(false);
-            }
-        });
-    }*/
     override fun onScrollNext(page: Int, totalItemsCount: Int): Boolean {
         this.page = page
         getAddFriendList(page, searchKeyword)

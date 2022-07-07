@@ -67,6 +67,8 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
     private val trending: Trending? = null
     private var appDialogUtil: AppDialogUtil? = null
 
+    private var comingFrom:String = "CreatePost"
+
     companion object {
         private var previewCallbacks: PreviewCallbacks? = null
         var caller = ""
@@ -161,7 +163,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                         intent.putExtra("GROUP_NAME", it.value.response!!.group_name)
                         intent.putExtra("ACTUAL_POST_ID", java.lang.String.valueOf(it.value.response!!.id))
                         intent.putExtra("POST_REACTION", "0")
-                        intent.putExtra("COMING_FROM", "CreatePost")
+                        intent.putExtra("COMING_FROM", comingFrom)
                         startActivity(intent)
                         InstaConnectApp.instance!!.mediaPlayer()!!.release()
                         finish()
@@ -174,7 +176,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             }
         }
 
-        viewModel.uploadPostResponse.observe(this) {
+        /*viewModel.uploadPostResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null && it.value.response!!.code.equals("200")) {
@@ -185,7 +187,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                 is Resource.Failure -> {
                 }
             }
-        }
+        }*/
 
         getYoutubeVideoDetails(chatMessage!!.videoType)
 
@@ -526,6 +528,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             if (chatMessage!!.videoType == "null" || chatMessage!!.videoType.contains("http")) {
 
                 if (chatMessage!!.videoType.contains("http")) {
+                    comingFrom = "CreatePost"
                     publicPostWatchTogether(
                         chatMessage!!.caption,
                         chatMessage!!.postType,
@@ -541,6 +544,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                         enteredPassword
                     )
                 } else {
+                    comingFrom = "DeletePost"
                     publicPostGalleryVideoPost(
                         chatMessage!!.caption,
                         chatMessage!!.postType,
@@ -632,8 +636,8 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             val thumb: RequestBody
             var thumbBody: MultipartBody.Part? = null
             if (saveFilePath != null) {
-                thumb = RequestBody.create(MediaType.parse("image/*"), File(saveFilePath))
-                thumbBody = MultipartBody.Part.createFormData("thumb_image", File(saveFilePath).name, thumb)
+                thumb = RequestBody.create(MediaType.parse("image/*"), "")
+                thumbBody = MultipartBody.Part.createFormData("thumb_image", "", thumb)
             }
 
             viewModel.viewModelScope.launch {
@@ -675,16 +679,16 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
         }
         val groupNameBody = RequestBody.create(MediaType.parse("multipart/form-data"), "01121993" + System.currentTimeMillis())
         val uniqueCode = RequestBody.create(MediaType.parse("multipart/form-data"), "01121993" + Util.createUniqueCode())
-        if (thumbImage == null) {
+        /*if (thumbImage == null) {
             thumbImage = "http://99.79.19.208/webapp/dev/uploads/1608380830thumbimage.jpeg"
-        }
+        }*/
 
         DownloadFileHelper(this, thumbImage) { saveFilePath ->
             val thumb: RequestBody
             var thumbBody: MultipartBody.Part? = null
             if (saveFilePath != null) {
-                thumb = RequestBody.create(MediaType.parse("image/*"), File(saveFilePath))
-                thumbBody = MultipartBody.Part.createFormData("thumb_image", File(saveFilePath).name, thumb)
+                thumb = RequestBody.create(MediaType.parse("image/*"), "")
+                thumbBody = MultipartBody.Part.createFormData("thumb_image", "", thumb)
             }
 
             viewModel.viewModelScope.launch {

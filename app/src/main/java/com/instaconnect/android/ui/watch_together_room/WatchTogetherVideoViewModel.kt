@@ -8,6 +8,7 @@ import com.instaconnect.android.data.model.FriendListModel
 import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogether
 import com.instaconnect.android.ui.watch_together_room.model.PostReaction
+import com.instaconnect.android.utils.models.Response
 import kotlinx.coroutines.launch
 
 class WatchTogetherVideoViewModel constructor(private val repository : WatchTogetherVideoRepository) : BaseViewModel(repository) {
@@ -23,6 +24,14 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     private val _postReactionResponse: MutableLiveData<Resource<PostReaction>> = MutableLiveData()
     val postReactionResponse: LiveData<Resource<PostReaction>>
         get() = _postReactionResponse
+
+    private val _userRatingResponse: MutableLiveData<Resource<RatingResponse>> = MutableLiveData()
+    val userRatingResponse: LiveData<Resource<RatingResponse>>
+        get() = _userRatingResponse
+
+    private val _deletePostResponse: MutableLiveData<Resource<Response>> = MutableLiveData()
+    val deletePostResponse: LiveData<Resource<Response>>
+        get() = _deletePostResponse
 
     suspend fun getAddFriendList(
         user_id: String,
@@ -49,5 +58,21 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     ) = viewModelScope.launch {
         _postReactionResponse.value = Resource.Loading
         _postReactionResponse.value = repository.addPostReaction(post_id, reaction, user_id)
+    }
+
+    suspend fun userRating(
+        userId: String,
+        appVersion: String,
+        isRated: String,
+    ) = viewModelScope.launch {
+        _userRatingResponse.value = Resource.Loading
+        _userRatingResponse.value = repository.userRating(userId, appVersion, isRated)
+    }
+
+    suspend fun deletePost(
+        postId: String
+    ) = viewModelScope.launch {
+        _deletePostResponse.value = Resource.Loading
+        _deletePostResponse.value = repository.deletePost(postId)
     }
 }

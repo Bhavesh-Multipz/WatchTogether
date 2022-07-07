@@ -2,12 +2,16 @@ package com.instaconnect.android.ui.friends.my_friends
 
 import android.app.Dialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.allattentionhere.autoplayvideos.recyclerview.LazyLoadListener
 import com.instaconnect.android.R
 import com.instaconnect.android.base.BaseFragment
@@ -103,10 +107,30 @@ class MyFriendFragment : BaseFragment<MyFriendsViewModel, FragmentMyFriendBindin
 
     private fun setView() {
         binding.recyclerMyFriend.setLazyLoadListener(this)
+
+        binding.recyclerMyFriend.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val topRowVerticalPosition =
+                    if (recyclerView.childCount == 0) 0 else recyclerView.getChildAt(0).top
+                binding.swipeRefresh.isEnabled = topRowVerticalPosition >= 0
+            }
+        })
     }
 
     private fun searchProfile() {
 
+        binding.edSearch.setOnEditorActionListener { v, actionId, event ->
+            if (event != null && event.keyCode === KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+
+                searchKeyword = binding.edSearch.text.toString()
+                Handler(Looper.myLooper()!!).postDelayed({
+                    binding.recyclerMyFriend.resetLazyLoadListener()
+                    myFriendListAdapter!!.clear()
+                    getMyFriendList(1, searchKeyword)
+                }, 400)
+            }
+            false
+        }
     }
 
     private fun getMyFriendList(page: Int, searchKeyword: String) {

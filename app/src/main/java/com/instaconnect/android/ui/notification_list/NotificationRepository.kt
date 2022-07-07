@@ -11,4 +11,10 @@ class NotificationRepository constructor(private val api: MyApi) : BaseRepositor
         ) = safeApiCall {
         api.getNotificationList(user_id, page)
     }
+
+    suspend fun clearAllNotification(
+        user_id: String,
+        ) = safeApiCall {
+        api.clearAllNotification(user_id)
+    }
 }

@@ -473,7 +473,7 @@ class VideoListAdapter(
                 } else {
                     // private room
                     if (postsLists[position].caption!!.isEmpty()) {
-                        viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_private_room_glass)
+                        viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_private_without_name)
                     } else {
                         viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_private_witt_name)
                     }
@@ -518,7 +518,7 @@ class VideoListAdapter(
             } else {
                 // private room
                 if (postsLists[position].caption!!.isEmpty()) {
-                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_private_room_glass)
+                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_private_without_name)
                 } else {
                     viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_private_witt_name)
                 }
@@ -893,7 +893,7 @@ class VideoListAdapter(
             viewHolder.ivYoutubeClick.layoutParams = params2
             if (!postsLists[position].groupPassword!!.isEmpty()) {
                 viewHolder.youTubePlayerView.visibility = View.GONE
-                viewHolder.ivYoutubeClick.setImageResource(R.drawable.ic_grid_private_room_glass)
+                viewHolder.ivYoutubeClick.setImageResource(R.drawable.ic_private_without_name)
             } else {
                 viewHolder.youTubePlayerView.visibility = View.VISIBLE
                 GlideHelper.loadFromUrl(
@@ -925,7 +925,7 @@ class VideoListAdapter(
             } else {
                 // private room
                 if (postsLists[position].caption!!.isEmpty()) {
-                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_grid_private_room_glass)
+                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_private_without_name)
                 } else {
                     viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_private_witt_name)
                 }
@@ -939,13 +939,15 @@ class VideoListAdapter(
             if (!postsLists[position].groupPassword!!.isEmpty()) {
                 viewHolder.youTubePlayerView.visibility = View.GONE
                 viewHolder.ivYoutubeClick.visibility = View.VISIBLE
+                screenWidth = ScreenUtils.getScreenWidth(context)
+                val videoHeight = screenWidth * 9 / 16
                 val params2 = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
-                    600
+                    videoHeight
                 )
                 params2.setMargins(0, 0, 0, 0)
                 viewHolder.ivYoutubeClick.layoutParams = params2
-                viewHolder.ivYoutubeClick.setImageResource(R.drawable.ic_grid_private_room_glass)
+                viewHolder.ivYoutubeClick.setImageResource(R.drawable.ic_private_without_name)
             } else {
                 GlideHelper.loadFromUrl(
                     context, "",

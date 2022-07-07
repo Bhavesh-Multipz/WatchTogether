@@ -315,11 +315,11 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/watchPostTitle"
                         android:layout_centerVertical="true"
-                        android:layout_marginTop="@dimen/_16sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_4sdp"
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
                         android:visibility="visible"
                         blurkit:blk_blurRadius="@integer/blur_radius"
-                        android:background="@drawable/layout_rounded_gradient_white_glass"
                         blurkit:blk_cornerRadius="0dp"
                         blurkit:blk_downscaleFactor="0.12"
                         blurkit:blk_fps="0">
@@ -344,7 +344,7 @@
                                 android:paddingVertical="12dp"
                                 android:textColor="@color/white"
                                 android:textColorHint="@color/transparent_white_hex_11"
-                                android:textSize="14sp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/tvGo"
@@ -373,9 +373,9 @@
                     android:layout_centerVertical="true"
                     android:layout_below="@+id/relWatchHeader"
                     android:layout_marginStart="@dimen/_16sdp"
-                    android:layout_marginTop="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:layout_marginEnd="@dimen/_16sdp"
-                    android:layout_marginBottom="@dimen/_16sdp"
+                    android:layout_marginBottom="@dimen/_8sdp"
                     app:blk_blurRadius="@integer/blur_radius"
                     app:blk_cornerRadius="0dp"
                     app:blk_downscaleFactor="0.12"
@@ -455,18 +455,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/_4sdp"
                     android:gravity="center"
-                    android:layout_marginBottom="@dimen/_8sdp"
-                    android:padding="@dimen/_8sdp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_4sdp">
 
                     <RelativeLayout
                         android:id="@+id/gallery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/_12sdp"
                         android:layout_marginHorizontal="@dimen/_8sdp"
-                        android:background="@drawable/layout_rounded_gradient_white_glass">
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
+                        android:padding="@dimen/_12sdp">
 
                         <ImageView
                             android:layout_width="@dimen/_20sdp"
@@ -478,10 +478,10 @@
                         android:id="@+id/rel_drive"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/_12sdp"
-                        android:visibility="gone"
                         android:layout_marginHorizontal="@dimen/_8sdp"
-                        android:background="@drawable/layout_rounded_gradient_white_glass">
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
+                        android:padding="@dimen/_12sdp"
+                        android:visibility="gone">
 
                         <ImageView
                             android:layout_width="@dimen/_20sdp"
@@ -493,9 +493,9 @@
                         android:id="@+id/rel_popular_websites"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/_12sdp"
                         android:layout_marginHorizontal="@dimen/_8sdp"
-                        android:background="@drawable/layout_rounded_gradient_white_glass">
+                        android:background="@drawable/layout_rounded_gradient_white_glass"
+                        android:padding="@dimen/_12sdp">
 
                         <ImageView
                             android:layout_width="@dimen/_20sdp"

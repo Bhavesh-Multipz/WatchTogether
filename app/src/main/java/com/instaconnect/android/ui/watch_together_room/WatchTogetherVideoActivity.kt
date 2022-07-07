@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -31,6 +32,7 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.*
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
+import com.google.android.material.internal.ViewUtils.dpToPx
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -40,11 +42,11 @@ import com.google.gson.reflect.TypeToken
 import com.instaconnect.android.InstaConnectApp
 import com.instaconnect.android.R
 import com.instaconnect.android.data.model.*
-import com.instaconnect.android.data.model.MessageDataItem
 import com.instaconnect.android.databinding.ActivityWatchTogetherVideoBinding
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.home.HomeActivity
+import com.instaconnect.android.ui.trending_websites.TrendingWebsitesActivity
 import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.heart_view.HeartsRenderer
 import com.instaconnect.android.utils.heart_view.HeartsView
@@ -58,6 +60,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
+
 
 class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, View.OnClickListener,
     AddFriendToVideoListAdapter.AddFriendListListener {
@@ -81,7 +84,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     private var groupName: String? = null
     private var to: String? = null
     private var from: String? = null
-    private var comingFrom: String? = null
+    private var comingFrom: String? = "Home"
     private var myPostReaction = ""
     private var actualPostId = ""
     private var currentUserAvtar = ""
@@ -94,6 +97,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     var roomLiveUsersAdapter: RoomLiveUsersAdapter? = null
     var liveUsersList: ArrayList<LiveUsersItem> = ArrayList()
     private var viewUtil: ViewUtil? = null
+    private var isRated: String = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +109,13 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         viewUtil = ViewUtil(this)
         videoId = intent.getStringExtra("VIDEO_ID")
         postId = intent.getStringExtra("POST_ID")!!
-        comingFrom = intent.getStringExtra("COMING_FROM")!!
+        if (intent.getStringExtra("COMING_FROM") != null) {
+            comingFrom = intent.getStringExtra("COMING_FROM")!!
+        }
 
         userId = Prefrences.getPreferences(this, Constants.PREF_USER_ID)
         currentUserAvtar = Prefrences.getUser()!!.avatar
-
+        isRated = Prefrences.getPreferences(this, Constants.IS_RATED)!!
         viewModel = ViewModelProvider(
             this,
             WatchTogetherViewModelFactory(
@@ -158,10 +164,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     binding.youtubeplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                         override fun onReady(youTubePlayer: YouTubePlayer) {
                             youTubePlayer.loadVideo(videoId!!, 0f)
+                            binding.relVideoNotWorking.visibility = View.GONE
                         }
 
                         override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
                             super.onError(youTubePlayer, error)
+                            binding.relVideoNotWorking.visibility = View.VISIBLE
                             Log.d("TAG", "onError: " + error.name)
                         }
 
@@ -212,10 +220,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             }
         }
 
+        // post reaction response handler
         viewModel.postReactionResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
+                        myPostReaction = "1"
                         binding.tvTotalLike.text = java.lang.String.valueOf(it.value.response!!.reaction!!.likes)
                     }
                 }
@@ -223,6 +233,36 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     ToastUtil.showToast(it.toString())
                 }
                 else -> {}
+            }
+        }
+
+
+        // user rating response handler
+        viewModel.userRatingResponse.observe(this) {
+            when (it) {
+                is Resource.Success -> {
+                    if (it.value.response != null) {
+                        Prefrences.savePreferencesString(this, Constants.IS_RATED, "1")
+                    }
+                }
+                is Resource.Failure -> {
+                    ToastUtil.showToast(it.toString())
+                }
+                else -> {}
+            }
+        }
+
+        // delete post response handler
+        viewModel.deletePostResponse.observe(this) {
+            when (it) {
+                is Resource.Success -> {
+                    finish()
+                    Toast.makeText(context, "Room deleted", Toast.LENGTH_SHORT).show()
+                }
+
+                is Resource.Loading -> {}
+
+                is Resource.Failure -> {}
             }
         }
     }
@@ -261,7 +301,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
             val data = args[0] as JSONObject
             try {
-                val liveUsers = data.getJSONArray("liveusers")
 
                 var liveUser: RoomLiveUsersResponse =
                     Gson().fromJson(
@@ -271,9 +310,19 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
                 if (actualPostId == liveUser.postId) {
                     liveUsersList.clear()
-                    liveUsersList.addAll(liveUser.liveUsers)
+                    liveUser.liveUsers.forEach {
+                        if (actualPostId == it.postId) {
+                            if (liveUsersList.contains(it)) {
+
+                            } else {
+                                liveUsersList.add(it)
+                            }
+                        }
+                    }
+
                     runOnUiThread {
-                        roomLiveUsersAdapter!!::notifyDataSetChanged
+
+                        setUpLiveUserAdapter()
                         binding.tvTotalWatch.text = liveUsersList.size.toString()
                     }
                 }
@@ -327,11 +376,11 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     object : TypeToken<ChatDataNewResponse?>() {}.type
                 )
 
-            chatDataList!!.clear()
             if (actualPostId == chatData.postId) {
+                chatDataList!!.clear()
                 chatDataList!!.addAll(chatData.messageData!!)
                 notifyList()
-                scrollViewToLastPos(false)
+                scrollViewToLastPos(true)
             }
         }
     }
@@ -414,6 +463,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         binding.ivLike.setOnClickListener(this)
         binding.ivSend.setOnClickListener(this)
         binding.ivStreamUser.setOnClickListener(this)
+        binding.relVideoNotWorking.setOnClickListener(this)
 
         binding.viewLayer.setOnClickListener(object : DoubleClickListener() {
             override fun onSingleClick(v: View?) {
@@ -422,6 +472,18 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
             override fun onDoubleClick(v: View?) {}
         })
+
+        window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            window.decorView.getWindowVisibleDisplayFrame(r)
+
+            val height = window.decorView.height
+            if (height - r.bottom > height * 0.1399) {
+
+            } else {
+                scrollViewToLastPos(true)
+            }
+        }
     }
 
     private fun showHideControls() {
@@ -434,8 +496,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
     override fun onDestroy() {
         super.onDestroy()
-
-        onLeavePostRoom()
 
         binding.youtubeplayer.release()
         binding.youtubeplayer2.release()
@@ -496,11 +556,17 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 viewUtil!!.hideKeyboard()
                 sendTextMessage()
             }
+
+            R.id.relVideoNotWorking ->{
+                startActivity(Intent(this, TrendingWebsitesActivity::class.java))
+            }
+
             R.id.iv_endStreaming -> {
-//                deleteWatchTogetherPost(postId)
-                feedbackDialog()
-
-
+                if (isRated == "0") {
+                    feedbackDialog()
+                } else {
+                    closeDialog()
+                }
             }
 
             R.id.play -> {
@@ -535,9 +601,9 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 if (myPostReaction == "0") {
                     myPostReaction = "1"
                     postLike(actualPostId, myPostReaction, userId)
-                    viewModel.viewModelScope.launch {
+                    /*viewModel.viewModelScope.launch {
                         viewModel.addPostReaction(actualPostId, myPostReaction, userId!!)
-                    }
+                    }*/
                 }
                 showHeart()
             }
@@ -602,9 +668,16 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 val flow: Task<Void> = reviewManager!!.launchReviewFlow(this, reviewInfo)
                 flow.addOnCompleteListener {
                     Toast.makeText(this, "Already Submitted", Toast.LENGTH_SHORT).show()
+
                 }
             } else {
                 Toast.makeText(this, "InAppReviewFailed", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        request.addOnSuccessListener {
+            viewModel.viewModelScope.launch {
+                viewModel.userRating(userId!!, packageManager.getPackageInfo(packageName, 0).versionName, "1")
             }
         }
     }
@@ -640,7 +713,11 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         }
         tvYes.setOnClickListener { v: View? ->
 
-            if(comingFrom == "Home"){
+            if(comingFrom.equals("DeletePost")){
+                deletePost()
+            }
+            onLeavePostRoom()
+            if (comingFrom == "Home") {
                 finish()
             } else {
                 val intent = Intent(this, HomeActivity::class.java)
@@ -650,6 +727,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             }
         }
         dialog.show()
+    }
+
+    private fun deletePost() {
+        viewModel.viewModelScope.launch {
+            viewModel.deletePost(actualPostId)
+        }
     }
 
     private fun postLike(actualPostId: String, myPostReaction: String, userId: String?) {
@@ -744,8 +827,13 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             C.TYPE_OTHER -> if (uri.toString().contains("mp4")) {
                 ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
             } else {
-                HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
-                    .createMediaSource(uri)
+                if (uri.toString().contains(".MOV")) {
+                    ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                } else {
+                    HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
+                        .createMediaSource(uri)
+                }
+
             }
             else -> {
                 throw IllegalStateException("Unsupported type: $type")
@@ -850,10 +938,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         }
         if (playbackState == Player.STATE_READY) {
             binding.progressBar.visibility = View.GONE
+            binding.relVideoNotWorking.visibility = View.GONE
             hide()
         } else {
             show()
             binding.progressBar.visibility = View.VISIBLE
+            binding.relVideoNotWorking.visibility = View.VISIBLE
         }
     }
 
@@ -868,6 +958,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     override fun onPlayerError(error: ExoPlaybackException?) {
         Log.d("TAG", "onPlayerError: ")
         binding.progressBar.visibility = View.GONE
+        binding.relVideoNotWorking.visibility = View.VISIBLE
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

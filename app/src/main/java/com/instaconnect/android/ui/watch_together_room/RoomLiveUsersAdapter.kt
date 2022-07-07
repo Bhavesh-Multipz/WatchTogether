@@ -1,6 +1,7 @@
 package com.instaconnect.android.ui.watch_together_room
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,8 @@ class RoomLiveUsersAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chatData = liveUsersList[position]
+
+        Log.d("IMAGE", "onBindViewHolder: ${chatData.image}")
 
         GlideHelper.loadFromUrl(
             context, chatData.image,

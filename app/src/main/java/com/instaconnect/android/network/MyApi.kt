@@ -14,10 +14,12 @@ import com.instaconnect.android.ui.fragment.more_setting.EnableDisbaleNotificati
 import com.instaconnect.android.ui.fragment.worldwide.InvitePeopleForWatchTogether
 import com.instaconnect.android.ui.fragment.worldwide.Post
 import com.instaconnect.android.ui.friends.my_friends.UnfriendResponse
+import com.instaconnect.android.ui.home.UpdateTokenResponse
 import com.instaconnect.android.ui.login.SendOtp
 import com.instaconnect.android.ui.notification_list.NotificationListModelNew
 import com.instaconnect.android.ui.profile.ProfileResponse
 import com.instaconnect.android.ui.trending_websites.models.TrendingWebsiteResponseModel
+import com.instaconnect.android.ui.watch_together_room.RatingResponse
 import com.instaconnect.android.ui.watch_together_room.model.PostReaction
 import com.instaconnect.android.ui.youtube_webview.YoutubeVideoDetails
 import com.instaconnect.android.utils.models.Response
@@ -25,6 +27,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -107,6 +110,12 @@ interface MyApi {
     ): ReportPost
 
     @FormUrlEncoded
+    @POST(ApiEndPoint.DELETE_NOTIFICATIONS)
+    suspend fun clearAllNotification(
+        @Field("user_id") userId: String?,
+    ): CommonResponse
+
+    @FormUrlEncoded
     @POST(ApiEndPoint.ENDPOINT_BLOCK_USER)
     suspend fun blockUser(
         @Field("block_user_id") block_user_id: String?,
@@ -171,6 +180,23 @@ interface MyApi {
     suspend fun deleteUserAccount(
         @Field("user_id") user_id: String?,
     ): CommonResponse
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.USER_RATING)
+    suspend fun userRating(
+        @Field("user_id") userId: String?,
+        @Field("app_version") appVersion: String?,
+        @Field("is_rated") isRated: String?,
+    ): RatingResponse
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.UPDATE_TOKEN)
+    suspend fun updateToken(
+        @Field("device_token") deviceToken: String?,
+        @Field("phone") userId: String?,
+        @Field("device_type") deviceType: String?,
+        @Field("voip_token") voipToken: String?,
+    ): UpdateTokenResponse
 
     @Multipart
     @POST(ApiEndPoint.ENDPOINT_UPLOADS_PUBLIC_POST)
@@ -255,7 +281,7 @@ interface MyApi {
     suspend fun loadPreference(
         @Field("version") blockedUserId: String?,
         @Field("device_type") status: String?,
-        @Field("userId") userId: String?,
+        @Field("userid") userId: String?,
     ): LoadPreferenceResponse
 
     companion object {

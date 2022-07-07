@@ -3,16 +3,16 @@ package com.instaconnect.android.ui.friends.add_friend_fragment
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.widget.*
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.allattentionhere.autoplayvideos.recyclerview.LazyLoadListener
 import com.instaconnect.android.R
@@ -114,6 +114,26 @@ class AddFriendFragment : BaseFragment<AddFriendFragmentViewModel, FragmentAddFr
         binding.swipeRefresh.isRefreshing = false
         binding.recyclerMyFriend.setLazyLoadListener(this)
         binding.swipeRefresh.setOnRefreshListener(this)
+
+        binding.edSearch.setOnEditorActionListener { v, actionId, event ->
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+                searchKeyword = binding.edSearch.text.toString()
+                Handler(Looper.myLooper()!!).postDelayed({
+                    binding.recyclerMyFriend.resetLazyLoadListener()
+                    myFriendListAdapter!!.clear()
+                    getAddFriendList(1, searchKeyword)
+                }, 400)
+            }
+            false
+        }
+
+        binding.recyclerMyFriend.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val topRowVerticalPosition =
+                    if (recyclerView.childCount == 0) 0 else recyclerView.getChildAt(0).top
+                binding.swipeRefresh.isEnabled = topRowVerticalPosition >= 0
+            }
+        })
     }
 
     private fun setAdapter() {
@@ -126,15 +146,7 @@ class AddFriendFragment : BaseFragment<AddFriendFragmentViewModel, FragmentAddFr
         binding.edSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                searchKeyword = s.toString()
-                Handler().postDelayed({
-                    /*if (call != null) {
-                        call!!.cancel()
-                    }*/
-                    binding.recyclerMyFriend.resetLazyLoadListener()
-                    myFriendListAdapter!!.clear()
-                    getAddFriendList(1, searchKeyword)
-                }, 400)
+
             }
 
             override fun afterTextChanged(s: Editable) {}

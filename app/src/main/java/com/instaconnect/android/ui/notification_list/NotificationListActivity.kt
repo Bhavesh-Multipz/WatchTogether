@@ -17,8 +17,11 @@ import com.instaconnect.android.ui.login.LoginViewModel
 import com.instaconnect.android.ui.login.LoginViewModelFactory
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences
+import com.instaconnect.android.utils.Utils.visible
 import com.instaconnect.android.utils.models.MessagelistItem
+import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
+import java.util.prefs.Preferences
 
 class NotificationListActivity : AppCompatActivity(), View.OnClickListener, LazyLoadListener {
 
@@ -50,15 +53,18 @@ class NotificationListActivity : AppCompatActivity(), View.OnClickListener, Lazy
         viewModel.getNotificationListResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
+                    binding.progressBar.visible(false)
                     if (it.value.response != null && it.value.response!!.code.equals("200")) {
                         if (it.value.response!!.messagelist == null || it.value.response!!.messagelist.isEmpty()
                         ) {
+                            binding.tvClearAll.visible(false)
                             if (page == 1) {
                                 binding.txtEmpty.visibility = View.VISIBLE
                                 binding.txtEmpty.text = it.value.response!!.message
                             }
                         } else {
                             binding.txtEmpty.visibility = View.GONE
+                            binding.tvClearAll.visible(true)
                             notificationListList = it.value.response!!.messagelist as ArrayList<MessagelistItem>
                             notificationListAdapter!!.addUser(notificationListList)
                         }
@@ -68,6 +74,7 @@ class NotificationListActivity : AppCompatActivity(), View.OnClickListener, Lazy
                             binding.recyclerView.setNextScrollingEnabled(false)
                         }
                     } else if (it.value.response!!.code.equals("301")) {
+                        binding.tvClearAll.visible(false)
                         if (page == 1) {
                             binding.txtEmpty.visibility = View.VISIBLE
                             binding.txtEmpty.text = it.value.response!!.message
@@ -77,10 +84,30 @@ class NotificationListActivity : AppCompatActivity(), View.OnClickListener, Lazy
                     }
                 }
                 is Resource.Failure -> {
+                    binding.progressBar.visible(false)
                 }
                 else -> {}
             }
         }
+
+        viewModel.clearAllNotificationResponse.observe(this) {
+            when (it) {
+                is Resource.Success -> {
+                    binding.progressBar.visible(false)
+                    if (it.value.response != null && it.value.response.code.equals("200")) {
+                        ToastUtil.showToast(it.value.response.message!!)
+                        notificationListAdapter!!.clear()
+                        binding.txtEmpty.visible(true)
+                    }
+                }
+                is Resource.Failure -> {
+                    binding.progressBar.visible(false)
+                }
+                else -> {}
+            }
+        }
+
+
     }
 
     private fun setAdapter() {
@@ -93,11 +120,20 @@ class NotificationListActivity : AppCompatActivity(), View.OnClickListener, Lazy
 
     private fun setView() {
         binding.imgBack.setOnClickListener(this)
+        binding.tvClearAll.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.img_back -> finish()
+            R.id.tvClearAll -> clearNotification()
+        }
+    }
+
+    private fun clearNotification() {
+        binding.progressBar.visible(true)
+        viewModel.viewModelScope.launch {
+            viewModel.clearAllNotification(Prefrences.getPreferences(this@NotificationListActivity,Constants.PREF_USER_ID)!!)
         }
     }
 
@@ -118,6 +154,7 @@ class NotificationListActivity : AppCompatActivity(), View.OnClickListener, Lazy
     }
 
     private fun getNotificationList(page: Int) {
+        binding.progressBar.visible(true)
         viewModel.viewModelScope.launch {
             viewModel.getNotificationList(Prefrences.getPreferences(this@NotificationListActivity, Constants.PREF_USER_ID)!!, page)
         }

@@ -7,6 +7,7 @@ import android.Manifest
  */
 object Constants {
 
+    const val IS_RATED: String = "is_rated"
     const val PORT = "5005"
     const val FOR_CHAT_HOST_NAME = "http://15.222.88.69/"
     const val APP_NAME = "Watch Together"

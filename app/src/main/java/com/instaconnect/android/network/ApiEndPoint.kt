@@ -12,8 +12,7 @@ object ApiEndPoint {
     const val SERVER_BASE_URL = "http://$IPADDRESS/api/"
     const val UPLOADS_BASE_URL = "http://$IPADDRESS/webapp/dev/uploads/"
 
-    const val ENDPOINT_SEND_OTP = (SERVER_BASE_URL
-            + "/send_otp")
+    const val ENDPOINT_SEND_OTP = ("$SERVER_BASE_URL/send_otp")
     const val ENDPOINT_SEND_SOCIAL_ID = ("$SERVER_BASE_URL/send_socialid")
     const val ENDPOINT_RESEND_OTP = (SERVER_BASE_URL
             + "/resend_otp")
@@ -97,4 +96,13 @@ object ApiEndPoint {
 
     const val LOAD_PREFERENCE = (SERVER_BASE_URL
             + "loadprefreance")
+
+    const val USER_RATING = (SERVER_BASE_URL
+            + "user_rating")
+
+    const val UPDATE_TOKEN = (SERVER_BASE_URL
+            + "update_token")
+
+    const val DELETE_NOTIFICATIONS = (SERVER_BASE_URL
+            + "delete_notifications")
 }

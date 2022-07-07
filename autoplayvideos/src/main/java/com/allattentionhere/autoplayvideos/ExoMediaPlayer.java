@@ -160,10 +160,14 @@ public class ExoMediaPlayer {
                         buildDataSourceFactory(true))
                         .createMediaSource(uri);
             case C.TYPE_HLS:
-                return new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent))
-                        .createMediaSource(uri);
+                if (uri.toString().contains(".MOV") || uri.toString().contains("mp4")){
+                    new ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+                } else {
+                    return new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent))
+                            .createMediaSource(uri);
+                }
             case C.TYPE_OTHER:
-                if (uri.toString().contains("mp4")){
+                if (uri.toString().contains("mp4") || uri.toString().contains(".MOV")){
                     return new ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
                 } else {
                     return new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent))

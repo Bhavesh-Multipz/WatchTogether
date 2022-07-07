@@ -121,6 +121,8 @@
                     android:layout_alignTop="@+id/youtubeplayer"
                     android:layout_alignEnd="@+id/youtubeplayer"
                     android:layout_alignBottom="@+id/youtubeplayer"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:layout_marginEnd="@dimen/_32sdp" />
 
                 <TextView
@@ -134,7 +136,6 @@
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
                     android:maxLines="3"
-
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="gone"
