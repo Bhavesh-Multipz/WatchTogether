@@ -12,8 +12,8 @@ android {
         applicationId "com.instaconnect.android"
         minSdk 21
         targetSdk 31
-        versionCode 9
-        versionName "1.6"
+        versionCode 12
+        versionName "1.9"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         dataBinding {
@@ -43,6 +43,9 @@ android {
         jvmTarget = '1.8'
     }
 
+    lintOptions {
+        abortOnError false
+    }
     configurations {
         cleanedAnnotations
         compile.exclude group: 'org.jetbrains', module: 'annotations'

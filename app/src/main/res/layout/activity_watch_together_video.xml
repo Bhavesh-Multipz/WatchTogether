@@ -196,7 +196,7 @@
             <LinearLayout
                 android:id="@+id/relVideoNotWorking"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_180sdp"
+                android:layout_height="@dimen/_170sdp"
                 android:layout_below="@+id/rvLiveUsers"
                 android:visibility="gone"
                 android:layout_marginTop="20dp"

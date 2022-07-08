@@ -1,5 +1,6 @@
 package com.instaconnect.android.ui.watch_together_room
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -32,7 +33,6 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.*
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
-import com.google.android.material.internal.ViewUtils.dpToPx
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -48,6 +48,7 @@ import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.ui.trending_websites.TrendingWebsitesActivity
 import com.instaconnect.android.utils.*
+import com.instaconnect.android.utils.Utils.toast
 import com.instaconnect.android.utils.heart_view.HeartsRenderer
 import com.instaconnect.android.utils.heart_view.HeartsView
 import com.instaconnect.android.utils.helper_classes.GlideHelper
@@ -64,6 +65,7 @@ import java.util.*
 
 class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, View.OnClickListener,
     AddFriendToVideoListAdapter.AddFriendListListener {
+    private val permissionsRequestCode = 111
     private lateinit var viewModel: WatchTogetherVideoViewModel
     private var videoId: String? = null
     private var postId = ""
@@ -98,6 +100,14 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     var liveUsersList: ArrayList<LiveUsersItem> = ArrayList()
     private var viewUtil: ViewUtil? = null
     private var isRated: String = "0"
+    private lateinit var managePermissions: ManagePermissions
+
+    var list = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +135,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             )
         )[WatchTogetherVideoViewModel::class.java]
 
+        managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
         mute = VideoRecyclerView.isMute()
         forBackgroundVideo()
         setChatAdapter()
@@ -267,6 +278,25 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            permissionsRequestCode -> {
+                val isPermissionsGranted = managePermissions
+                    .processPermissionsResult(requestCode, permissions, grantResults)
+                if (isPermissionsGranted) {
+
+                } else {
+                    this.toast("Permissions denied.")
+                }
+                return
+            }
+        }
+    }
+
     private fun getPostReactionSocket() {
         val jsonObject = JSONObject()
         try {
@@ -386,7 +416,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun getPostReaction() {
-        SocketConnector.getSocket()!!.on(
+        SocketConnector.getSocket()!!.once(
             "getPostReaction"
         ) { args ->
             val data = args[0] as JSONObject
@@ -395,8 +425,12 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     data.toString(),
                     object : TypeToken<PostReactionSocketResponse?>() {}.type
                 )
-            myPostReaction = "${reaction.messageData!!.yourReaction}"
-            if (binding.tvTotalLike.text.toString() != "${reaction.messageData.likes}") {
+
+            if (actualPostId == reaction.postId){
+                myPostReaction = "${reaction.messageData!!.yourReaction}"
+            }
+
+            if (binding.tvTotalLike.text.toString() != "${reaction.messageData!!.likes}") {
                 showLikesAnimation(reaction.messageData.likes)
             }
             runOnUiThread { binding.tvTotalLike.text = "${reaction.messageData.likes}" }
@@ -557,7 +591,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 sendTextMessage()
             }
 
-            R.id.relVideoNotWorking ->{
+            R.id.relVideoNotWorking -> {
                 startActivity(Intent(this, TrendingWebsitesActivity::class.java))
             }
 
@@ -713,7 +747,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         }
         tvYes.setOnClickListener { v: View? ->
 
-            if(comingFrom.equals("DeletePost")){
+            if (comingFrom.equals("DeletePost")) {
                 deletePost()
             }
             onLeavePostRoom()
@@ -943,7 +977,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         } else {
             show()
             binding.progressBar.visibility = View.VISIBLE
-            binding.relVideoNotWorking.visibility = View.VISIBLE
         }
     }
 

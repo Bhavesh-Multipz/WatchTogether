@@ -238,7 +238,7 @@ class VideoListAdapter(
         GlideHelper.loadFromUrl(
             context,
             postsLists[position].userimage,
-            R.drawable.gridview_image,
+            R.drawable.gridview_image_1,
             viewHolder.userPic
         )
         if (postsLists[position].thumbnail!!.contains("http")) {
@@ -271,13 +271,13 @@ class VideoListAdapter(
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
-                        R.drawable.gridview_image, viewHolder.imageView
+                        R.drawable.gridview_image_1, viewHolder.imageView
                     )
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
                         ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
-                        R.drawable.gridview_image,
+                        R.drawable.gridview_image_1,
                         viewHolder.imageView
                     )
                 }
@@ -310,13 +310,13 @@ class VideoListAdapter(
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
-                        R.drawable.gridview_image, viewHolder.imageView
+                        R.drawable.gridview_image_1, viewHolder.imageView
                     )
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
                         ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
-                        R.drawable.gridview_image,
+                        R.drawable.gridview_image_1,
                         viewHolder.imageView
                     )
                 }
@@ -324,13 +324,13 @@ class VideoListAdapter(
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
-                        R.drawable.gridview_image, viewHolder.imageView
+                        R.drawable.gridview_image_1, viewHolder.imageView
                     )
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
                         ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
-                        R.drawable.gridview_image,
+                        R.drawable.gridview_image_1,
                         viewHolder.imageView
                     )
                 }
@@ -343,7 +343,7 @@ class VideoListAdapter(
         } else {
             GlideHelper.loadFromUrl(
                 context, postsLists[position].thumbnail,
-                R.drawable.gridview_image, viewHolder.imageView
+                R.drawable.gridview_image_1, viewHolder.imageView
             )
             if (postsLists[position].blurBitmap == null) {
                 getBitmapFromUrl(position, postsLists[position].thumbnail, viewHolder.iv_imageBlur)
@@ -466,7 +466,7 @@ class VideoListAdapter(
                 if (postsLists[position].groupPassword!!.isEmpty()) {
                     // watch together
                     if (postsLists[position].caption!!.isEmpty()) {
-                        viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_watch_together_glass)
+                        viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_watch_together_glass_1)
                     } else {
                         viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_watch_with_name)
                     }
@@ -495,14 +495,14 @@ class VideoListAdapter(
                     Glide.with(context)
                         .asGif()
                         .load(postsLists[position].gif)
-                        .placeholder(R.drawable.gridview_image)
+                        .placeholder(R.drawable.gridview_image_1)
                         .into(viewHolder.ivVideoGif)
                 } else {
 
                     Glide.with(context)
                         .asGif()
                         .load(ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].gif)
-                        .placeholder(R.drawable.gridview_image)
+                        .placeholder(R.drawable.gridview_image_1)
                         .into(viewHolder.ivVideoGif)
                 }
             }
@@ -511,7 +511,7 @@ class VideoListAdapter(
             if (postsLists[position].groupPassword!!.isEmpty()) {
                 // watch together
                 if (postsLists[position].caption!!.isEmpty()) {
-                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_watch_together_glass)
+                    viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_grid_watch_together_glass_1)
                 } else {
                     viewHolder.iv_videoGridImage.setImageResource(R.drawable.ic_watch_with_name)
                 }
@@ -715,13 +715,13 @@ class VideoListAdapter(
         GlideHelper.loadFromUrl(
             context,
             postsLists[position].userimage,
-            R.drawable.gridview_image,
+            R.drawable.gridview_image_1,
             viewHolder.userPic
         )
         //  viewHolder.tvDate.setText(DateUtil.formatByDay(postsLists.get(position).getDate()));
         if (postsLists[position].thumbnail != null && !postsLists[position].thumbnail!!.isEmpty()) GlideHelper.loadFromUrl(
             context, ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
-            R.drawable.gridview_image, viewHolder.imageView
+            R.drawable.gridview_image_1, viewHolder.imageView
         )
         if (postsLists[position].blurBitmap == null) {
             if (postsLists[position].thumbnail!!.contains("http")) {
@@ -918,7 +918,7 @@ class VideoListAdapter(
             if (postsLists[position].groupPassword!!.isEmpty()) {
                 // watch together
                 if (postsLists[position].caption!!.isEmpty()) {
-                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_grid_watch_together_glass)
+                    viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_grid_watch_together_glass_1)
                 } else {
                     viewHolder.iv_youtubeGridImage!!.setImageResource(R.drawable.ic_watch_with_name)
                 }

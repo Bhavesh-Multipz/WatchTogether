@@ -221,7 +221,7 @@ class AddFriendToWatchVideoDialog(
     private fun searchProfile() {
 
         ed_search!!.setOnEditorActionListener { v, actionId, event ->
-            if (event != null && event.keyCode === KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
 
                 progressBar!!.visible(true)
                 searchKeyword = ed_search!!.text.toString()
@@ -229,7 +229,7 @@ class AddFriendToWatchVideoDialog(
 
                     recyclerView!!.resetLazyLoadListener()
                     myFriendListAdapter!!.clear()
-                    getAddFriendList(1, searchKeyword)
+                    getAddFriendList(page, searchKeyword)
                 }, 400)
             }
             false

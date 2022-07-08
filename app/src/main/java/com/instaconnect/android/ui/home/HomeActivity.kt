@@ -79,6 +79,8 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     var list = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
     )
     var isONECHAT = false
     var isCall = false
@@ -215,12 +217,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         viewUtil = ViewUtil(this)
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
         permissionUtil = PermissionUtil(this)
-        if (managePermissions.checkPermissions()) {
-            detectLocation()
-        } else {
-            permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
-                PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
-        }
+
         exploreFragment = ExploreFragment()
         fragmentUtil = FragmentUtil(supportFragmentManager)
     }
@@ -349,8 +346,14 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-            } else if (notificationType == "send_request") {
-                showFriendFragment("notification", intent.getStringExtra("title")!!)
+            }
+            else if (notificationType == "send_request") {
+                if(intent.getStringExtra("title") != null){
+                    showFriendFragment("notification", intent.getStringExtra("title")!!)
+                } else {
+                    showFriendFragment("notification","")
+                }
+
             } else {
                 showStreamFragment()
             }
@@ -534,6 +537,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                     .processPermissionsResult(requestCode, permissions, grantResults)
                 if (isPermissionsGranted) {
                     detectLocation()
+                    showAddPostFragment()
                 } else {
                     this.toast("Permissions denied.")
                 }
@@ -550,7 +554,14 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         when (v!!.id) {
 
             R.id.relPlus -> {
-                showAddPostFragment()
+                if (managePermissions.checkPermissions()) {
+                    detectLocation()
+                    showAddPostFragment()
+                } else {
+                    permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
+                        PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
+                }
+
             }
 
             R.id.relSetting -> {
