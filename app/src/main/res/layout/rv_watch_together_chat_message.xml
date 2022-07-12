@@ -44,6 +44,7 @@
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:textSize="14sp"
+                    android:textIsSelectable="true"
                     android:fontFamily="@font/montserrat_regular"
                     android:visibility="visible"
                     tools:text="username" />
@@ -54,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:textColor="@color/light_grey"
-
+                    android:textIsSelectable="true"
                     android:textSize="16sp"
                     android:visibility="gone"
                     android:layout_marginTop="@dimen/_4sdp"

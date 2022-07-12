@@ -105,4 +105,5 @@ object ApiEndPoint {
 
     const val DELETE_NOTIFICATIONS = (SERVER_BASE_URL
             + "delete_notifications")
+
 }

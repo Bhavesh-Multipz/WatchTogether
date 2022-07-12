@@ -180,7 +180,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
                         override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
                             super.onError(youTubePlayer, error)
-                            binding.relVideoNotWorking.visibility = View.VISIBLE
+
                             Log.d("TAG", "onError: " + error.name)
                         }
 
@@ -426,7 +426,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                     object : TypeToken<PostReactionSocketResponse?>() {}.type
                 )
 
-            if (actualPostId == reaction.postId){
+            if (actualPostId == reaction.postId) {
                 myPostReaction = "${reaction.messageData!!.yourReaction}"
             }
 
@@ -748,7 +748,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         tvYes.setOnClickListener { v: View? ->
 
             if (comingFrom.equals("DeletePost")) {
-                deletePost()
+                //deletePost()
             }
             onLeavePostRoom()
             if (comingFrom == "Home") {
@@ -848,7 +848,10 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
     private fun playVideo() {
         simpleExoPlayer!!.addListener(this)
-        simpleExoPlayer!!.prepare(buildMediaSource(Uri.parse(videoId), MediaSourceUtil.getExtension(Uri.parse(videoId))!!))
+        val extension = MediaSourceUtil.getExtension(Uri.parse(videoId))
+
+        if (extension != null)
+            simpleExoPlayer!!.prepare(buildMediaSource(Uri.parse(videoId), extension))
         binding.exoPlayer.requestFocus()
         simpleExoPlayer!!.playWhenReady = true
     }
@@ -858,10 +861,10 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         return when (type) {
             C.TYPE_HLS -> HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
                 .createMediaSource(uri)
-            C.TYPE_OTHER -> if (uri.toString().contains("mp4")) {
+            C.TYPE_OTHER -> if (uri.toString().contains("mp4") || uri.toString().contains(".MOV")) {
                 ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
             } else {
-                if (uri.toString().contains(".MOV")) {
+                if (uri.toString().contains(".MOV") || uri.toString().contains("mp4")) {
                     ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
                 } else {
                     HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))

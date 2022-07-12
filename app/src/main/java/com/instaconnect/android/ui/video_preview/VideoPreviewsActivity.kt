@@ -172,22 +172,44 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
                 Resource.Loading -> {}
                 is Resource.Failure -> {
                     // uploadCallbacks.onError(ChatMessage())
+
                 }
             }
         }
 
-        /*viewModel.uploadPostResponse.observe(this) {
+        viewModel.uploadPostResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null && it.value.response!!.code.equals("200")) {
+                        val intent = Intent(this@VideoPreviewsActivity,
+                            WatchTogetherVideoActivity::class.java)
+                        if (it.value.response!!.youTubeVideoId.equals("empty")) {
+                            intent.putExtra("VIDEO_ID", it.value.response!!.hyperlink)
+                        } else {
+                            intent.putExtra("VIDEO_ID", it.value.response!!.youTubeVideoId)
+                        }
+                        intent.putExtra("POST_ID", java.lang.String.valueOf(it.value.response!!.id))
+                        intent.putExtra("ROOM_NAME", it.value.response!!.group_name)
+                        intent.putExtra("USER_ID", it.value.response!!.userId)
+                        intent.putExtra("USER_NAME", it.value.response!!.username)
+                        intent.putExtra("USER_IMAGE", it.value.response!!.userimage)
+                        intent.putExtra("TOTAL_VIEWS", "0")
+                        intent.putExtra("TOTAL_LIKES", "0")
+                        intent.putExtra("GROUP_NAME", it.value.response!!.group_name)
+                        intent.putExtra("ACTUAL_POST_ID", java.lang.String.valueOf(it.value.response!!.id))
+                        intent.putExtra("POST_REACTION", "0")
+                        intent.putExtra("COMING_FROM", comingFrom)
+                        startActivity(intent)
+                        InstaConnectApp.instance!!.mediaPlayer()!!.release()
                         finish()
                     }
                 }
                 Resource.Loading -> {}
                 is Resource.Failure -> {
+                    Log.d("TAG", "onCreate: error")
                 }
             }
-        }*/
+        }
 
         getYoutubeVideoDetails(chatMessage!!.videoType)
 

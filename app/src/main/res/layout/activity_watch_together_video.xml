@@ -193,25 +193,6 @@
 
             </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
 
-            <LinearLayout
-                android:id="@+id/relVideoNotWorking"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_170sdp"
-                android:layout_below="@+id/rvLiveUsers"
-                android:visibility="gone"
-                android:layout_marginTop="20dp"
-                android:background="@color/black">
-
-                <ImageView
-                    android:id="@+id/ivVideoNotWorking"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_video_not_working" />
-
-            </LinearLayout>
-
             <RelativeLayout
                 android:id="@+id/relExo"
                 android:layout_width="match_parent"
@@ -314,6 +295,25 @@
 
             </RelativeLayout>
 
+            <LinearLayout
+                android:id="@+id/relVideoNotWorking"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_170sdp"
+                android:layout_below="@+id/rvLiveUsers"
+                android:visibility="gone"
+                android:layout_marginTop="20dp"
+                android:background="@color/black">
+
+                <ImageView
+                    android:id="@+id/ivVideoNotWorking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_video_not_working" />
+
+            </LinearLayout>
+
         </RelativeLayout>
 
         <ImageView
@@ -396,7 +396,7 @@
                         android:background="@null"
                         android:drawablePadding="@dimen/_5sdp"
                         android:hint="@string/type_a_message"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:paddingHorizontal="@dimen/_8sdp"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"

@@ -10,7 +10,7 @@ public class MediaSourceUtil {
     public static String getExtension(@NonNull Uri uri) {
         String path = uri.getLastPathSegment();
         if (path == null) {
-            return null;
+            return "";
         }
 
         int periodIndex = path.lastIndexOf('.');
@@ -26,7 +26,8 @@ public class MediaSourceUtil {
             path = "." + uri.getLastPathSegment();
         }
 
-        String rawExtension = path.substring(periodIndex);
+        String rawExtension = "";
+        rawExtension = path.substring(periodIndex);
         return rawExtension.toLowerCase();
     }
 }
