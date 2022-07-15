@@ -11,18 +11,13 @@ import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.offline.DownloadAction;
-import com.google.android.exoplayer2.offline.ProgressiveDownloadAction;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
-import com.google.android.exoplayer2.source.dash.offline.DashDownloadAction;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.source.hls.offline.HlsDownloadAction;
 import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
-import com.google.android.exoplayer2.source.smoothstreaming.offline.SsDownloadAction;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -52,13 +47,13 @@ public class ExoMediaPlayer {
     private static final String DOWNLOAD_ACTION_FILE = "actions";
     private static final String DOWNLOAD_TRACKER_ACTION_FILE = "tracked_actions";
     private static final int MAX_SIMULTANEOUS_DOWNLOADS = 2;
-    private static final DownloadAction.Deserializer[] DOWNLOAD_DESERIALIZERS =
+    /*private static final DownloadAction.Deserializer[] DOWNLOAD_DESERIALIZERS =
             new DownloadAction.Deserializer[]{
                     DashDownloadAction.DESERIALIZER,
                     HlsDownloadAction.DESERIALIZER,
                     SsDownloadAction.DESERIALIZER,
                     ProgressiveDownloadAction.DESERIALIZER
-            };
+            };*/
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private static final CookieManager DEFAULT_COOKIE_MANAGER;
 
@@ -114,7 +109,7 @@ public class ExoMediaPlayer {
     /**
      * Returns a {@link DataSource.Factory}.
      */
-    private DataSource.Factory buildDataSourceFactory(TransferListener<? super DataSource> listener) {
+    private DataSource.Factory buildDataSourceFactory(TransferListener listener) {
         DefaultDataSourceFactory upstreamFactory =
                 new DefaultDataSourceFactory(context, listener, buildHttpDataSourceFactory(listener));
         return buildReadOnlyCacheDataSource(upstreamFactory, getDownloadCache());
@@ -124,7 +119,7 @@ public class ExoMediaPlayer {
      * Returns a {@link HttpDataSource.Factory}.
      */
     private HttpDataSource.Factory buildHttpDataSourceFactory(
-            TransferListener<? super DataSource> listener) {
+            TransferListener listener) {
 
         return new DefaultHttpDataSourceFactory(userAgent, listener);
     }
@@ -230,26 +225,31 @@ public class ExoMediaPlayer {
             unPlug();
 
         // a factory to create an AdaptiveVideoTrackSelection
-        TrackSelection.Factory adaptiveTrackSelectionFactory =
+        /*TrackSelection.Factory adaptiveTrackSelectionFactory =
                 new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
         TrackSelector trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
         player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(context),
                 trackSelector,
-                new DefaultLoadControl());
+                new DefaultLoadControl());*/
 
+        player = new SimpleExoPlayer.Builder(context).build();
         if (playerView != null)
             playerView.setPlayer(player);
 
-        if (listener != null)
+        if (listener != null && player != null) {
             player.addListener(listener);
+        }
 
         if (exoBus != null)
             this.exoMediaPlayerBus = exoBus;
 
-        player.setPlayWhenReady(startAutoPlay);
-        player.setRepeatMode(repeatMode);
-        player.prepare(buildMediaSource(uri, MediaSourceUtil.getExtension(uri)), true, false);
+       if(player != null){
+           player.setPlayWhenReady(startAutoPlay);
+           player.setRepeatMode(repeatMode);
+           player.prepare(buildMediaSource(uri, MediaSourceUtil.getExtension(uri)), true, false);
+       }
+
     }
 
 

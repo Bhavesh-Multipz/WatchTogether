@@ -3,9 +3,7 @@ package com.instaconnect.android.ui.fragment.worldwide
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
@@ -32,7 +30,6 @@ import com.instaconnect.android.base.BaseFragment
 import com.instaconnect.android.base.BaseIntent
 import com.instaconnect.android.data.model.db.ChatMessage
 import com.instaconnect.android.databinding.FragmentWorldWideBinding
-import com.instaconnect.android.model.Response1
 import com.instaconnect.android.network.ApiEndPoint
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.network.Resource
@@ -93,13 +90,11 @@ class WorldwideFragment : BaseFragment<WorldWideViewModel, FragmentWorldWideBind
     var page = "0"
     var currentVersion = ""
     var emptyTextViewMsg: TextView? = null
-
     var proxyCacheServer: HttpProxyCacheServer? = null
-
 
     private var spacesItemDecoration1: SpacesItemDecoration? = null
     private var spacesItemDecoration2: SpacesItemDecoration? = null
-    val postsLists: List<PostsList> = ArrayList()
+    val postsLists: ArrayList<PostsList> = ArrayList()
 
     private val reportDialogCallback: DialogCallback = object : DialogCallback {
         override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
@@ -550,7 +545,7 @@ ${post_item.caption}"""
                         ) {
                             if (youtubeViewHolder!!.mYouTubePlayer != null) {
                                 youtubeViewHolder.isLoading = false
-                                youtubeViewHolder!!.isPlayingOrNot = false
+                                youtubeViewHolder.isPlayingOrNot = false
                                 youtubeViewHolder.mYouTubePlayer!!.pause()
                             }
                         }

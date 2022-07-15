@@ -57,5 +57,9 @@ class FriendListModel : Model(), Serializable {
         @SerializedName("is_friended")
         @Expose
         var is_friended = 0
+
+        @SerializedName("is_invited")
+        @Expose
+        var is_invited = 0
     }
 }

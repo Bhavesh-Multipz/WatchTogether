@@ -11,7 +11,7 @@ import com.instaconnect.android.ui.watch_together_room.model.PostReaction
 import com.instaconnect.android.utils.models.Response
 import kotlinx.coroutines.launch
 
-class WatchTogetherVideoViewModel constructor(private val repository : WatchTogetherVideoRepository) : BaseViewModel(repository) {
+class WatchTogetherVideoViewModel constructor(private val repository: WatchTogetherVideoRepository) : BaseViewModel(repository) {
 
     private val _friendListResponse: MutableLiveData<Resource<FriendListModel>> = MutableLiveData()
     val friendListResponse: LiveData<Resource<FriendListModel>>
@@ -33,19 +33,21 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     val deletePostResponse: LiveData<Resource<Response>>
         get() = _deletePostResponse
 
-    suspend fun getAddFriendList(
+    suspend fun getFriendListForWatchTogetherRoom(
         user_id: String,
         search: String,
-        page: Int
+        postId: String,
+        page: Int,
     ) = viewModelScope.launch {
         _friendListResponse.value = Resource.Loading
-        _friendListResponse.value = repository.getAddFriendList(user_id, search, page)
+        _friendListResponse.value = repository.getFriendListForWatchTogetherRoom(user_id, search, postId, page)
     }
 
     suspend fun invitePeopleToWatchVideo(
         user_id: String,
         other_user_id: String,
-        post_id: String
+        post_id: String,
+        position: Int,
     ) = viewModelScope.launch {
         _invitePeopleResponse.value = Resource.Loading
         _invitePeopleResponse.value = repository.invitePeopleToWatchVideo(user_id, other_user_id, post_id)
@@ -54,7 +56,7 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     suspend fun addPostReaction(
         post_id: String,
         reaction: String,
-        user_id: String
+        user_id: String,
     ) = viewModelScope.launch {
         _postReactionResponse.value = Resource.Loading
         _postReactionResponse.value = repository.addPostReaction(post_id, reaction, user_id)
@@ -70,7 +72,7 @@ class WatchTogetherVideoViewModel constructor(private val repository : WatchToge
     }
 
     suspend fun deletePost(
-        postId: String
+        postId: String,
     ) = viewModelScope.launch {
         _deletePostResponse.value = Resource.Loading
         _deletePostResponse.value = repository.deletePost(postId)

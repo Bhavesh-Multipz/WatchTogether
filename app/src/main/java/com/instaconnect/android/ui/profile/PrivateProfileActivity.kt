@@ -26,10 +26,8 @@ import com.instaconnect.android.utils.models.User
 import gun0912.tedimagepicker.builder.TedImagePicker
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.createFormData
-import okhttp3.RequestBody
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -40,19 +38,21 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private var fileUtils: FileUtils? = null
     private lateinit var managePermissions: ManagePermissions
     private var mCurrentPhotoPath: String? = null
-
+    var profileBitmap: Bitmap? = null
     var userId = ""
     var list = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.CAMERA
     )
-
+    var appFileHelper : AppFileHelper? = null
+    var profileFile: File? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityPrivateProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         viewModel = ViewModelProvider(
             this,
             ProfileViewModelFactory(
@@ -64,7 +64,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
 
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
         fileUtils = FileUtils(this)
-
+        appFileHelper = AppFileHelper(this)
         setOnClickListener()
 
         setUserData()
@@ -72,13 +72,14 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
-                        if(it.value.response!!.code == "200"){
+                        if (it.value.response!!.code == "200") {
+                            ToastUtil.showToast("Profile Updated Successfully")
                             val user = User()
                             user.phone = userId
                             user.name = it.value.response!!.username!!
                             user.avatar = it.value.response!!.image!!
-                            Prefrences.savePreferencesString(this,Constants.PREF_USER_NAME, it.value.response!!.username!!)
-                            Prefrences.savePreferencesString(this,Constants.PREF_USER_PROFILE_PIC, it.value.response!!.image!!)
+                            Prefrences.savePreferencesString(this, Constants.PREF_USER_NAME, it.value.response!!.username!!)
+                            Prefrences.savePreferencesString(this, Constants.PREF_USER_PROFILE_PIC, it.value.response!!.image!!)
                             Prefrences.setUser(user)
                             Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
                             val intent = Intent(this, HomeActivity::class.java)
@@ -106,24 +107,30 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private fun setUserData() {
         val bn = intent.extras
         val name = bn!!.getString("userName")
-        val userProfile = bn.getString("profilePhoto")
+        mCurrentPhotoPath = bn.getString("profilePhoto")
 
-        GlideHelper.loadFromUrl(this, userProfile, R.drawable.loader, binding.imgProfile)
-        /*val executor = Executors.newSingleThreadExecutor()
+        GlideHelper.loadFromUrl(this, mCurrentPhotoPath, R.drawable.ic_avtar_placeholder, binding.imgProfile)
+
+
+        val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
-        var image: Bitmap? = null
+
         executor.execute {
-            val imageURL = userProfile
+            val imageURL = mCurrentPhotoPath
             try {
                 val openStream = java.net.URL(imageURL).openStream()
-                image = BitmapFactory.decodeStream(openStream)
+                profileBitmap = BitmapFactory.decodeStream(openStream)
                 handler.post {
-                    binding.imgProfile.setImageBitmap(image)
+                    binding.imgProfile.setImageBitmap(profileBitmap)
+
+                    profileFile = appFileHelper!!.createThumbFile(userId+"_profile")!!
+                    BitmapUtil.bitmapToFile(profileBitmap!!, profileFile!!.path)
+
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }*/
+        }
 
         binding.etName.setText(name)
 
@@ -149,7 +156,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
 
-            R.id.iv_back ->{
+            R.id.iv_back -> {
                 finish()
             }
         }
@@ -158,33 +165,32 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private fun saveProfile() {
         val name = binding.etName.text.toString().trim()
         userId = Prefrences.getPreferences(this, Constants.PREF_USER_ID)!!
-        if (name.isNotEmpty()) {
 
+
+        if (name.isEmpty()) {
+            ToastUtil.showToast("Please enter name")
+        } else if (mCurrentPhotoPath!!.isEmpty() && mCurrentPhotoPath.equals("null")|| mCurrentPhotoPath.equals("http://15.222.88.69/uploads/default_pic.png")) {
+            ToastUtil.showToast("Please add profile picture")
+        } else {
             if (Utils.isConnected(this)) {
 
                 var filePart: MultipartBody.Part? = null
                 val params = HashMap<String, String>()
-
-                if (mCurrentPhotoPath != null && mCurrentPhotoPath!!.isNotEmpty()) {
-                    val mediaFile = File(mCurrentPhotoPath!!)
-                    val mediaFileBody: ProgressRequestBody = ProgressRequestBody(
-                        mediaFile,
-                        ProgressRequestBody.IMAGE,null
-                    )
-                    filePart = createFormData(
-                        "image",
-                        mediaFile.name,
-                        mediaFileBody
-                    )
-                } else {
-
-                    val attachmentEmpty: RequestBody = RequestBody.create(MediaType.parse("text/plain"), "")
-                    filePart = createFormData(
-                        "image",
-                        "",
-                        attachmentEmpty
-                    )
+                var mediaFile = File(mCurrentPhotoPath!!)
+                if(mCurrentPhotoPath!!.startsWith("http")){
+                    mediaFile = profileFile!!
                 }
+
+
+                val mediaFileBody: ProgressRequestBody = ProgressRequestBody(
+                    mediaFile,
+                    ProgressRequestBody.IMAGE, null
+                )
+                filePart = createFormData(
+                    "image",
+                    mediaFile.name,
+                    mediaFileBody
+                )
 
                 params["user_id"] = userId
                 params["username"] = name
@@ -194,11 +200,10 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
             } else {
-
+                ToastUtil.showToast("Please check internet connection!")
             }
-        } else {
-            ToastUtil.showToast("Please enter name")
         }
+
     }
 
     private fun showSingleImage(uri: Uri) {

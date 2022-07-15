@@ -44,6 +44,8 @@ public class ExoViewHolder extends RecyclerView.ViewHolder implements ExoMediaPl
         setInit(true);
     }
 
+
+
     public void videoStarted() {
         if (exoVideoImage != null)
             exoVideoImage.getImageView().setVisibility(View.GONE);

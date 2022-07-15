@@ -12,7 +12,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_24sdp"
+        android:paddingTop="@dimen/_36sdp"
+        android:fitsSystemWindows="true"
         tools:context=".ui.webview.YoutubeWebViewActivity">
 
         <com.instaconnect.android.widget.BasicTextView

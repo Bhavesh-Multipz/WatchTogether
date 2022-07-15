@@ -134,14 +134,14 @@ class YoutubeViewHolder(
                 (context as AppCompatActivity).runOnUiThread {
                     try {
                         if (playerView.player != null) {
-                            if (playerView.player.currentPosition in 3001..3999) {
+                            if (playerView!!.player!!.currentPosition in 3001..3999) {
                                 videoListAdapter.increaseYoutubePostView(
                                     currentPosition,
                                     this@YoutubeViewHolder
                                 )
                             }
                             val time =
-                                Util.formateMilliSeccond(playerView.player.duration - playerView.player.currentPosition)
+                                Util.formateMilliSeccond(playerView!!.player!!.duration - playerView!!.player!!.currentPosition)
                             if (tvTime.text.toString().length < 6) {
                                 tvTime.text = time
                                 tvTime.visibility = View.VISIBLE

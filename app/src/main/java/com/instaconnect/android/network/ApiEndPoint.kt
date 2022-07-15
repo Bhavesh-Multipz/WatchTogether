@@ -31,7 +31,7 @@ object ApiEndPoint {
     const val ENDPOINT_GET_CHAT_BG = (SERVER_BASE_URL
             + "get_backgrounds")
     const val ENDPOINT_GET_TRENDING_WEBSITES = (SERVER_BASE_URL
-            + "get_streamingwebsites?device_type=Android")
+            + "get_streamingwebsites?device_type=1") // 0- ios, 1- android
     const val ENDPOINT_GET_YOUTUBE_VIDEO_DETAILS =
         "https://noembed.com/embed?url=http://www.youtube.com/watch?v="
     const val ENDPOINT_GET_POSTS = (SERVER_BASE_URL
@@ -105,5 +105,8 @@ object ApiEndPoint {
 
     const val DELETE_NOTIFICATIONS = (SERVER_BASE_URL
             + "delete_notifications")
+
+    const val GET_FRIEND_LIST_FOR_WATCH_TOGETHER = (SERVER_BASE_URL
+            + "add_friend_list_for_post")
 
 }

@@ -1,6 +1,7 @@
 package com.instaconnect.android.ui.watch_together_room
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -9,7 +10,9 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.util.SparseArray
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.Window
@@ -23,15 +26,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.allattentionhere.autoplayvideos.MediaSourceUtil
 import com.allattentionhere.autoplayvideos.VideoRecyclerView
+import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.*
-import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
@@ -52,10 +57,9 @@ import com.instaconnect.android.utils.Utils.toast
 import com.instaconnect.android.utils.heart_view.HeartsRenderer
 import com.instaconnect.android.utils.heart_view.HeartsView
 import com.instaconnect.android.utils.helper_classes.GlideHelper
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.instaconnect.android.ytextractor.VideoMeta
+import com.instaconnect.android.ytextractor.YouTubeExtractor
+import com.instaconnect.android.ytextractor.YtFile
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -101,6 +105,9 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     private var viewUtil: ViewUtil? = null
     private var isRated: String = "0"
     private lateinit var managePermissions: ManagePermissions
+    var currentWindow = 0
+    var playBackPosition: Long = 0
+    var proxyCacheServer: HttpProxyCacheServer? = null
 
     var list = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -137,6 +144,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
         mute = VideoRecyclerView.isMute()
+        proxyCacheServer = InstaConnectApp.instance!!.getProxy(this)
         forBackgroundVideo()
         setChatAdapter()
         setUpLiveUserAdapter()
@@ -144,9 +152,9 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
         val handler1 = Handler()
         handler1.postDelayed({
-            if (videoId != null && postId != null && postId != "web" && !videoId!!.contains("http")) {
-                binding.youtubeplayer.visibility = View.VISIBLE
-                binding.exoPlayer.visibility = View.GONE
+            /*if (videoId != null && postId != null && postId != "web" && !videoId!!.contains("http")) {
+                binding.youtubeplayer.visibility = View.GONE
+                binding.exoPlayer.visibility = View.VISIBLE
                 binding.relExo.visibility = View.GONE
                 binding.youtubeplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                     override fun onReady(youTubePlayer: YouTubePlayer) {
@@ -164,53 +172,52 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                         }
                     }
                 })
-            } else {
-                var hyperLink: String
-                if (videoId != null && !videoId!!.contains("http")) {
-                    //hyperLink = extractYTId(videoId);
-                    binding.youtubeplayer.visibility = View.VISIBLE
-                    binding.exoPlayer.visibility = View.GONE
-                    binding.relExo.visibility = View.GONE
-                    Log.d("TAG", "run: $videoId")
-                    binding.youtubeplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                        override fun onReady(youTubePlayer: YouTubePlayer) {
-                            youTubePlayer.loadVideo(videoId!!, 0f)
-                            binding.relVideoNotWorking.visibility = View.GONE
-                        }
+            } else {*/
+            /*var hyperLink: String
+            if (videoId != null && !videoId!!.contains("http")) {
+                //hyperLink = extractYTId(videoId);
+                binding.youtubeplayer.visibility = View.GONE
+                binding.exoPlayer.visibility = View.VISIBLE
+                binding.relExo.visibility = View.VISIBLE
+                Log.d("TAG", "run: $videoId")
+                binding.youtubeplayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                    override fun onReady(youTubePlayer: YouTubePlayer) {
+                        youTubePlayer.loadVideo(videoId!!, 0f)
+                        binding.relVideoNotWorking.visibility = View.GONE
+                    }
 
-                        override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
-                            super.onError(youTubePlayer, error)
+                    override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
+                        super.onError(youTubePlayer, error)
 
-                            Log.d("TAG", "onError: " + error.name)
-                        }
+                        Log.d("TAG", "onError: " + error.name)
+                    }
 
-                        override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerState) {
-                            if (state == PlayerState.ENDED) {
+                    override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerState) {
+                        if (state == PlayerState.ENDED) {
 //                                youtubeVideoEnded()
-                            }
                         }
-                    })
-                } else {
-                    binding.youtubeplayer.visibility = View.GONE
-                    binding.exoPlayer.visibility = View.VISIBLE
-                    binding.relExo.visibility = View.VISIBLE
-                    show()
-                    binding.progressBar.visibility = View.VISIBLE
-                    if (videoId!!.contains("http")) {
-                        val handler = Handler()
-                        handler.postDelayed({ playVideo() }, 100)
                     }
+                })
+            } else {*/
+            binding.youtubeplayer.visibility = View.GONE
+            binding.exoPlayer.visibility = View.VISIBLE
 
-                    binding.exoPlayer.setControllerVisibilityListener { visibility ->
-                        Log.e("control_visibilyt", "$visibility....")
-                        if (visibility == 0) {
-                            show()
-                        } else {
-                            hide()
-                        }
-                    }
+            show()
+            binding.progressBar.visibility = View.VISIBLE
+
+            val handler = Handler(Looper.myLooper()!!)
+            handler.postDelayed({ playVideo() }, 100)
+
+            binding.exoPlayer.setControllerVisibilityListener { visibility ->
+                Log.e("control_visibility", "$visibility....")
+                if (visibility == 0) {
+                    show()
+                } else {
+                    hide()
                 }
             }
+//                } }
+
         }, 1000)
 
         setUserData()
@@ -534,8 +541,8 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         binding.youtubeplayer.release()
         binding.youtubeplayer2.release()
         simpleExoPlayer!!.release()
-        InstaConnectApp.instance!!.mediaPlayer()!!.release()
 
+        InstaConnectApp.instance!!.mediaPlayer()!!.release()
     }
 
     override fun onStart() {
@@ -847,13 +854,88 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun playVideo() {
-        simpleExoPlayer!!.addListener(this)
-        val extension = MediaSourceUtil.getExtension(Uri.parse(videoId))
+        if (videoId!!.contains("www.youtube") || videoId!!.contains("watch?v") || videoId!!.length == 11) {
+            binding.youtubeplayer.visibility = View.GONE
+            binding.exoPlayer.visibility = View.VISIBLE
+            binding.relExo.visibility = View.VISIBLE
+            simpleExoPlayer!!.addListener(this)
+            binding.exoPlayer.player = simpleExoPlayer
+            playYoutubeVideo(videoId!!)
+        } else {
+            simpleExoPlayer!!.addListener(this)
+            val extension = MediaSourceUtil.getExtension(Uri.parse(videoId))
 
-        if (extension != null)
-            simpleExoPlayer!!.prepare(buildMediaSource(Uri.parse(videoId), extension))
-        binding.exoPlayer.requestFocus()
-        simpleExoPlayer!!.playWhenReady = true
+            if (extension != null)
+                simpleExoPlayer!!.prepare()
+            simpleExoPlayer!!.setMediaSource(MergingMediaSource(buildMediaSource(Uri.parse(videoId)!!, extension!!)!!), true)
+            simpleExoPlayer!!.playWhenReady = true
+        }
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private fun playYoutubeVideo(youtubeLink: String) {
+        object : YouTubeExtractor(this@WatchTogetherVideoActivity) {
+
+            override fun onExtractionComplete(ytFiles: SparseArray<YtFile>?, videoMeta: VideoMeta?) {
+
+                if (ytFiles != null) {
+                    val videoTag = 135 // 480p MP4 video
+                    val audioTag = 140 // audio tab for m4a
+
+
+                    val downloadableUrl = 22 // downloadable url
+                    val url144 = 160
+                    val url240 = 133
+                    val url360 = 134
+                    val url480 = 135
+                    val url720 = 136
+                    val audioSource = ProgressiveMediaSource.Factory(DefaultHttpDataSource.Factory())
+                        .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(audioTag).url)))
+                    var videoSource: ProgressiveMediaSource? = null
+
+                    if (ytFiles.get(url360) != null) {
+                        videoSource = ProgressiveMediaSource.Factory(
+                            DefaultHttpDataSource.Factory())
+                            .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(url360).url)))
+                    } else if (ytFiles.get(url240) != null) {
+                        videoSource = ProgressiveMediaSource.Factory(
+                            DefaultHttpDataSource.Factory())
+                            .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(url240).url)))
+                    } else if (ytFiles.get(url144) != null) {
+                        videoSource = ProgressiveMediaSource.Factory(
+                            DefaultHttpDataSource.Factory())
+                            .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(url144).url)))
+                    } else if (ytFiles.get(url480) != null) {
+                        videoSource = ProgressiveMediaSource.Factory(
+                            DefaultHttpDataSource.Factory())
+                            .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(url480).url)))
+                    } else if (ytFiles.get(url720) != null) {
+                        videoSource = ProgressiveMediaSource.Factory(
+                            DefaultHttpDataSource.Factory())
+                            .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(url720).url)))
+                    } else if (ytFiles.get(downloadableUrl) != null) {
+                        videoSource = ProgressiveMediaSource.Factory(
+                            DefaultHttpDataSource.Factory())
+                            .createMediaSource(MediaItem.fromUri(proxyCacheServer!!.getProxyUrl(ytFiles.get(downloadableUrl).url)))
+
+                    }
+
+                    if (videoSource != null) {
+                        simpleExoPlayer!!.setMediaSource(
+                            MergingMediaSource(
+                                true, videoSource, audioSource), true
+                        )
+
+                        simpleExoPlayer!!.prepare()
+                        simpleExoPlayer!!.playWhenReady = true
+                        simpleExoPlayer!!.seekTo(currentWindow, playBackPosition)
+                    }
+
+                }
+            }
+        }.extract(youtubeLink, true, true)
+
     }
 
     private fun buildMediaSource(uri: Uri, overrideExtension: String): MediaSource? {
@@ -862,10 +944,10 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             C.TYPE_HLS -> HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
                 .createMediaSource(uri)
             C.TYPE_OTHER -> if (uri.toString().contains("mp4") || uri.toString().contains(".MOV")) {
-                ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                ExtractorMediaSource.Factory(dataSourceFactory!!).createMediaSource(uri)
             } else {
                 if (uri.toString().contains(".MOV") || uri.toString().contains("mp4")) {
-                    ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                    ExtractorMediaSource.Factory(dataSourceFactory!!).createMediaSource(uri)
                 } else {
                     HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
                         .createMediaSource(uri)
@@ -893,23 +975,14 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun forBackgroundVideo() {
-        userAgent = Util.getUserAgent(context, "ExoPlayer")
-        val bandwidthMeter: BandwidthMeter = DefaultBandwidthMeter()
-        val videoTrackSelectionFactory: TrackSelection.Factory =
-            AdaptiveTrackSelection.Factory(bandwidthMeter)
-        val trackSelector: TrackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-        // Create a default LoadControl
-        val loadControl: LoadControl = DefaultLoadControl()
+        userAgent = Util.getUserAgent(context!!, "ExoPlayer")
         // Create the player
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl)
+        simpleExoPlayer = SimpleExoPlayer.Builder(this).build()
         binding.exoPlayer.player = simpleExoPlayer
         binding.exoPlayer.keepScreenOn = true
         dataSourceFactory = DefaultDataSourceFactory(this, Util.getUserAgent(this, "ExoPlayer"))
         extractorsFactory = DefaultExtractorsFactory()
-        val videoSource: MediaSource = ExtractorMediaSource(
-            Uri.parse(videoId),
-            dataSourceFactory, extractorsFactory, null, null
-        )
+
     }
 
     private fun setUpLiveUserAdapter() {
@@ -950,11 +1023,11 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
          })*/
     }
 
-    override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
+    override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
         Log.d("TAG", "onTimelineChanged: ")
     }
 
-    override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
         Log.d("TAG", "onTracksChanged: ")
     }
 
@@ -969,10 +1042,11 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
+        /*if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
             binding.play.visibility = View.GONE
             binding.pause.visibility = View.VISIBLE
-        }
+
+        }*/
         if (playbackState == Player.STATE_READY) {
             binding.progressBar.visibility = View.GONE
             binding.relVideoNotWorking.visibility = View.GONE
@@ -981,6 +1055,8 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             show()
             binding.progressBar.visibility = View.VISIBLE
         }
+
+
     }
 
     override fun onRepeatModeChanged(repeatMode: Int) {
@@ -991,8 +1067,8 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         Log.d("TAG", "onShuffleModeEnabledChanged: ")
     }
 
-    override fun onPlayerError(error: ExoPlaybackException?) {
-        Log.d("TAG", "onPlayerError: ")
+    override fun onPlayerError(error: ExoPlaybackException) {
+        Log.d("TAG", "onPlayerError: $error")
         binding.progressBar.visibility = View.GONE
         binding.relVideoNotWorking.visibility = View.VISIBLE
     }
@@ -1001,7 +1077,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         Log.d("TAG", "onPositionDiscontinuity: ")
     }
 
-    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
+    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
         Log.d("TAG", "onPlaybackParametersChanged: ")
     }
 

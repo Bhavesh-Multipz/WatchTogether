@@ -117,14 +117,14 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             })
         } else {
             //Other Video
+            setVideoPreview()
             binding.player.visibility = View.VISIBLE
             binding.youtubePlayer.visibility = View.GONE
             binding.player.setControllerVisibilityListener(this)
-            binding.player.overlayFrameLayout
-                .setOnClickListener { viewUtil!!.hideKeyboard() }
+            binding.player.overlayFrameLayout!!.setOnClickListener { viewUtil!!.hideKeyboard() }
         }
 
-        setVideoPreview()
+
         viewModel.youtubeVideoDetailsResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
@@ -177,7 +177,7 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
             }
         }
 
-        viewModel.uploadPostResponse.observe(this) {
+        viewModel.uploadYoutubePostResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null && it.value.response!!.code.equals("200")) {
@@ -744,10 +744,10 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
     override fun onFinish(chatMessage: ChatMessage) {
     }
 
-    override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
+    override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
     }
 
-    override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
     }
 
     override fun onLoadingChanged(isLoading: Boolean) {
@@ -762,13 +762,13 @@ class VideoPreviewsActivity : AppCompatActivity(), View.OnClickListener, PlayerC
     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
     }
 
-    override fun onPlayerError(error: ExoPlaybackException?) {
+    override fun onPlayerError(error: ExoPlaybackException) {
     }
 
     override fun onPositionDiscontinuity(reason: Int) {
     }
 
-    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
+    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
     }
 
     override fun onSeekProcessed() {

@@ -1,11 +1,10 @@
 package com.instaconnect.android.ui.public_chat.videoList
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
@@ -13,6 +12,7 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ImageSpan
 import android.util.Log
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.RecyclerView
 import com.allattentionhere.autoplayvideos.ExoVideosAdapter
 import com.allattentionhere.autoplayvideos.ExoViewHolder
 import com.bumptech.glide.Glide
@@ -46,10 +45,12 @@ import com.instaconnect.android.utils.Util
 import com.instaconnect.android.utils.Utils.visible
 import com.instaconnect.android.utils.helper_classes.GlideHelper
 import com.instaconnect.android.utils.models.User
+import com.instaconnect.android.ytextractor.VideoMeta
+import com.instaconnect.android.ytextractor.YouTubeExtractor
+import com.instaconnect.android.ytextractor.YtFile
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.thefinestartist.finestwebview.FinestWebView
-import java.net.URL
 import java.text.DecimalFormat
 import java.util.regex.Pattern
 
@@ -82,15 +83,21 @@ class VideoListAdapter(
                     .inflate(R.layout.rv_public_video_new, parent, false)
                 return VideoViewHolder(resultView, context, this)
             }
-            YOUTUBE -> {
+            /*YOUTUBE -> {
                 resultView = LayoutInflater.from(parent.context)
                     .inflate(R.layout.rv_public_youtube_video_new, parent, false)
                 return YoutubeViewHolder(resultView, context, lifecycle, this)
+            }*/
+            YOUTUBE -> {
+                resultView = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.rv_public_video_new, parent, false)
+                return VideoViewHolder(resultView, context, this)
             }
+
             YOUTUBE_WATCH_TOGATHER -> {
                 resultView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.rv_public_youtube_video_watchtogather, parent, false)
-                return YoutubeViewHolder(resultView, context, lifecycle, this)
+                    .inflate(R.layout.rv_public_video_new, parent, false)
+                return VideoViewHolder(resultView, context, this)
             }
             IMAGE -> {
                 resultView =
@@ -234,30 +241,70 @@ class VideoListAdapter(
             "Following" else if (postsLists[position].follow!!.status == 3) viewHolder.tv_follow.text =
             "+follow"
         viewHolder.imageView.cropYCenterOffsetPct = 0f
-        viewHolder.tvUserName.text = postsLists.get(position).username
+        viewHolder.tvUserName.text = postsLists[position].username
         GlideHelper.loadFromUrl(
             context,
             postsLists[position].userimage,
-            R.drawable.gridview_image_1,
+            R.drawable.default_user_avatar,
             viewHolder.userPic
         )
-        if (postsLists[position].thumbnail!!.contains("http")) {
-            viewHolder.imageUrl = postsLists[position].thumbnail
-            if ((postsLists[position].mediaType == "web")) {
-                viewHolder.videoUrl = postsLists[position].hyperlink
-            } else {
-                viewHolder.videoUrl = proxyCacheServer.getProxyUrl(postsLists[position].video)
-            }
+
+        @SuppressLint("StaticFieldLeak")
+        if ((postsLists[position].hyperlink!!.contains("www.youtube") || postsLists[position].hyperlink!!.contains("m.youtube.com")) && postsLists[position].hyperlink!!.contains(
+                "watch?v")
+        ) {
+
+            object : YouTubeExtractor(context) {
+                override fun onExtractionComplete(ytFiles: SparseArray<YtFile>?, videoMeta: VideoMeta?) {
+                    if (ytFiles != null) {
+                        val downloadableUrl = 22 // downloadable url
+                        val url144 = 160
+                        val url240 = 133
+                        val url360 = 134
+                        val url480 = 135
+                        val url720 = 136
+
+
+                        if (ytFiles.get(url360) != null) {
+                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url360).url)
+                        } else if (ytFiles.get(url240) != null) {
+                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url240).url)
+                        } else if (ytFiles.get(url144) != null) {
+                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url144).url)
+                        } else if (ytFiles.get(url480) != null) {
+                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url480).url)
+                        } else if (ytFiles.get(url720) != null) {
+                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url720).url)
+                        } else if (ytFiles.get(downloadableUrl) != null) {
+                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(downloadableUrl).url)
+                        }
+
+
+                    }
+                }
+            }.extract(postsLists[position].hyperlink!!, true, true)
+
         } else {
-            viewHolder.imageUrl =
-                ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail
-            if ((postsLists[position].mediaType == "web")) {
-                viewHolder.videoUrl = postsLists[position].hyperlink
+            if (postsLists[position].thumbnail!!.contains("http")) {
+                viewHolder.imageUrl = postsLists[position].thumbnail
+                if ((postsLists[position].mediaType == "web")) {
+                    viewHolder.videoUrl = postsLists[position].hyperlink
+                } else {
+                    viewHolder.videoUrl = proxyCacheServer.getProxyUrl(postsLists[position].video)
+                }
             } else {
-                viewHolder.videoUrl =
-                    ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].video
+                viewHolder.imageUrl =
+                    ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail
+                if ((postsLists[position].mediaType == "web")) {
+                    viewHolder.videoUrl = postsLists[position].hyperlink
+                } else {
+                    viewHolder.videoUrl =
+                        ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].video
+                }
             }
         }
+
+
         if (postsLists[viewHolder.bindingAdapterPosition].groupPassword!!.isEmpty()) {
             viewHolder.initVideoView(context as AppCompatActivity, viewHolder.exoMediaPlayer, null)
         }
@@ -271,13 +318,13 @@ class VideoListAdapter(
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
-                        R.drawable.gridview_image_1, viewHolder.imageView
+                        R.drawable.ic_watch_without_name, viewHolder.imageView
                     )
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
                         ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
-                        R.drawable.gridview_image_1,
+                        R.drawable.ic_watch_without_name,
                         viewHolder.imageView
                     )
                 }
@@ -310,13 +357,13 @@ class VideoListAdapter(
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
-                        R.drawable.gridview_image_1, viewHolder.imageView
+                        R.drawable.ic_watch_without_name, viewHolder.imageView
                     )
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
                         ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
-                        R.drawable.gridview_image_1,
+                        R.drawable.ic_watch_without_name,
                         viewHolder.imageView
                     )
                 }
@@ -324,13 +371,13 @@ class VideoListAdapter(
                 if (postsLists[position].thumbnail!!.contains("http")) {
                     GlideHelper.loadFromUrl(
                         context, postsLists[position].thumbnail,
-                        R.drawable.gridview_image_1, viewHolder.imageView
+                        R.drawable.ic_watch_without_name, viewHolder.imageView
                     )
                 } else {
                     GlideHelper.loadFromUrl(
                         context,
                         ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].thumbnail,
-                        R.drawable.gridview_image_1,
+                        R.drawable.ic_watch_without_name,
                         viewHolder.imageView
                     )
                 }
@@ -343,7 +390,7 @@ class VideoListAdapter(
         } else {
             GlideHelper.loadFromUrl(
                 context, postsLists[position].thumbnail,
-                R.drawable.gridview_image_1, viewHolder.imageView
+                R.drawable.ic_watch_without_name, viewHolder.imageView
             )
             if (postsLists[position].blurBitmap == null) {
                 getBitmapFromUrl(position, postsLists[position].thumbnail, viewHolder.iv_imageBlur)
@@ -351,6 +398,8 @@ class VideoListAdapter(
                 viewHolder.iv_imageBlur.setImageBitmap(postsLists[position].blurBitmap)
             }
         }
+
+
         if (isMute) {
             viewHolder.ivAudio.setImageResource(R.drawable.mute)
         } else {
@@ -495,14 +544,14 @@ class VideoListAdapter(
                     Glide.with(context)
                         .asGif()
                         .load(postsLists[position].gif)
-                        .placeholder(R.drawable.gridview_image_1)
+                        .placeholder(R.drawable.ic_watch_without_name)
                         .into(viewHolder.ivVideoGif)
                 } else {
 
                     Glide.with(context)
                         .asGif()
                         .load(ApiEndPoint.UPLOADS_BASE_URL + postsLists[position].gif)
-                        .placeholder(R.drawable.gridview_image_1)
+                        .placeholder(R.drawable.ic_watch_without_name)
                         .into(viewHolder.ivVideoGif)
                 }
             }
@@ -562,6 +611,10 @@ class VideoListAdapter(
             }
 
         }
+    }
+
+    private fun playYoutubeVideo(s: String) {
+        TODO("Not yet implemented")
     }
 
     fun getBitmapFromUrl(position: Int, url: String?, iv_imageBlur: ImageView) {
@@ -715,13 +768,13 @@ class VideoListAdapter(
         GlideHelper.loadFromUrl(
             context,
             postsLists[position].userimage,
-            R.drawable.gridview_image_1,
+            R.drawable.ic_watch_without_name,
             viewHolder.userPic
         )
         //  viewHolder.tvDate.setText(DateUtil.formatByDay(postsLists.get(position).getDate()));
         if (postsLists[position].thumbnail != null && !postsLists[position].thumbnail!!.isEmpty()) GlideHelper.loadFromUrl(
             context, ApiEndPoint.UPLOADS_BASE_URL.toString() + postsLists[position].thumbnail,
-            R.drawable.gridview_image_1, viewHolder.imageView
+            R.drawable.ic_watch_without_name, viewHolder.imageView
         )
         if (postsLists[position].blurBitmap == null) {
             if (postsLists[position].thumbnail!!.contains("http")) {
@@ -1351,6 +1404,7 @@ class VideoListAdapter(
     fun delete(position: Int) {
         postsLists.removeAt(position)
         notifyItemRemoved(position)
+        notifyItemRangeChanged(position, postsLists.size)
     }
 
     interface VideoListListener {

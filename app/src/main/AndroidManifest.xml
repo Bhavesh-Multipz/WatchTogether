@@ -61,6 +61,7 @@
         <activity
             android:name=".ui.youtube_webview.YoutubeWebViewActivity"
             android:exported="false"
+            android:theme="@style/FullscreenTheme"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.watch_together_room.WatchTogetherVideoActivity"

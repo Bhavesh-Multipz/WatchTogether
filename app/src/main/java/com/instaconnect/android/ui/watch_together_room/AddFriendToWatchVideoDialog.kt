@@ -7,8 +7,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
@@ -35,6 +33,7 @@ import com.instaconnect.android.ui.watch_together_room.AddFriendToVideoListAdapt
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences
 import com.instaconnect.android.utils.Utils.visible
+import gun0912.tedimagepicker.util.ToastUtil
 import io.alterac.blurkit.BlurKit
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -43,7 +42,7 @@ class AddFriendToWatchVideoDialog(
     var ctx: Context,
     var postId: String,
     var addFriendListListener: AddFriendListListener,
-    var viewModel: WatchTogetherVideoViewModel
+    var viewModel: WatchTogetherVideoViewModel,
 ) : BottomSheetDialogFragment(), LazyLoadListener,
     AddFriendListListener, View.OnClickListener {
     var dialog: BottomSheetDialog? = null
@@ -53,7 +52,7 @@ class AddFriendToWatchVideoDialog(
     var recyclerView: BasicRecyclerView? = null
     var progressBar: ProgressBar? = null
     var myFriendListAdapter: AddFriendToVideoListAdapter? = null
-    var myFriendList: List<FriendListModel.User> = ArrayList()
+    var myFriendList: ArrayList<FriendListModel.User> = ArrayList()
     var myContactList = ArrayList<Contacts>()
     var ed_search: AppCompatEditText? = null
     var searchKeyword = ""
@@ -62,6 +61,7 @@ class AddFriendToWatchVideoDialog(
     var currentSelectedType = "friends"
     var inviteContactFrg: FrameLayout? = null
     var page: Int = 0
+    var itemToRemove : Int? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         BlurKit.init(ctx)
         dialog = BottomSheetDialog(requireContext(), R.style.MyTransparentBottomSheetDialogTheme)
@@ -97,7 +97,7 @@ class AddFriendToWatchVideoDialog(
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         val v = inflater.inflate(R.layout.bottom_add_friend_to_watch_video, container, false)
         val imageView = v.findViewById<ImageView>(R.id.img_bg)
@@ -137,27 +137,18 @@ class AddFriendToWatchVideoDialog(
                     if (it.value.response!!.code.equals("200")) {
                         if (it.value.response!!.userlist == null || it.value.response!!.userlist!!.isEmpty()
                         ) {
-                            if (page == 1) {
-                                //txtEmpty.setVisibility(View.VISIBLE);
-                                //txtEmpty.setText(it.value.response.getMessage());
-                            }
+                            ToastUtil.showToast("User not found!")
                         } else {
-                            // txtEmpty.setVisibility(View.GONE);
                             myFriendList = it.value.response!!.userlist!!
                             myFriendListAdapter!!.addUser(myFriendList)
                         }
-                        if (it.value.response!!.isLastPage === 0) {
+                        if (it.value.response!!.isLastPage == 0) {
                             recyclerView!!.isLoading = false
                         } else {
                             recyclerView!!.isNestedScrollingEnabled = false
                         }
                     } else if (it.value.response!!.code.equals("301")) {
-                        if (page == 1) {
-                            // txtEmpty.setVisibility(View.VISIBLE);
-                            // txtEmpty.setText(it.value.response.getMessage());
-                        } else {
-                            //txtEmpty.setVisibility(View.GONE);
-                        }
+
                     }
                 }
                 is Resource.Loading -> {
@@ -174,9 +165,15 @@ class AddFriendToWatchVideoDialog(
         viewModel.invitePeopleResponse.observe(requireActivity()) {
             when (it) {
                 is Resource.Success -> {
-                    if (it.value.response != null){
+                    if (it.value.response != null) {
                         if (it.value.response!!.code.equals("200")) {
-                            Toast.makeText(context, it.value.response!!.message, Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(ctx, "${it.value.response!!.message}", Toast.LENGTH_SHORT).show()
+                            if(itemToRemove != null){
+                                myFriendList.removeAt(itemToRemove!!)
+                                myFriendListAdapter!!.notifyItemRemoved(itemToRemove!!)
+                            }
+
                         }
                     }
                 }
@@ -186,14 +183,15 @@ class AddFriendToWatchVideoDialog(
                 is Resource.Failure -> {
                     recyclerView!!.isLoading = false
                 }
-                else -> {
-                    recyclerView!!.isLoading = false
-                }
             }
-
         }
 
         return v
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
     }
 
     private fun showContactFragment() {
@@ -246,7 +244,10 @@ class AddFriendToWatchVideoDialog(
         this.page = page
         recyclerView!!.isLoading = true
         viewModel.viewModelScope.launch {
-            viewModel.getAddFriendList(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, search!!, page+1)
+            viewModel.getFriendListForWatchTogetherRoom(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!,
+                search!!,
+                postId,
+                page + 1)
         }
     }
 
@@ -267,18 +268,20 @@ class AddFriendToWatchVideoDialog(
 
     override fun onAddFriendClick(position: Int, user: FriendListModel.User?, view: View?) {
         // invite Watch Together user for my watch together party...
-        invitePeopleForWatchTogetherParty(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, user!!.userId!!)
+        invitePeopleForWatchTogetherParty(Prefrences.getPreferences(requireContext(), Constants.PREF_USER_ID)!!, user!!.userId!!, position)
     }
 
-    private fun invitePeopleForWatchTogetherParty(loginUserId: String, otherUserId: String) {
+    private fun invitePeopleForWatchTogetherParty(loginUserId: String, otherUserId: String, position: Int) {
         viewModel.viewModelScope.launch {
-            viewModel.invitePeopleToWatchVideo(loginUserId,otherUserId, postId)
+            itemToRemove = position
+            viewModel.invitePeopleToWatchVideo(loginUserId, otherUserId, postId, position)
         }
     }
 
     override fun onFriendView(position: Int, user: FriendListModel.User?, view: View?) {
 
     }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.linExploriiUsers -> getUserData("friends")

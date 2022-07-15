@@ -74,6 +74,17 @@ interface MyApi {
     ): FriendListModel
 
     @FormUrlEncoded
+    @POST(ApiEndPoint.GET_FRIEND_LIST_FOR_WATCH_TOGETHER)
+    suspend fun getFriendListForWatchTogetherRoom(
+        @Field("user_id") user_id: String?,
+        @Field("search") search: String?,
+        @Field("post_id") post_id: String?,
+        @Field("page") page: Int,
+    ): FriendListModel
+
+
+
+    @FormUrlEncoded
     @POST(ApiEndPoint.ENDPOINT_WATCH_LIST)
     suspend fun getWatchList(
         @Field("user_id") user_id: String?,

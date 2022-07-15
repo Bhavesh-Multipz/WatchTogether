@@ -45,7 +45,7 @@ class YoutubeWebViewActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun loadWebView() {
-        val webSettings: WebSettings = binding.youtubeWebView.getSettings()
+        val webSettings: WebSettings = binding.youtubeWebView.settings
         webSettings.javaScriptEnabled = true
         webSettings.domStorageEnabled = true
         webSettings.builtInZoomControls = true

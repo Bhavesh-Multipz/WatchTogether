@@ -21,7 +21,7 @@ plugins {
 
 ext {
     // App dependencies
-    exoplayer='2.8.1'
+    exoplayer='2.13.2'
     roomVersion = "2.2.5"
     roomcompilerVersion = "2.0.0"
     place='17.0.0'

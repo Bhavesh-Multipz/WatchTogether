@@ -6,12 +6,13 @@ import okhttp3.MultipartBody
 
 class WatchTogetherVideoRepository constructor(private val api : MyApi) : BaseRepository(){
 
-    suspend fun getAddFriendList(
+    suspend fun getFriendListForWatchTogetherRoom(
         user_id: String,
         search: String,
+        postId: String,
         page: Int
     ) = safeApiCall {
-        api.getAddFriendList(user_id, search, page)
+        api.getFriendListForWatchTogetherRoom(user_id, search,postId, page)
     }
 
     suspend fun invitePeopleToWatchVideo(

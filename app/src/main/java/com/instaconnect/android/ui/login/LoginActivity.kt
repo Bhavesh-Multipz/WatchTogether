@@ -105,53 +105,57 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         when {
                             it.value.response!!.code.equals("200") -> {
 
-                                /*if(it.value.response!!.message!!.contains("deactivated")){
-                                                    ToastUtil.showToast(it.value.response!!.message!!)
-                                                } else {*/
+                               if(it.value.response!!.username!!.isEmpty() || it.value.response!!.userProfileUrl!!.isEmpty() || it.value.response!!.userProfileUrl!! == "http://15.222.88.69/uploads/default_pic.png"){
+                                   Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
+                                   val intent = Intent(this, PrivateProfileActivity::class.java)
+                                   intent.flags =
+                                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                   intent.putExtra("userName", it.value.response!!.username)
+                                   intent.putExtra("profilePhoto", it.value.response!!.userProfileUrl)
+                                   startActivity(intent)
+                                   finish()
+                               } else {
+                                   Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
+                                   val user = User()
+                                   startActivity(Intent(this, HomeActivity::class.java))
+                                   Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
 
-                                /*if(it.value.response!!.username != null && it.value.response!!.userProfileUrl != null &&
-                                                        !it.value.response!!.userProfileUrl!!.contains(""))*/
+                                   if (it.value.response!!.username!!.isEmpty()) {
+                                       Prefrences.savePreferencesString(
+                                           this,
+                                           Constants.PREF_USER_NAME,
+                                           userName
+                                       )
+                                       Prefrences.savePreferencesString(
+                                           this,
+                                           Constants.PREF_USER_PROFILE_PIC,
+                                           userPhotoUri
+                                       )
 
-                                Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
-                                val user = User()
-                                startActivity(Intent(this, HomeActivity::class.java))
-                                Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
+                                       user.phone = number
+                                       user.name = userName
+                                       user.avatar = userPhotoUri
 
-                                if (it.value.response!!.username!!.isEmpty()) {
-                                    Prefrences.savePreferencesString(
-                                        this,
-                                        Constants.PREF_USER_NAME,
-                                        userName
-                                    )
-                                    Prefrences.savePreferencesString(
-                                        this,
-                                        Constants.PREF_USER_PROFILE_PIC,
-                                        userPhotoUri
-                                    )
+                                   } else {
+                                       Prefrences.savePreferencesString(
+                                           this,
+                                           Constants.PREF_USER_NAME,
+                                           it.value.response!!.username!!
+                                       )
+                                       Prefrences.savePreferencesString(
+                                           this,
+                                           Constants.PREF_USER_PROFILE_PIC,
+                                           it.value.response!!.userProfileUrl!!
+                                       )
 
-                                    user.phone = number
-                                    user.name = userName
-                                    user.avatar = userPhotoUri
+                                       user.phone = number
+                                       user.name = it.value.response!!.username!!
+                                       user.avatar = it.value.response!!.userProfileUrl!!
+                                   }
 
-                                } else {
-                                    Prefrences.savePreferencesString(
-                                        this,
-                                        Constants.PREF_USER_NAME,
-                                        it.value.response!!.username!!
-                                    )
-                                    Prefrences.savePreferencesString(
-                                        this,
-                                        Constants.PREF_USER_PROFILE_PIC,
-                                        it.value.response!!.userProfileUrl!!
-                                    )
+                                   Prefrences.setUser(user)
+                               }
 
-                                    user.phone = number
-                                    user.name = it.value.response!!.username!!
-                                    user.avatar = it.value.response!!.userProfileUrl!!
-                                }
-
-                                Prefrences.setUser(user)
-                    //                            }
 
 
                             }
