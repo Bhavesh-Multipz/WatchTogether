@@ -489,7 +489,7 @@ ${post_item.caption}"""
         }
 
         if (trending != null) {
-            Log.d("Treding_Cat", trending!!.api_name)
+            Log.d("Trending_Cat", trending!!.api_name)
             ctName = trending!!.api_name
         }
 

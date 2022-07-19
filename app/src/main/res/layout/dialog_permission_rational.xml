@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_200sdp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp">
 
@@ -18,12 +18,12 @@
     <RelativeLayout
         android:id="@+id/rel_main"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_height="wrap_content"
         android:background="@drawable/layout_password_rounded_white_glass"
         android:padding="12dp">
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/tvHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -32,16 +32,16 @@
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/montserrat_medium"
             android:gravity="center"
-            android:textStyle="bold"
             android:text="Permission denied!"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text1"
+            android:layout_below="@+id/tvHeader"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
@@ -61,10 +61,10 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             android:gravity="end"
-            android:weightSum="4">
+            android:weightSum="2">
 
             <LinearLayout
-                android:id="@+id/linearCancel"
+                android:id="@+id/linearSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="6dp"
@@ -73,13 +73,13 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/tvCancel"
+                    android:id="@+id/tvSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_medium"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="Cancel"
+                    android:text="Setting"
                     android:textColor="@color/white"
                     android:textSize="14dp"
                     android:visibility="gone" />
@@ -87,13 +87,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearSignOut"
+                android:id="@+id/linearOk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginStart="6dp"
-                android:layout_marginLeft="6dp"
-
+                android:layout_marginRight="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/layout_rounded_white_glass"
                 android:gravity="center">
@@ -107,7 +104,8 @@
                     android:padding="10dp"
                     android:text="Ok"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="14dp"
+                    android:visibility="visible" />
 
             </LinearLayout>
 

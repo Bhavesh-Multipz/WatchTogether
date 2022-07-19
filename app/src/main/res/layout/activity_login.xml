@@ -155,7 +155,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_medium"
                             android:padding="@dimen/_8sdp"
-                            android:text="@string/terms"
+                            android:text="By continuing you agree to Terms &amp; Policies"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_12sdp" />
 

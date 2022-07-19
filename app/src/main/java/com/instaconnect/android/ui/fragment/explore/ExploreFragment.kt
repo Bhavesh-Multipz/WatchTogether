@@ -242,12 +242,11 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
                 })
             }
             R.id.binocular_iv -> {
-                if (managePermissions.checkPermissions()) {
+
+                if(HomeActivity.userLocation == null){
                     detectLocation()
-                    filterDialog()
                 } else {
-                    permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
-                        PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
+                    filterDialog()
                 }
             }
             R.id.tvTitle -> {
@@ -493,7 +492,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
                 LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                     Log.i("TAG", "Location settings are not satisfied. Show the user a dialog to upgrade location settings")
                     try {
-
+                        showEnableLocationDialog()
                     } catch (e: IntentSender.SendIntentException) {
                         Log.i("TAG", "PendingIntent unable to execute request.")
                     }
@@ -502,6 +501,43 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
                     "Location settings are inadequate, and cannot be fixed here. Dialog not created.")
             }
         }
+    }
+
+    private fun showEnableLocationDialog() {
+        val dialog = Dialog(requireContext(), R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_permission_rational)
+        val tvOk = dialog.findViewById<TextView>(R.id.tvOk)
+        val tvMessage = dialog.findViewById<TextView>(R.id.text)
+        tvMessage.text = "Something wrong with the Enable location, Please Enable Location Manually."
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
+        tvOk.setOnClickListener { v: View? ->
+            val intent = Intent(
+                Settings.ACTION_LOCATION_SOURCE_SETTINGS
+            )
+            startActivity(intent)
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     override fun onRequestPermissionsResult(
@@ -515,6 +551,7 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
                     .processPermissionsResult(requestCode, permissions, grantResults)
                 if (isPermissionsGranted) {
                     detectLocation()
+                    filterDialog()
                 } else {
                     showPermissionDialog()
                 }

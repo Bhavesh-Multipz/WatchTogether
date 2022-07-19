@@ -50,8 +50,23 @@ object Constants {
         Manifest.permission.READ_CONTACTS
     )
 
+    var appPermissionsForLocation = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    )
+
+    var appPermissionsForStorage = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
+    var appPermissionsForCamera = arrayOf(
+        Manifest.permission.CAMERA
+    )
+
     var appPermissionsForContacts = arrayOf(
-        Manifest.permission.READ_CONTACTS
+        Manifest.permission.READ_CONTACTS,
+        Manifest.permission.WRITE_CONTACTS
     )
 
     const val TYPING_STATUS_TRUE = "composing"
@@ -65,4 +80,9 @@ object Constants {
     const val NOTIFICATION_TYPE_SEND_REQUEST = "send_request"
     const val NOTIFICATION_TYPE_SEND_INVITATION = "send_invitation"
     const val NOTIFICATION_TYPE_POST_LIKED = "post_liked"
+
+    const val PERMISSION_TAG_STORAGE = "Storage"
+    const val PERMISSION_TAG_LOCATION = "Location"
+    const val PERMISSION_TAG_CONTACTS = "Contact"
+    const val PERMISSION_TAG_CAMERA = "Camera"
 }

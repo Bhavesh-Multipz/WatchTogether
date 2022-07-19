@@ -13,6 +13,8 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
@@ -46,7 +48,6 @@ import com.instaconnect.android.ui.friends.FriendsFragment
 import com.instaconnect.android.ui.public_chat.videoList.VideoListAdapter
 import com.instaconnect.android.ui.watch_together_room.WatchTogetherVideoActivity
 import com.instaconnect.android.utils.*
-import com.instaconnect.android.utils.Utils.toast
 import io.alterac.blurkit.BlurKit
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -54,6 +55,7 @@ import org.json.JSONObject
 
 
 class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener {
+    private var isPlusClicked: Boolean = false
     private val permissionsRequestCode = 112
     private val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
 
@@ -110,14 +112,18 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         setOnClickListener()
         showStreamFragment()
         loadPreference()
-        FirebaseMessaging.getInstance().isAutoInitEnabled = true
+
         // notification status by default ON
         Prefrences.savePreferencesString(this, Constants.PREF_NOTIFICATION_STATUS, "1")
 
         FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
             if (result != null) {
                 updateToken(result)
-                Prefrences.savePreferencesString(this@HomeActivity, Constants.PREF_DEVICE_TOKEN, result)
+                Prefrences.savePreferencesString(
+                    this@HomeActivity,
+                    Constants.PREF_DEVICE_TOKEN,
+                    result
+                )
             }
         }
 
@@ -148,9 +154,11 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
             when (it) {
                 is Resource.Success -> {
                     if (it.value.response != null) {
-                        Prefrences.savePreferencesString(this,
+                        Prefrences.savePreferencesString(
+                            this,
                             Constants.PREF_NOTIFICATION_STATUS,
-                            it.value.response.notificationStatus!!)
+                            it.value.response.notificationStatus!!
+                        )
                     }
                 }
                 is Resource.Failure -> {
@@ -189,12 +197,15 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 Log.e("View Height", "$width...$height")
                 imageView.layoutParams.height = height
                 imageView.layoutParams.width = width
-                imageView.setImageBitmap(BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat()))
+                imageView.setImageBitmap(
+                    BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat())
+                )
             }
         })
 
         tvOk.setOnClickListener { v: View? ->
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(response.alertArr!!.button1Link))
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(response.alertArr!!.button1Link))
             startActivity(browserIntent)
             dialog.dismiss()
         }
@@ -294,7 +305,8 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                             )
                             Log.d("GPS", "GPS Enabled")
                             if (locationManager != null) {
-                                location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                                location =
+                                    locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                                 if (location != null) {
                                     latitude = location!!.latitude
                                     longitude = location!!.longitude
@@ -318,13 +330,15 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 Activity.RESULT_OK -> {
                     Log.i("TAG", "User agreed to make required location settings changes.")
 
-                    Handler().postDelayed({
+                    Handler(Looper.getMainLooper()).postDelayed({
                         detectLocation()
                     }, 500)
 
                 }
-                Activity.RESULT_CANCELED -> Log.i("TAG",
-                    "User chose not to make required location settings changes.")
+                Activity.RESULT_CANCELED -> Log.i(
+                    "TAG",
+                    "User chose not to make required location settings changes."
+                )
             }
         }
     }
@@ -336,8 +350,12 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     }
 
     private fun handleNotification() {
-        if (intent.getStringExtra("from") != null && intent.getStringExtra("from").equals("notification")) {
-            intent.putExtra("from", "") // in case user come back this popup will not open second time
+        if (intent.getStringExtra("from") != null && intent.getStringExtra("from")
+                .equals("notification")) {
+            intent.putExtra(
+                "from",
+                ""
+            ) // in case user come back this popup will not open second time
             val notificationType = intent.getStringExtra("type")
             if (notificationType == "send_invitation" || notificationType == "post_liked") {
                 val notiBody = intent.getStringExtra("noti_body")
@@ -354,12 +372,11 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-            }
-            else if (notificationType == "send_request") {
-                if(intent.getStringExtra("title") != null){
+            } else if (notificationType == "send_request") {
+                if (intent.getStringExtra("title") != null) {
                     showFriendFragment("notification", intent.getStringExtra("title")!!)
                 } else {
-                    showFriendFragment("notification","")
+                    showFriendFragment("notification", "")
                 }
 
             } else {
@@ -414,7 +431,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 Log.e("View Height", "$width...$height")
                 imageView.layoutParams.height = height
                 imageView.layoutParams.width = width
-                imageView.setImageBitmap(BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat()))
+                imageView.setImageBitmap(
+                    BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat())
+                )
             }
         })
         dialog.show()
@@ -442,7 +461,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 Log.e("View Height", "$width...$height")
                 imageView.layoutParams.height = height
                 imageView.layoutParams.width = width
-                imageView.setImageBitmap(BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat()))
+                imageView.setImageBitmap(
+                    BlurKit.getInstance().fastBlur(imageView, 8, 0.12.toFloat())
+                )
             }
         })
         tvCancel.setOnClickListener { v: View? -> dialog.dismiss() }
@@ -456,9 +477,11 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 if (enteredPassword == groupPassword) {
                     goToWatchPartyRoom(postObject)
                 } else {
-                    Toast.makeText(this@HomeActivity,
+                    Toast.makeText(
+                        this@HomeActivity,
                         "You've entered wrong password!",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -468,7 +491,10 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     private fun goToWatchPartyRoom(postObject: JSONObject) {
         val intent = BaseIntent(this, WatchTogetherVideoActivity::class.java, false)
         try {
-            if (postObject.has("user_id")) intent.putExtra("USER_ID", postObject["user_id"].toString())
+            if (postObject.has("user_id")) intent.putExtra(
+                "USER_ID",
+                postObject["user_id"].toString()
+            )
             if (postObject["youTubeVideoId"].toString() == "empty") {
                 // for other type of video
                 intent.putExtra("VIDEO_ID", postObject["hyperlink"].toString())
@@ -476,26 +502,46 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 // for youtube video
                 intent.putExtra("VIDEO_ID", postObject["youTubeVideoId"].toString())
             }
-            intent.putExtra("COMING_FROM","Home")
-            if (postObject.has("mediaType")) intent.putExtra("POST_ID",
-                postObject["mediaType"].toString()) else intent.putExtra("POST_ID", "")
-            if (postObject.has("id")) intent.putExtra("ACTUAL_POST_ID",
-                postObject["id"].toString()) else intent.putExtra("ACTUAL_POST_ID", "")
-            if (postObject.has("group_name")) intent.putExtra("ROOM_NAME",
-                postObject["group_name"].toString()) else intent.putExtra("ROOM_NAME", "")
-            if (postObject.has("username")) intent.putExtra("USER_NAME",
-                postObject["username"].toString()) else intent.putExtra("USER_NAME", "")
-            if (postObject.has("yourReaction")) intent.putExtra("POST_REACTION",
-                postObject["yourReaction"].toString()) else intent.putExtra("POST_REACTION", "0")
-            if (postObject.has("userimage")) intent.putExtra("USER_IMAGE",
-                postObject["userimage"].toString()) else intent.putExtra("USER_IMAGE", "")
-            if (postObject.has("total_views")) intent.putExtra("TOTAL_VIEWS",
-                postObject["total_views"].toString()) else intent.putExtra("TOTAL_VIEWS", "0")
-            if (postObject.has("group_name")) intent.putExtra("GROUP_NAME",
-                postObject["group_name"].toString()) else intent.putExtra("GROUP_NAME", "")
-            if (postObject.has("likes")) intent.putExtra("TOTAL_LIKES",
-                VideoListAdapter.prettyCount(postObject["likes"].toString().toInt())) else intent.putExtra("TOTAL_LIKES",
-                VideoListAdapter.prettyCount("0".toInt()))
+            intent.putExtra("COMING_FROM", "Home")
+            if (postObject.has("mediaType")) intent.putExtra(
+                "POST_ID",
+                postObject["mediaType"].toString()
+            ) else intent.putExtra("POST_ID", "")
+            if (postObject.has("id")) intent.putExtra(
+                "ACTUAL_POST_ID",
+                postObject["id"].toString()
+            ) else intent.putExtra("ACTUAL_POST_ID", "")
+            if (postObject.has("group_name")) intent.putExtra(
+                "ROOM_NAME",
+                postObject["group_name"].toString()
+            ) else intent.putExtra("ROOM_NAME", "")
+            if (postObject.has("username")) intent.putExtra(
+                "USER_NAME",
+                postObject["username"].toString()
+            ) else intent.putExtra("USER_NAME", "")
+            if (postObject.has("yourReaction")) intent.putExtra(
+                "POST_REACTION",
+                postObject["yourReaction"].toString()
+            ) else intent.putExtra("POST_REACTION", "0")
+            if (postObject.has("userimage")) intent.putExtra(
+                "USER_IMAGE",
+                postObject["userimage"].toString()
+            ) else intent.putExtra("USER_IMAGE", "")
+            if (postObject.has("total_views")) intent.putExtra(
+                "TOTAL_VIEWS",
+                postObject["total_views"].toString()
+            ) else intent.putExtra("TOTAL_VIEWS", "0")
+            if (postObject.has("group_name")) intent.putExtra(
+                "GROUP_NAME",
+                postObject["group_name"].toString()
+            ) else intent.putExtra("GROUP_NAME", "")
+            if (postObject.has("likes")) intent.putExtra(
+                "TOTAL_LIKES",
+                VideoListAdapter.prettyCount(postObject["likes"].toString().toInt())
+            ) else intent.putExtra(
+                "TOTAL_LIKES",
+                VideoListAdapter.prettyCount("0".toInt())
+            )
         } catch (e: JSONException) {
             Log.d("TAG", "JSONException$e")
             e.printStackTrace()
@@ -523,7 +569,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                     Log.i("TAG", "Location settings are not satisfied. Show the user a dialog to upgrade location settings")
                     try {
-
+                        showPermissionDialog()
                     } catch (e: IntentSender.SendIntentException) {
                         Log.i("TAG", "PendingIntent unable to execute request.")
                     }
@@ -532,6 +578,43 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                     "Location settings are inadequate, and cannot be fixed here. Dialog not created.")
             }
         }
+    }
+
+    private fun showPermissionDialog() {
+        val dialog = Dialog(this, R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_permission_rational)
+        val tvOk = dialog.findViewById<TextView>(R.id.tvOk)
+        val tvMessage = dialog.findViewById<TextView>(R.id.text)
+        tvMessage.text = "Something wrong with the Enable location, Please Enable Location Manually."
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
+        tvOk.setOnClickListener { v: View? ->
+            val intent = Intent(
+                Settings.ACTION_LOCATION_SOURCE_SETTINGS
+            )
+            startActivity(intent)
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     override fun onRequestPermissionsResult(
@@ -545,9 +628,15 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                     .processPermissionsResult(requestCode, permissions, grantResults)
                 if (isPermissionsGranted) {
                     detectLocation()
-                    showAddPostFragment()
+                    if (isPlusClicked)
+                        showAddPostFragment()
                 } else {
-                    this.toast("Permissions denied.")
+
+                    if(!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForStorage)){
+                        permissionUtil!!.openPermissionDeniedPopup(this, Constants.PERMISSION_TAG_STORAGE)
+                    } else if(!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForLocation)){
+                        permissionUtil!!.openPermissionDeniedPopup(this, Constants.PERMISSION_TAG_LOCATION)
+                    }
                 }
                 return
             }
@@ -563,12 +652,15 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         when (v!!.id) {
 
             R.id.relPlus -> {
+                isPlusClicked = true
                 if (managePermissions.checkPermissions()) {
                     detectLocation()
                     showAddPostFragment()
                 } else {
-                    permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
-                        PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
+                    permissionUtil!!.requestPermissionsGroup(
+                        Constants.appPermissionsForHomeScreen,
+                        PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE
+                    )
                 }
 
             }
@@ -592,7 +684,8 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         val bundle = Bundle()
         moreSettingsFragment.setArguments(bundle)
 
-        fragmentUtil!!.fragment(moreSettingsFragment, R.id.fl_container_home_other, true).skipStack().commit()
+        fragmentUtil!!.fragment(moreSettingsFragment, R.id.fl_container_home_other, true)
+            .skipStack().commit()
 
         binding.relLive.setBackgroundResource(0)
         binding.relFriend.setBackgroundResource(0)
@@ -608,7 +701,8 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         bundle.putString("title", title)
         friendsFragment.arguments = bundle
 
-        fragmentUtil!!.fragment(friendsFragment, R.id.fl_container_home_other, true).skipStack().commit()
+        fragmentUtil!!.fragment(friendsFragment, R.id.fl_container_home_other, true).skipStack()
+            .commit()
         binding.relLive.setBackgroundResource(0)
         binding.relFriend.setBackgroundResource(R.drawable.layout_rounded_white_glass)
         binding.relPlus.setBackgroundResource(0)
@@ -626,13 +720,14 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
     }
 
     private fun showAddPostFragment() {
-
+        isPlusClicked = false
         val captureFragment = CaptureFragment()
         val bundle = Bundle()
         bundle.putString("CaptureType", "WatchTogether")
         bundle.putString("PostType", "")
         captureFragment.arguments = bundle
-        fragmentUtil!!.fragment(captureFragment, R.id.fl_container_home_other, true).skipStack().commit()
+        fragmentUtil!!.fragment(captureFragment, R.id.fl_container_home_other, true).skipStack()
+            .commit()
         binding.relLive.setBackgroundResource(0)
         binding.relFriend.setBackgroundResource(0)
         binding.relPlus.setBackgroundResource(R.drawable.layout_rounded_white_glass)

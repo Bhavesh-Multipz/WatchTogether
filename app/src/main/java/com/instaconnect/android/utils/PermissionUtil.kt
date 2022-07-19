@@ -2,11 +2,26 @@ package com.instaconnect.android.utils
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
+import android.content.Context
+import android.content.Intent
 import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.core.app.ActivityCompat
 import com.instaconnect.android.utils.PermissionUtil
 import android.os.Build
+import android.provider.Settings
+import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.Window
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.fragment.app.Fragment
+import com.instaconnect.android.R
+import com.instaconnect.android.utils.Utils.visible
 
 /**
  * Helper class for managing permissions at runtime
@@ -266,6 +281,60 @@ class PermissionUtil(private val activity: Activity?) {
 
     /* check if requested permissions granted */
 
+    fun openPermissionDeniedPopup(context: Context, permissionTag : String){
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_permission_rational)
+        val tvOk = dialog.findViewById<TextView>(R.id.tvOk)
+        val tvMessage = dialog.findViewById<TextView>(R.id.text)
+        val tvSetting = dialog.findViewById<TextView>(R.id.tvSetting)
+        val tvHeader = dialog.findViewById<TextView>(R.id.tvHeader)
+        tvSetting.visible(true)
+        if(permissionTag == Constants.PERMISSION_TAG_STORAGE){
+            tvHeader.text = "Your 'Storage' permission is turned off"
+            tvMessage.text = "Please turn on your Storage permission from your phone settings to manage file with WatchTogether App."
+        } else if(permissionTag == Constants.PERMISSION_TAG_LOCATION){
+            tvHeader.text = "Your 'Location' permission is turned off"
+            tvMessage.text = "Please turn on your Location Permission from your phone settings to see rooms near you."
+        } else if(permissionTag == Constants.PERMISSION_TAG_CONTACTS){
+            tvHeader.text = "Your 'Contacts' permission is turned off"
+            tvMessage.text = "Please turn on your Contacts permission from your phone settings to Invite Contacts."
+        } else if(permissionTag == Constants.PERMISSION_TAG_CAMERA){
+            tvHeader.text = "Your 'Camera' permission is turned off"
+            tvMessage.text = "Please turn on your Camera permission from your phone settings to To Capture Images"
+        }
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
+        tvSetting.setOnClickListener { v: View? ->
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri: Uri = Uri.fromParts("package", context.packageName, null)
+            intent.data = uri
+            context.startActivity(intent)
+            dialog.dismiss()
+        }
+        tvOk.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
     companion object {
         const val AUDIO_REQUEST_CODE = 1
         const val EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 2

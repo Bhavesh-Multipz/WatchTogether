@@ -36,6 +36,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityPrivateProfileBinding
     private lateinit var viewModel: ProfileViewModel
     private var fileUtils: FileUtils? = null
+    private var permissionUtil: PermissionUtil? = null
     private lateinit var managePermissions: ManagePermissions
     private var mCurrentPhotoPath: String? = null
     var profileBitmap: Bitmap? = null
@@ -64,6 +65,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
 
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
         fileUtils = FileUtils(this)
+        permissionUtil = PermissionUtil(this)
         appFileHelper = AppFileHelper(this)
         setOnClickListener()
 
@@ -226,7 +228,11 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                     TedImagePicker.with(this)
                         .start { uri -> showSingleImage(uri) }
                 } else {
-                    this.toast("Permissions denied.")
+                    if(!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForStorage)){
+                        permissionUtil!!.openPermissionDeniedPopup(this, Constants.PERMISSION_TAG_STORAGE)
+                    } else if(!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForCamera)){
+                        permissionUtil!!.openPermissionDeniedPopup(this, Constants.PERMISSION_TAG_CAMERA)
+                    }
                 }
                 return
             }

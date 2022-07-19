@@ -118,6 +118,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                    Prefrences.savePreferencesBoolean(this, Constants.LOGIN_STATUS, true)
                                    val user = User()
                                    startActivity(Intent(this, HomeActivity::class.java))
+
                                    Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)
 
                                    if (it.value.response!!.username!!.isEmpty()) {
@@ -154,10 +155,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                    }
 
                                    Prefrences.setUser(user)
+
+                                   finish()
                                }
-
-
-
                             }
                             it.value.response!!.code.equals("201") -> {
                                 Prefrences.savePreferencesString(this, Constants.PREF_USER_ID, number)

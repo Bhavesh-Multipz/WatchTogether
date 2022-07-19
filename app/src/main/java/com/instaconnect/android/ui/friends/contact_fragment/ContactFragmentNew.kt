@@ -1,6 +1,9 @@
 package com.instaconnect.android.ui.friends.contact_fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -17,6 +20,7 @@ import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.ui.friends.contact_fragment.adapter.ContactNewAdapter
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.PermissionUtil
+import com.instaconnect.android.utils.Utils.visible
 import com.instaconnect.android.utils.ViewUtil
 
 
@@ -38,6 +42,12 @@ class ContactFragmentNew : BaseFragment<ContactFragmentViewModel, FragmentContac
                     if (!element.isStatus) resultList.add(element)
                 }
             }
+
+            if(resultList.isEmpty()){
+                binding.relNoData.visible(true)
+            } else {
+                binding.relNoData.visible(false)
+            }
             contactAdapter!!.data = resultList
         }
 
@@ -46,16 +56,14 @@ class ContactFragmentNew : BaseFragment<ContactFragmentViewModel, FragmentContac
 
         permissionUtil = PermissionUtil(requireActivity())
         viewUtil = ViewUtil(requireActivity())
-        //contactManger.init();
         contactAdapter = ContactNewAdapter(requireContext(), viewUtil)
 
-        //   viewModel.getAppUser().observe(getViewLifecycleOwner(), appUserObserver);
         binding.recyclerContacts.layoutManager = LinearLayoutManager(context)
         binding.recyclerContacts.adapter = contactAdapter
-//        viewModel.getAppUserAvatar()
 
         if (permissionUtil.hasPermissionsGroup(Constants.appPermissionsForContacts)) {
             viewModel.load()
+            getData()
         } else {
             permissionUtil.requestPermissionsGroup(
                 Constants.appPermissionsForContacts,
@@ -63,11 +71,11 @@ class ContactFragmentNew : BaseFragment<ContactFragmentViewModel, FragmentContac
             )
         }
 
-        getData()
         setListeners()
     }
 
     private fun getData() {
+        binding.swipeRefresh.isRefreshing = true
         val bundle = arguments
         if (bundle != null) {
             isSharing = requireArguments().getBoolean("isSharing")
@@ -76,16 +84,20 @@ class ContactFragmentNew : BaseFragment<ContactFragmentViewModel, FragmentContac
     }
 
     private fun setListeners() {
-        binding.swipeRefresh.isRefreshing = true
         binding.inputSearch.addTextChangedListener(this)
         binding.swipeRefresh.setOnRefreshListener(this)
+        binding.linearOk.setOnClickListener { v: View? ->
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            requireContext().startActivity(intent)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE && PermissionUtil.isPermissionGranted(
-                grantResults
-            )
+                grantResults)
         )
             viewModel.load()
         else
