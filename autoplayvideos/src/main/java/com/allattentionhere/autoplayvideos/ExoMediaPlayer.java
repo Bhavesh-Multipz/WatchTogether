@@ -8,11 +8,12 @@ import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
@@ -20,10 +21,10 @@ import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
@@ -36,6 +37,7 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.Util;
+
 import java.io.File;
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -56,7 +58,7 @@ public class ExoMediaPlayer {
             };*/
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private static final CookieManager DEFAULT_COOKIE_MANAGER;
-
+    LoadControl loadControl;
     static {
         DEFAULT_COOKIE_MANAGER = new CookieManager();
         DEFAULT_COOKIE_MANAGER.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
@@ -91,6 +93,13 @@ public class ExoMediaPlayer {
     private void init(Context context) {
         userAgent = Util.getUserAgent(context, "ExoPlayerDemo");
         mediaDataSourceFactory = buildDataSourceFactory(true);
+//        loadControl = new DefaultLoadControl();
+        loadControl = new DefaultLoadControl.Builder()
+                .setAllocator(new DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE))
+                .setTargetBufferBytes(C.LENGTH_UNSET)
+                .setBufferDurationsMs(10000, 120000, 1000, 1000)
+                .setPrioritizeTimeOverSizeThresholds(true)
+                .build();
         if (CookieHandler.getDefault() != DEFAULT_COOKIE_MANAGER) {
             CookieHandler.setDefault(DEFAULT_COOKIE_MANAGER);
         }
@@ -148,25 +157,25 @@ public class ExoMediaPlayer {
                 return new DashMediaSource.Factory(
                         new DefaultDashChunkSource.Factory(mediaDataSourceFactory),
                         buildDataSourceFactory(true))
-                        .createMediaSource(uri);
+                        .createMediaSource(MediaItem.fromUri(uri));
             case C.TYPE_SS:
                 return new SsMediaSource.Factory(
                         new DefaultSsChunkSource.Factory(mediaDataSourceFactory),
                         buildDataSourceFactory(true))
-                        .createMediaSource(uri);
+                        .createMediaSource(MediaItem.fromUri(uri));
             case C.TYPE_HLS:
                 if (uri.toString().contains(".MOV") || uri.toString().contains("mp4")){
-                    new ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+                    new ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(MediaItem.fromUri(uri));
                 } else {
                     return new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent))
                             .createMediaSource(uri);
                 }
             case C.TYPE_OTHER:
                 if (uri.toString().contains("mp4") || uri.toString().contains(".MOV")){
-                    return new ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+                    return new ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(MediaItem.fromUri(uri));
                 } else {
                     return new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory(userAgent))
-                            .createMediaSource(uri);
+                            .createMediaSource(MediaItem.fromUri(uri));
                 }
             default: {
                 throw new IllegalStateException("Unsupported type: " + type);
@@ -225,15 +234,17 @@ public class ExoMediaPlayer {
             unPlug();
 
         // a factory to create an AdaptiveVideoTrackSelection
-        /*TrackSelection.Factory adaptiveTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+        AdaptiveTrackSelection.Factory adaptiveTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory();
         TrackSelector trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
-        player = ExoPlayerFactory.newSimpleInstance(
-                new DefaultRenderersFactory(context),
-                trackSelector,
-                new DefaultLoadControl());*/
+//        player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);;
 
-        player = new SimpleExoPlayer.Builder(context).build();
+        DefaultRenderersFactory defaultRenderersFactory = new DefaultRenderersFactory(context);
+
+
+        player = new SimpleExoPlayer.Builder(context, defaultRenderersFactory).setLoadControl(loadControl)
+                .setHandleAudioBecomingNoisy(true).build();
+
         if (playerView != null)
             playerView.setPlayer(player);
 
@@ -247,7 +258,8 @@ public class ExoMediaPlayer {
        if(player != null){
            player.setPlayWhenReady(startAutoPlay);
            player.setRepeatMode(repeatMode);
-           player.prepare(buildMediaSource(uri, MediaSourceUtil.getExtension(uri)), true, false);
+           player.setMediaSource(buildMediaSource(uri, MediaSourceUtil.getExtension(uri)));
+           player.prepare();
        }
 
     }

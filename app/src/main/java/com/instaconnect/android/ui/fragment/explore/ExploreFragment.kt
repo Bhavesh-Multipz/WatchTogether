@@ -1,20 +1,37 @@
 package com.instaconnect.android.ui.fragment.explore
 
+import android.Manifest
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.browser.customtabs.CustomTabsClient.getPackageName
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.PendingResult
+import com.google.android.gms.common.api.Status
+import com.google.android.gms.location.*
 import com.hbb20.CountryCodePicker
 import com.instaconnect.android.R
 import com.instaconnect.android.base.BaseFragment
 import com.instaconnect.android.databinding.ExploreFragmentBinding
 import com.instaconnect.android.network.MyApi
 import com.instaconnect.android.ui.fragment.worldwide.WorldwideFragment
+import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.dialog_helper.DialogCallback
 import com.instaconnect.android.utils.dialog_helper.DialogUtil
@@ -23,18 +40,32 @@ import gun0912.tedimagepicker.util.ToastUtil
 import io.reactivex.functions.Consumer
 
 class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, ExploreRepository>(),
-    View.OnClickListener {
-
+    View.OnClickListener, LocationListener {
+    private val permissionsRequestCode = 112
+    private var locationManager: LocationManager? = null
     private var mGoogleApiClient: GoogleApiClient? = null
     private val mainDialogItem: ArrayList<DialogItem> = ArrayList<DialogItem>()
     private var worldwideFragment: WorldwideFragment = WorldwideFragment()
     //private val trendingFragment: TrendingFragment = TrendingFragment(this)
-
+    private lateinit var managePermissions: ManagePermissions
     var isPlayVideoDueToChat = false
     private var permissionUtil: PermissionUtil? = null
     var selectedItem = "Worldwide"
     var appDialogUtil: AppDialogUtil? = null
+    var isGPSEnabled = false
+    var isNetworkEnabled = false
+    var canGetLocation = false
+    var location: Location? = null
+    var latitude = 0.0
+    var longitude = 0.0
+    private val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10 // 10 meters
+    private val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
+    lateinit var viewUtil: ViewUtil
 
+    var list = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    )
     private val refresh =
         Consumer<Boolean> { refresh ->
             if (refresh) {
@@ -51,6 +82,8 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
         showMainFragment()
         createMainPopUp()
         permissionUtil = PermissionUtil(requireActivity())
+        managePermissions = ManagePermissions(requireActivity(), list.toList(), permissionsRequestCode)
+        viewUtil = ViewUtil(requireActivity())
         appDialogUtil = AppDialogUtil(requireContext())
         Prefrences.savePreferencesString(requireContext(), Constants.PREF_SEARCH_BY_DISTANCE, "0")
 
@@ -209,57 +242,13 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
                 })
             }
             R.id.binocular_iv -> {
-                val binocular_list = java.util.ArrayList<DialogItem>()
-                binocular_list.add(
-                    DialogItem(
-                        isItemSelected("Explore by Country"),
-                        "Explore by Country",
-                        R.color.sky_blue,
-                        true
-                    )
-                )
-                binocular_list.add(
-                    DialogItem(
-                        isItemSelected("Explore by Distance"),
-                        "Explore by Distance",
-                        R.color.sky_blue,
-                        true
-                    )
-                )
-                binocular_list.add(
-                    DialogItem(
-                        isItemSelected("Worldwide"),
-                        "Worldwide",
-                        R.color.sky_blue,
-                        true
-                    )
-                )
-                binocular_list.add(DialogItem(false, "Cancel", R.color.red, true))
-
-                DialogUtil.createListDialog(requireContext(), binocular_list, object : DialogCallback {
-
-                    override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
-                        when (position) {
-                            0 -> {
-                                selectedItem = "Explore by Country"
-                                showCountryDialog()
-                            }
-                            1 -> {
-                                selectedItem = "Explore by Distance"
-                                showDistanceDialog()
-                            }
-                            2 -> {
-                                selectedItem = "Worldwide"
-                                Prefrences.savePreferencesBoolean(requireContext(), Constants.PREF_HAS_COUNTRY, false)
-                                Prefrences.savePreferencesBoolean(requireContext(), Constants.PREF_HAS_DISTANCE, false)
-                                showMainFragment()
-                            }
-                            3 -> dialog!!.dismiss()
-                        }
-                    }
-
-                    override fun onDismiss() {}
-                })
+                if (managePermissions.checkPermissions()) {
+                    detectLocation()
+                    filterDialog()
+                } else {
+                    permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
+                        PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
+                }
             }
             R.id.tvTitle -> {
                 /*if (selection_tv != null) {
@@ -272,6 +261,60 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
                 showMainFragment()
             }
         }
+    }
+
+    private fun filterDialog() {
+        val binocular_list = java.util.ArrayList<DialogItem>()
+        binocular_list.add(
+            DialogItem(
+                isItemSelected("Explore by Country"),
+                "Explore by Country",
+                R.color.sky_blue,
+                true
+            )
+        )
+        binocular_list.add(
+            DialogItem(
+                isItemSelected("Explore by Distance"),
+                "Explore by Distance",
+                R.color.sky_blue,
+                true
+            )
+        )
+        binocular_list.add(
+            DialogItem(
+                isItemSelected("Worldwide"),
+                "Worldwide",
+                R.color.sky_blue,
+                true
+            )
+        )
+        binocular_list.add(DialogItem(false, "Cancel", R.color.red, true))
+
+        DialogUtil.createListDialog(requireContext(), binocular_list, object : DialogCallback {
+
+            override fun onCallback(dialog: Dialog?, v: View?, position: Int) {
+                when (position) {
+                    0 -> {
+                        selectedItem = "Explore by Country"
+                        showCountryDialog()
+                    }
+                    1 -> {
+                        selectedItem = "Explore by Distance"
+                        showDistanceDialog()
+                    }
+                    2 -> {
+                        selectedItem = "Worldwide"
+                        Prefrences.savePreferencesBoolean(requireContext(), Constants.PREF_HAS_COUNTRY, false)
+                        Prefrences.savePreferencesBoolean(requireContext(), Constants.PREF_HAS_DISTANCE, false)
+                        showMainFragment()
+                    }
+                    3 -> dialog!!.dismiss()
+                }
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     private fun isItemSelected(selectType: String): Boolean {
@@ -360,5 +403,165 @@ class ExploreFragment : BaseFragment<ExploreViewModel, ExploreFragmentBinding, E
         Log.e("ExploreAdd", "IN SHOW WORLD WIDE Replace")
     }
 
+    private fun detectLocation(): Location? {
+        try {
+            locationManager = requireContext().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
+            isGPSEnabled = locationManager!!
+                .isProviderEnabled(LocationManager.GPS_PROVIDER)
+            isNetworkEnabled = locationManager!!
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                // no network provider is enabled
+                displayLocationSettingsRequest(requireContext())
+            } else {
+                this.canGetLocation = true
+                if (isNetworkEnabled) {
+                    if (ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        viewUtil.showPermissionSnack()
+                    } else {
+
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
+                        )
+
+                        if (locationManager != null) {
+                            location = locationManager!!
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                            if (location != null) {
+                                latitude = location!!.latitude
+                                longitude = location!!.longitude
+                                HomeActivity.userLocation = location
+                            }
+                        }
+                    }
+                }
+                if (isGPSEnabled) {
+                    if (location == null) {
+                        if (ActivityCompat.checkSelfPermission(
+                                requireContext(),
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            viewUtil.showPermissionSnack()
+                        } else {
+                            locationManager!!.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this
+                            )
+                            Log.d("GPS", "GPS Enabled")
+                            if (locationManager != null) {
+                                location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                                if (location != null) {
+                                    latitude = location!!.latitude
+                                    longitude = location!!.longitude
+                                    HomeActivity.userLocation = location
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return location
+    }
+
+    private fun displayLocationSettingsRequest(context: Context) {
+        val googleApiClient = GoogleApiClient.Builder(context)
+            .addApi(LocationServices.API).build()
+        googleApiClient.connect()
+        val locationRequest: LocationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 10000 / 2
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        builder.setAlwaysShow(true)
+        val result: PendingResult<LocationSettingsResult> =
+            LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build())
+        result.setResultCallback { result ->
+            val status: Status = result.status
+            when (status.statusCode) {
+                LocationSettingsStatusCodes.SUCCESS -> Log.i("TAG", "All location settings are satisfied.")
+                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                    Log.i("TAG", "Location settings are not satisfied. Show the user a dialog to upgrade location settings")
+                    try {
+
+                    } catch (e: IntentSender.SendIntentException) {
+                        Log.i("TAG", "PendingIntent unable to execute request.")
+                    }
+                }
+                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> Log.i("TAG",
+                    "Location settings are inadequate, and cannot be fixed here. Dialog not created.")
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            permissionsRequestCode -> {
+                val isPermissionsGranted = managePermissions
+                    .processPermissionsResult(requestCode, permissions, grantResults)
+                if (isPermissionsGranted) {
+                    detectLocation()
+                } else {
+                    showPermissionDialog()
+                }
+                return
+            }
+        }
+    }
+
+    private fun showPermissionDialog() {
+        val dialog = Dialog(requireActivity(), R.style.CustomDialogTheme)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setContentView(R.layout.dialog_permission_rational)
+        val tvOk = dialog.findViewById<TextView>(R.id.tvOk)
+        val relMain: View = dialog.findViewById(R.id.rel_main)
+        val vto: ViewTreeObserver = relMain.viewTreeObserver
+        val imageView: ImageView = dialog.findViewById(R.id.img_bg)
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                relMain.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val width: Int = relMain.measuredWidth
+                val height: Int = relMain.measuredHeight
+                Log.e("View Height", "$width...$height")
+                imageView.layoutParams.height = height
+                imageView.layoutParams.width = width
+                /*imageView.setImageBitmap(
+                    BlurKit.getInstance()!!.fastBlur(imageView, 8, 0.12.toFloat())
+                )*/
+            }
+        })
+
+        tvOk.setOnClickListener { v: View? ->
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            startActivity(intent)
+            requireActivity().finish()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+
+    override fun onLocationChanged(p0: Location) {
+        HomeActivity.userLocation = p0
+    }
 
 }

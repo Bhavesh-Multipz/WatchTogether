@@ -30,7 +30,10 @@ import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.source.*
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MergingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DataSource
@@ -218,7 +221,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             }
 //                } }
 
-        }, 1000)
+        }, 100)
 
         setUserData()
         setListeners()
@@ -423,7 +426,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun getPostReaction() {
-        SocketConnector.getSocket()!!.once(
+        SocketConnector.getSocket()!!.on(
             "getPostReaction"
         ) { args ->
             val data = args[0] as JSONObject
@@ -434,13 +437,15 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
                 )
 
             if (actualPostId == reaction.postId) {
-                myPostReaction = "${reaction.messageData!!.yourReaction}"
+                if (userId == "${reaction.userId}") {
+                    myPostReaction = "${reaction.messageData!!.yourReaction}"
+                }
+                runOnUiThread { binding.tvTotalLike.text = "${reaction.messageData!!.likes}" }
             }
 
             if (binding.tvTotalLike.text.toString() != "${reaction.messageData!!.likes}") {
                 showLikesAnimation(reaction.messageData.likes)
             }
-            runOnUiThread { binding.tvTotalLike.text = "${reaction.messageData.likes}" }
         }
     }
 
@@ -854,20 +859,21 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     }
 
     private fun playVideo() {
-        if (videoId!!.contains("www.youtube") || videoId!!.contains("watch?v") || videoId!!.length == 11) {
+        if (videoId!!.contains("www.youtube") || videoId!!.contains("m.youtube.com") || videoId!!.contains(
+                "watch?v") || videoId!!.length == 11
+        ) {
+            playYoutubeVideo(videoId!!)
             binding.youtubeplayer.visibility = View.GONE
             binding.exoPlayer.visibility = View.VISIBLE
             binding.relExo.visibility = View.VISIBLE
             simpleExoPlayer!!.addListener(this)
             binding.exoPlayer.player = simpleExoPlayer
-            playYoutubeVideo(videoId!!)
+            simpleExoPlayer!!.playWhenReady = true
         } else {
             simpleExoPlayer!!.addListener(this)
-            val extension = MediaSourceUtil.getExtension(Uri.parse(videoId))
-
-            if (extension != null)
-                simpleExoPlayer!!.prepare()
-            simpleExoPlayer!!.setMediaSource(MergingMediaSource(buildMediaSource(Uri.parse(videoId)!!, extension!!)!!), true)
+            simpleExoPlayer!!.prepare()
+            simpleExoPlayer!!.setMediaSource(buildMediaSource(Uri.parse(videoId)!!,
+                MediaSourceUtil.getExtension(Uri.parse(videoId))!!))
             simpleExoPlayer!!.playWhenReady = true
         }
 
@@ -938,21 +944,20 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
 
     }
 
-    private fun buildMediaSource(uri: Uri, overrideExtension: String): MediaSource? {
+    private fun buildMediaSource(uri: Uri, overrideExtension: String): MediaSource {
         @C.ContentType val type = Util.inferContentType(uri, overrideExtension)
         return when (type) {
             C.TYPE_HLS -> HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
                 .createMediaSource(uri)
             C.TYPE_OTHER -> if (uri.toString().contains("mp4") || uri.toString().contains(".MOV")) {
-                ExtractorMediaSource.Factory(dataSourceFactory!!).createMediaSource(uri)
+                ProgressiveMediaSource.Factory(dataSourceFactory!!).createMediaSource(uri)
             } else {
                 if (uri.toString().contains(".MOV") || uri.toString().contains("mp4")) {
-                    ExtractorMediaSource.Factory(dataSourceFactory!!).createMediaSource(uri)
+                    ProgressiveMediaSource.Factory(dataSourceFactory!!).createMediaSource(uri)
                 } else {
                     HlsMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
                         .createMediaSource(uri)
                 }
-
             }
             else -> {
                 throw IllegalStateException("Unsupported type: $type")
@@ -1049,7 +1054,6 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
         }*/
         if (playbackState == Player.STATE_READY) {
             binding.progressBar.visibility = View.GONE
-            binding.relVideoNotWorking.visibility = View.GONE
             hide()
         } else {
             show()
@@ -1070,7 +1074,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.d("TAG", "onPlayerError: $error")
         binding.progressBar.visibility = View.GONE
-        binding.relVideoNotWorking.visibility = View.VISIBLE
+        binding.relVideoNotWorking.visibility = View.GONE
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

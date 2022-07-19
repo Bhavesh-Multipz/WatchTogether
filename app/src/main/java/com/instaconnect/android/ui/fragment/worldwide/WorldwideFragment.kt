@@ -478,14 +478,14 @@ ${post_item.caption}"""
         var lng = 0.0
         var includeOtherMedia = 1
 
-        if (Prefrences.getBooleanPreferences(requireContext(), Constants.PREF_HAS_COUNTRY)!!) {
+        if (Prefrences.getBooleanPreferences(requireContext(), Constants.PREF_HAS_COUNTRY)) {
             country = Prefrences.getPreferences(requireContext(), "explore_country")!!
-        } else if (Prefrences.getBooleanPreferences(requireContext(), Constants.PREF_HAS_DISTANCE)!!) {
+        } else if (Prefrences.getBooleanPreferences(requireContext(), Constants.PREF_HAS_DISTANCE)) {
             radius = Prefrences.getPreferences(requireContext(), Constants.PREF_SEARCH_BY_DISTANCE)!!
-            if (HomeActivity.userLocation!!.latitude != null && HomeActivity.userLocation!!.longitude != null) {
+            if (HomeActivity.userLocation != null) {
                 lat = HomeActivity.userLocation!!.latitude
                 lng = HomeActivity.userLocation!!.longitude
-            }
+            } 
         }
 
         if (trending != null) {

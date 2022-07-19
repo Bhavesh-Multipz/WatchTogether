@@ -121,6 +121,13 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
             }
         }
 
+        if (managePermissions.checkPermissions()) {
+            detectLocation()
+        } else {
+            permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
+                PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
+        }
+
         // load Preference response handler
         viewModel.loadPreferenceResponse.observe(this) {
             when (it) {
@@ -324,6 +331,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     override fun onResume() {
         super.onResume()
+
         handleNotification()
     }
 
@@ -515,7 +523,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                     Log.i("TAG", "Location settings are not satisfied. Show the user a dialog to upgrade location settings")
                     try {
-                        status.startResolutionForResult(this@HomeActivity, 123456)
+
                     } catch (e: IntentSender.SendIntentException) {
                         Log.i("TAG", "PendingIntent unable to execute request.")
                     }
@@ -546,8 +554,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         }
     }
 
+
     override fun onLocationChanged(p0: Location) {
-        userLocation = location
+        userLocation = p0
     }
 
     override fun onClick(v: View?) {

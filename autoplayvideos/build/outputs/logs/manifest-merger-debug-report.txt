@@ -1,8 +1,8 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:1-12:12
-INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:1-12:12
-INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:1-12:12
+ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:1-14:12
+INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:1-14:12
+INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:1-14:12
 	package
 		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:2:5-50
 		INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml
@@ -10,21 +10,23 @@ INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autopla
 	xmlns:android
 		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:1:11-69
 application
-ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:4:5-10:19
+ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:4:5-12:19
 	android:supportsRtl
-		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:6:9-35
+		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:8:9-35
 	android:label
-		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:5:45-77
+		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:6:9-41
+	android:largeHeap
+		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:7:9-33
 	android:allowBackup
 		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:4:18-44
 	android:usesCleartextTraffic
 		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:5:9-44
 service#com.allattentionhere.autoplayvideos.AAH_DownloadService
-ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:7:9-9:40
+ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:9:9-11:40
 	android:exported
-		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:9:13-37
+		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:11:13-37
 	android:name
-		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:8:13-48
+		ADDED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml:10:13-48
 uses-sdk
 INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\Bhavesh Workshop\Projects\Running Project\WatchTogather\autoplayvideos\src\main\AndroidManifest.xml

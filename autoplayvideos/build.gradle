@@ -7,8 +7,6 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -40,7 +38,10 @@ dependencies {
     // Shiny: Compile replaced with implementation
 
     implementation "androidx.recyclerview:recyclerview:1.2.1"
-    api "com.google.android.exoplayer:exoplayer:$rootProject.exoplayer"
+    api "com.google.android.exoplayer:exoplayer:2.14.2"
+    implementation 'com.google.android.exoplayer:extension-okhttp:2.14.2'
+    implementation 'com.google.android.exoplayer:extension-cast:2.14.2'
+
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'

@@ -7,6 +7,9 @@ data class PostReactionSocketResponse(
 	@field:SerializedName("post_id")
 	val postId: String? = null,
 
+	@field:SerializedName("user_id")
+	val userId: String? = null,
+
 	@field:SerializedName("success")
 	val success: Int? = null,
 
