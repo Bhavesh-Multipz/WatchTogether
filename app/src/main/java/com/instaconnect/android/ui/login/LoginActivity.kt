@@ -8,9 +8,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -33,12 +36,12 @@ import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.ui.profile.PrivateProfileActivity
 import com.instaconnect.android.ui.terms_webview.TermsWebViewActivity
-import com.instaconnect.android.utils.CommonUtil
 import com.instaconnect.android.utils.Constants
 import com.instaconnect.android.utils.Prefrences
 import com.instaconnect.android.utils.models.User
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
+
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -234,7 +237,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
-                positionOffsetPixels: Int
+                positionOffsetPixels: Int,
             ) {
             }
 
@@ -300,28 +303,46 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         googleSignInLauncher.launch(signInIntent)
     }
 
-    var googleSignInLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    var googleSignInLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult(),
+    ActivityResultCallback<ActivityResult> { result ->
+        if (result.data != null) {
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 handleSignInResult(task)
             }
+            if (result.resultCode == Activity.RESULT_CANCELED) {
+                Log.d("TAG", "From Activity2:    CANCELLED\n")
+            }
+        } else {
+            Log.d("TAG", "From Activity2:    NO DATA\n")
         }
+    })
+
+    /*var googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleSignInResult(task)
+            }
+        }*/
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             Log.e("GoogleSingin", account.id + "....." + account.email)
 
-            number = account.id!!
-            userName = account.displayName!!
-            userPhotoUri = account.photoUrl.toString()
-            viewModel.viewModelScope.launch {
-                viewModel.sendSocialId(
-                    account!!.id!!, "0", deviceToken, "android", account.displayName!!,
-                    if (account.photoUrl != null) account.photoUrl.toString() else ""
-                )
+            if(account != null && account.id != null){
+                number = account.id!!
+                userName = if(account.displayName == null) "" else account.displayName!!
+                userPhotoUri = account.photoUrl.toString()
+                viewModel.viewModelScope.launch {
+                    viewModel.sendSocialId(
+                        account.id!!, "0", deviceToken, "android", account.displayName!!,
+                        if (account.photoUrl != null) account.photoUrl.toString() else ""
+                    )
+                }
             }
+
         } catch (e: ApiException) {
             Log.w("SigningError", "signInResult:failed code=" + e.statusCode)
         }

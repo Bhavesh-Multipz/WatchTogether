@@ -116,6 +116,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         // notification status by default ON
         Prefrences.savePreferencesString(this, Constants.PREF_NOTIFICATION_STATUS, "1")
 
+
         FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
             if (result != null) {
                 updateToken(result)
@@ -127,12 +128,15 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
             }
         }
 
-        if (managePermissions.checkPermissions()) {
-            detectLocation()
-        } else {
-            permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
-                PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (managePermissions.checkPermissions()) {
+                detectLocation()
+            } else {
+                permissionUtil!!.requestPermissionsGroup(Constants.appPermissionsForHomeScreen,
+                    PermissionUtil.PERMISSIONS_STORAGE_CAMERA_AUDIO_GROUP_CODE)
+            }
+        }, 10000)
+
 
         // load Preference response handler
         viewModel.loadPreferenceResponse.observe(this) {
@@ -569,7 +573,10 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                     Log.i("TAG", "Location settings are not satisfied. Show the user a dialog to upgrade location settings")
                     try {
-                        showPermissionDialog()
+                        runOnUiThread(Runnable {
+                            showPermissionDialog()
+                        })
+
                     } catch (e: IntentSender.SendIntentException) {
                         Log.i("TAG", "PendingIntent unable to execute request.")
                     }
@@ -614,7 +621,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
             startActivity(intent)
             dialog.dismiss()
         }
-        dialog.show()
+        if (!(this@HomeActivity).isFinishing) {
+            dialog.show()
+        }
     }
 
     override fun onRequestPermissionsResult(

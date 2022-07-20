@@ -101,4 +101,15 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_15sdp" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:indeterminateTint="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="@dimen/_40sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:indeterminate="true"/>
+
 </com.instaconnect.android.widget.RelativeViewLayout>

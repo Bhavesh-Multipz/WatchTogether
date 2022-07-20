@@ -6,10 +6,12 @@ public class YtFile {
 
     private Format format;
     private String url = "";
+    private int position;
 
-    YtFile(Format format, String url) {
+    YtFile(Format format, String url, int position) {
         this.format = format;
         this.url = url;
+        this.position = position;
     }
 
     /**
@@ -17,6 +19,10 @@ public class YtFile {
      */
     public String getUrl() {
         return url;
+    }
+
+    public int getPosition(){
+        return position;
     }
 
     /**

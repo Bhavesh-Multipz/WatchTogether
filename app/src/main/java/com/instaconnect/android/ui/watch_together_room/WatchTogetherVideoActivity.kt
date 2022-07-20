@@ -886,7 +886,7 @@ class WatchTogetherVideoActivity : AppCompatActivity(), Player.EventListener, Vi
             override fun onExtractionComplete(ytFiles: SparseArray<YtFile>?, videoMeta: VideoMeta?) {
 
                 if (ytFiles != null) {
-                    val videoTag = 135 // 480p MP4 video
+
                     val audioTag = 140 // audio tab for m4a
 
 

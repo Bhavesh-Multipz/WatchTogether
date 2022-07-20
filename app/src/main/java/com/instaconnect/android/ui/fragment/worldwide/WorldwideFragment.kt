@@ -865,7 +865,7 @@ ${post_item.caption}"""
         post: PostsList?,
         imageView: ImageView?,
         type: Int,
-        position: Int,
+        position: Int, videoUrlNew: String
     ) {
         if (type == VideoListAdapter.VIDEO) {
             makeServerCallForIncreaseView(post!!.id!!, position)
@@ -873,7 +873,11 @@ ${post_item.caption}"""
                 val intent =
                     BaseIntent(requireActivity(), WatchTogetherVideoActivity::class.java, false)
                 intent.putExtra("USER_ID", post.userId)
-                intent.putExtra("VIDEO_ID", post.hyperlink)
+                if(post.youTubeVideoId!!.isEmpty()){
+                    intent.putExtra("VIDEO_ID", post.hyperlink)
+                } else {
+                    intent.putExtra("VIDEO_ID", videoUrlNew)
+                }
                 intent.putExtra("POST_ID", post.mediaType)
                 intent.putExtra("ROOM_NAME", post.groupName)
                 intent.putExtra("USER_NAME", post.username)
@@ -1029,6 +1033,7 @@ ${post_item.caption}"""
         password: String?,
         hyperLink: String?,
         type: Int,
+        videoUrlNew: String
     ) {
         val dialog = Dialog(requireContext(), R.style.CustomDialogTheme)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
@@ -1062,7 +1067,7 @@ ${post_item.caption}"""
                 Toast.makeText(context, "Please enter password", Toast.LENGTH_SHORT).show()
             } else {
                 if (enteredPassword == password) {
-                    goToWatchTogetherVideoActivity(post!!, type)
+                    goToWatchTogetherVideoActivity(post!!, type, videoUrlNew)
                     dialog.dismiss()
                 } else {
                     Toast.makeText(
@@ -1076,13 +1081,19 @@ ${post_item.caption}"""
         dialog.show()
     }
 
-    private fun goToWatchTogetherVideoActivity(post: PostsList, type: Int) {
+    private fun goToWatchTogetherVideoActivity(post: PostsList, type: Int, videoUrlNew: String) {
         if (type == VideoListAdapter.VIDEO) {
             if (post.mediaType.equals("web", ignoreCase = true)) {
                 val intent =
                     BaseIntent(requireActivity(), WatchTogetherVideoActivity::class.java, false)
                 intent.putExtra("USER_ID", post.userId)
-                intent.putExtra("VIDEO_ID", post.hyperlink)
+
+                if(post.youTubeVideoId!!.isEmpty()){
+                    intent.putExtra("VIDEO_ID", post.hyperlink)
+                } else {
+                    intent.putExtra("VIDEO_ID", videoUrlNew)
+                }
+
                 intent.putExtra("POST_ID", post.mediaType)
                 intent.putExtra("ROOM_NAME", post.groupName)
                 intent.putExtra("USER_NAME", post.username)
@@ -1099,7 +1110,11 @@ ${post_item.caption}"""
                 val intent =
                     BaseIntent(requireActivity(), WatchTogetherVideoActivity::class.java, false)
                 intent.putExtra("USER_ID", post.userId)
-                intent.putExtra("VIDEO_ID", post.youTubeVideoId)
+                if(post.youTubeVideoId!!.isEmpty()){
+                    intent.putExtra("VIDEO_ID", post.hyperlink)
+                } else {
+                    intent.putExtra("VIDEO_ID", videoUrlNew)
+                }
                 intent.putExtra("POST_ID", post.mediaType)
                 intent.putExtra("ROOM_NAME", post.groupName)
                 intent.putExtra("USER_NAME", post.username)

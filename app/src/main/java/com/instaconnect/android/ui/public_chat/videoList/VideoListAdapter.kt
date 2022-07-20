@@ -264,25 +264,24 @@ class VideoListAdapter(
                         val url480 = 135
                         val url720 = 136
 
-
-                        if (ytFiles.get(url360) != null) {
-                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url360).url)
-                        } else if (ytFiles.get(url240) != null) {
-                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url240).url)
-                        } else if (ytFiles.get(url144) != null) {
-                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url144).url)
-                        } else if (ytFiles.get(url480) != null) {
-                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url480).url)
-                        } else if (ytFiles.get(url720) != null) {
-                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(url720).url)
-                        } else if (ytFiles.get(downloadableUrl) != null) {
-                            viewHolder.videoUrl = proxyCacheServer.getProxyUrl(ytFiles.get(downloadableUrl).url)
+                        if(position == ytFiles.get(url240).position){
+                            if (ytFiles.get(url360) != null) {
+                                viewHolder.videoUrl = ytFiles.get(url360).url /*proxyCacheServer.getProxyUrl(ytFiles.get(url360).url)*/
+                            } else if (ytFiles.get(url240) != null) {
+                                viewHolder.videoUrl = ytFiles.get(url240).url /*proxyCacheServer.getProxyUrl(ytFiles.get(url240).url)*/
+                            } else if (ytFiles.get(url144) != null) {
+                                viewHolder.videoUrl = ytFiles.get(url144).url /*proxyCacheServer.getProxyUrl(ytFiles.get(url144).url)*/
+                            } else if (ytFiles.get(url480) != null) {
+                                viewHolder.videoUrl = ytFiles.get(url480).url /*proxyCacheServer.getProxyUrl(ytFiles.get(url480).url)*/
+                            } else if (ytFiles.get(url720) != null) {
+                                viewHolder.videoUrl = ytFiles.get(url720).url /*proxyCacheServer.getProxyUrl(ytFiles.get(url720).url)*/
+                            } else if (ytFiles.get(downloadableUrl) != null) {
+                                viewHolder.videoUrl = ytFiles.get(downloadableUrl).url /*proxyCacheServer.getProxyUrl(ytFiles.get(downloadableUrl).url)*/
+                            }
                         }
-
-
                     }
                 }
-            }.extract(postsLists[position].hyperlink!!, true, true)
+            }.extract(postsLists[position].hyperlink!!, true, true, position)
 
         } else {
             if (postsLists[position].thumbnail!!.contains("http")) {
@@ -420,7 +419,7 @@ class VideoListAdapter(
         }
         viewHolder.tvText.setOnClickListener {
             listListener.onItemSingleClick(
-                postsLists[position], viewHolder.imageView, VIDEO, position
+                postsLists[position], viewHolder.imageView, VIDEO, position, viewHolder.videoUrl
             )
         }
         viewHolder.itemView.setOnClickListener(object : DoubleClickListener() {
@@ -431,7 +430,7 @@ class VideoListAdapter(
                     listListener.onPrivateRoomVideoClick(
                         postsLists[position], postsLists[position].mediaType,
                         postsLists[position].groupPassword,
-                        postsLists[position].hyperlink, VIDEO
+                        postsLists[position].hyperlink, VIDEO, viewHolder.videoUrl
                     )
                 } else {
                     val totalViewCount = postsLists[position].totalViews!!.toInt()
@@ -442,7 +441,7 @@ class VideoListAdapter(
                         postsLists[position],
                         viewHolder.imageView,
                         VIDEO,
-                        position
+                        position,viewHolder.videoUrl
                     )
                 }
             }
@@ -796,7 +795,7 @@ class VideoListAdapter(
                         postsLists[position],
                         viewHolder.imageView,
                         YOUTUBE,
-                        position
+                        position,viewHolder.videoUrl
                     )
                 } else {
                     // password protected watch together youtube vdo
@@ -805,7 +804,7 @@ class VideoListAdapter(
                         postsLists[position].mediaType,
                         postsLists[position].groupPassword,
                         postsLists[position].hyperlink,
-                        YOUTUBE
+                        YOUTUBE,viewHolder.videoUrl
                     )
                 }
             }
@@ -816,7 +815,7 @@ class VideoListAdapter(
                     postsLists[position],
                     viewHolder.imageView,
                     YOUTUBE,
-                    position
+                    position,""
                 )
             } else {
                 // password protected watch together youtube vdo
@@ -825,7 +824,7 @@ class VideoListAdapter(
                     postsLists[position].mediaType,
                     postsLists[position].groupPassword,
                     postsLists[position].hyperlink,
-                    YOUTUBE
+                    YOUTUBE,""
                 )
             }
         }
@@ -853,7 +852,7 @@ class VideoListAdapter(
                     postsLists[position],
                     viewHolder.imageView,
                     YOUTUBE,
-                    position
+                    position,""
                 )
             } else {
                 // password protected watch together youtube vdo
@@ -862,7 +861,7 @@ class VideoListAdapter(
                     postsLists[position].mediaType,
                     postsLists[position].groupPassword,
                     postsLists[position].hyperlink,
-                    YOUTUBE
+                    YOUTUBE,""
                 )
             }
         }
@@ -877,7 +876,7 @@ class VideoListAdapter(
                 postsLists.get(position),
                 viewHolder.getImageView(),
                 YOUTUBE,
-                position
+                position,""
             )
         } else {
             // password protected watch together youtube vdo
@@ -886,7 +885,7 @@ class VideoListAdapter(
                 postsLists.get(position).mediaType,
                 postsLists.get(position).groupPassword,
                 postsLists.get(position).hyperlink,
-                YOUTUBE
+                YOUTUBE,""
             )
         }
         }
@@ -1139,14 +1138,14 @@ class VideoListAdapter(
                         postsLists[position],
                         viewHolder.mCover,
                         GRID_VIEW,
-                        position
+                        position,""
                     )
                 } else {
                     listListener.onItemSingleClick(
                         postsLists[viewHolder.bindingAdapterPosition],
                         viewHolder.mCover,
                         IMAGE,
-                        position
+                        position,""
                     )
                 }
             }
@@ -1409,7 +1408,7 @@ class VideoListAdapter(
 
     interface VideoListListener {
         fun onItemViewClick(post: PostsList?, imageView: ImageView?, type: Int)
-        fun onItemSingleClick(post: PostsList?, imageView: ImageView?, type: Int, position: Int)
+        fun onItemSingleClick(post: PostsList?, imageView: ImageView?, type: Int, position: Int, holderVideoId : String)
         fun onTextItemClick(post: PostsList?, textView: TextView?, type: Int, position: Int)
         fun onOptionClick(position: Int, post: PostsList?, type: Int)
         fun onItemClick(position: Int, post: PostsList?, view: View?)
@@ -1419,6 +1418,7 @@ class VideoListAdapter(
             password: String?,
             hyperLink: String?,
             type: Int,
+            holderVideoId : String
         )
     }
 

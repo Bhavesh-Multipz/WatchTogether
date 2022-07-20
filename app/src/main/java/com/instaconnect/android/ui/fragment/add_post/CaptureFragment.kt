@@ -323,7 +323,7 @@ class CaptureFragment : BaseFragment<CaptureFragmentViewModel, FragmentCaptureBi
                 if (enteredLink.isEmpty()) {
                     ToastUtil.showToast("Enter Link")
                 } else {
-                    if (!enteredLink.contains("http")) {
+                    if (!enteredLink.contains("http") && enteredLink.contains(".")) {
                         enteredLink = "http://$enteredLink"
                         getDataFromYoutubeUrl(enteredLink)
                     } else {

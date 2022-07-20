@@ -21,6 +21,7 @@ import com.instaconnect.android.network.Resource
 import com.instaconnect.android.ui.home.HomeActivity
 import com.instaconnect.android.utils.*
 import com.instaconnect.android.utils.Utils.toast
+import com.instaconnect.android.utils.Utils.visible
 import com.instaconnect.android.utils.helper_classes.GlideHelper
 import com.instaconnect.android.utils.models.User
 import gun0912.tedimagepicker.builder.TedImagePicker
@@ -73,6 +74,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.profileResponse.observe(this) {
             when (it) {
                 is Resource.Success -> {
+                    hideProgressBar()
                     if (it.value.response != null) {
                         if (it.value.response!!.code == "200") {
                             ToastUtil.showToast("Profile Updated Successfully")
@@ -93,6 +95,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
                 is Resource.Failure -> {
+                    hideProgressBar()
                     ToastUtil.showToast(it.toString())
                 }
                 else -> {}
@@ -112,8 +115,6 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
         mCurrentPhotoPath = bn.getString("profilePhoto")
 
         GlideHelper.loadFromUrl(this, mCurrentPhotoPath, R.drawable.ic_avtar_placeholder, binding.imgProfile)
-
-
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
 
@@ -148,6 +149,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_continue -> {
+
                 saveProfile()
             }
 
@@ -183,7 +185,6 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                     mediaFile = profileFile!!
                 }
 
-
                 val mediaFileBody: ProgressRequestBody = ProgressRequestBody(
                     mediaFile,
                     ProgressRequestBody.IMAGE, null
@@ -198,6 +199,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
                 params["username"] = name
 
                 viewModel.viewModelScope.launch {
+                    showProgressBar()
                     viewModel.addProfile(filePart!!, params)
                 }
 
@@ -206,6 +208,16 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
 
+    }
+
+    private fun showProgressBar() {
+        binding.btnContinue.visible(false)
+        binding.progressBar.visible(true)
+    }
+
+    private fun hideProgressBar() {
+        binding.btnContinue.visible(true)
+        binding.progressBar.visible(false)
     }
 
     private fun showSingleImage(uri: Uri) {

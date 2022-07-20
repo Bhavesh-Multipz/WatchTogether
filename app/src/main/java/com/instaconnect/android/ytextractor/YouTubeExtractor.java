@@ -41,6 +41,7 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
     static boolean CACHING = true;
     static boolean LOGGING = false;
 
+    int position;
     private final static String LOG_TAG = "YouTubeExtractor";
     private final static String CACHE_FILE_NAME = "decipher_js_funct";
 
@@ -150,6 +151,11 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
     /**
      * @deprecated Use {@link #extract(String)} instead.
      */
+    public void extract(String youtubeLink, boolean parseDashManifest, boolean includeWebM, int position) {
+        this.position = position;
+        this.execute(youtubeLink);
+    }
+
     public void extract(String youtubeLink, boolean parseDashManifest, boolean includeWebM) {
         this.execute(youtubeLink);
     }
@@ -251,7 +257,7 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
                 if (FORMAT_MAP.get(itag) != null) {
                     if (format.has("url")) {
                         String url = format.getString("url").replace("\\u0026", "&");
-                        ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url));
+                        ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url, position));
                     } else if (format.has("signatureCipher")) {
 
                         mat = patSigEncUrl.matcher(format.getString("signatureCipher"));
@@ -259,7 +265,7 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
                         if (mat.find() && matSig.find()) {
                             String url = URLDecoder.decode(mat.group(1), "UTF-8");
                             String signature = URLDecoder.decode(matSig.group(1), "UTF-8");
-                            ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url));
+                            ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url, position));
                             encSignatures.append(itag, signature);
                         }
                     }
@@ -280,7 +286,7 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
                 if (FORMAT_MAP.get(itag) != null) {
                     if (adaptiveFormat.has("url")) {
                         String url = adaptiveFormat.getString("url").replace("\\u0026", "&");
-                        ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url));
+                        ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url, position));
                     } else if (adaptiveFormat.has("signatureCipher")) {
 
                         mat = patSigEncUrl.matcher(adaptiveFormat.getString("signatureCipher"));
@@ -288,7 +294,7 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
                         if (mat.find() && matSig.find()) {
                             String url = URLDecoder.decode(mat.group(1), "UTF-8");
                             String signature = URLDecoder.decode(matSig.group(1), "UTF-8");
-                            ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url));
+                            ytFiles.append(itag, new YtFile(FORMAT_MAP.get(itag), url,position));
                             encSignatures.append(itag, signature);
                         }
                     }
@@ -353,7 +359,7 @@ public abstract class YouTubeExtractor extends AsyncTask<String, Void, SparseArr
                     int key = encSignatures.keyAt(i);
                     String url = ytFiles.get(key).getUrl();
                     url += "&sig=" + sigs[i];
-                    YtFile newFile = new YtFile(FORMAT_MAP.get(key), url);
+                    YtFile newFile = new YtFile(FORMAT_MAP.get(key), url, position);
                     ytFiles.put(key, newFile);
                 }
             }

@@ -31,13 +31,13 @@ class InstaConnectApp : BaseApp() {
     private var proxy: HttpProxyCacheServer? = null
 
     fun getProxy(context: Context): HttpProxyCacheServer? {
-        var app: InstaConnectApp = context.getApplicationContext() as InstaConnectApp
+        var app: InstaConnectApp = context.applicationContext as InstaConnectApp
         return if (app.proxy == null) app.newProxy().also { app.proxy = it } else app.proxy
     }
 
     private fun newProxy(): HttpProxyCacheServer? {
         return HttpProxyCacheServer.Builder(this)
-            .maxCacheSize(500000000) // 500 mb for cache
+            .maxCacheSize(1024*1024*1024) // 1 gb for cache
             .build()
     }
 

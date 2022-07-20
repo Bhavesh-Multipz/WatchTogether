@@ -15,10 +15,6 @@ import java.util.Date;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * Created by krupenghetiya on 03/05/17.
- */
-
 public class AAH_DownloadService extends IntentService {
 
     public AAH_DownloadService() {
