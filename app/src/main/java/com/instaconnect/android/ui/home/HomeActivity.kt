@@ -116,17 +116,22 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
         // notification status by default ON
         Prefrences.savePreferencesString(this, Constants.PREF_NOTIFICATION_STATUS, "1")
 
-
-        FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
-            if (result != null) {
-                updateToken(result)
-                Prefrences.savePreferencesString(
-                    this@HomeActivity,
-                    Constants.PREF_DEVICE_TOKEN,
-                    result
-                )
+        try {
+            FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
+                if (result != null) {
+                    updateToken(result)
+                    Prefrences.savePreferencesString(
+                        this@HomeActivity,
+                        Constants.PREF_DEVICE_TOKEN,
+                        result
+                    )
+                }
             }
+        } catch (e: IllegalStateException) {
+            //Firebase not initialized automatically, do it manually
+            FirebaseApp.initializeApp(this)
         }
+
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (managePermissions.checkPermissions()) {
@@ -213,7 +218,10 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
             startActivity(browserIntent)
             dialog.dismiss()
         }
-        dialog.show()
+
+        if (!(this@HomeActivity).isFinishing) {
+            dialog.show()
+        }
 
     }
 
@@ -355,7 +363,8 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     private fun handleNotification() {
         if (intent.getStringExtra("from") != null && intent.getStringExtra("from")
-                .equals("notification")) {
+                .equals("notification")
+        ) {
             intent.putExtra(
                 "from",
                 ""
@@ -440,7 +449,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 )
             }
         })
-        dialog.show()
+        if (!(this@HomeActivity).isFinishing) {
+            dialog.show()
+        }
     }
 
     private fun verifyVideoPasswordDialog(groupPassword: String, postObject: JSONObject) {
@@ -489,7 +500,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                 }
             }
         }
-        dialog.show()
+        if (!(this@HomeActivity).isFinishing) {
+            dialog.show()
+        }
     }
 
     private fun goToWatchPartyRoom(postObject: JSONObject) {
@@ -641,9 +654,9 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
                         showAddPostFragment()
                 } else {
 
-                    if(!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForStorage)){
+                    if (!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForStorage)) {
                         permissionUtil!!.openPermissionDeniedPopup(this, Constants.PERMISSION_TAG_STORAGE)
-                    } else if(!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForLocation)){
+                    } else if (!permissionUtil!!.hasPermissionsGroup(Constants.appPermissionsForLocation)) {
                         permissionUtil!!.openPermissionDeniedPopup(this, Constants.PERMISSION_TAG_LOCATION)
                     }
                 }

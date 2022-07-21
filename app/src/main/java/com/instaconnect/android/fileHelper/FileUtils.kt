@@ -53,7 +53,7 @@ class FileUtils     //private constructor to enforce Singleton pattern
      * @return The MIME type for the give Uri.
      */
     fun getMimeType(uri: Uri): String? {
-        val file = File(getPath(uri))
+        val file = File(getPath(uri)!!)
         return getMimeType(file)
     }
 
@@ -309,7 +309,7 @@ class FileUtils     //private constructor to enforce Singleton pattern
          */
         fun getMimeType(file: File): String? {
             val extension = getExtension(file.name)
-            return if (extension!!.length > 0) MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            return if (extension != null && extension.isNotEmpty()) MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                 extension.substring(1)
             ) else "application/octet-stream"
         }

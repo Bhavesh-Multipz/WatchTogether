@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        hashFromSHA1("32:3E:27:38:E3:DC:03:DD:6B:1E:AE:B4:A5:90:EB:CF:E2:40:0B:1A")
+        //hashFromSHA1("32:3E:27:38:E3:DC:03:DD:6B:1E:AE:B4:A5:90:EB:CF:E2:40:0B:1A")
 
         managePermissions = ManagePermissions(this, list.toList(), permissionsRequestCode)
         setUpNavigation()

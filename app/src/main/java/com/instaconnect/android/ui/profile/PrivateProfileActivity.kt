@@ -149,7 +149,6 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_continue -> {
-
                 saveProfile()
             }
 
@@ -173,7 +172,7 @@ class PrivateProfileActivity : AppCompatActivity(), View.OnClickListener {
 
         if (name.isEmpty()) {
             ToastUtil.showToast("Please enter name")
-        } else if (mCurrentPhotoPath!!.isEmpty() && mCurrentPhotoPath.equals("null")|| mCurrentPhotoPath.equals("http://15.222.88.69/uploads/default_pic.png")) {
+        } else if (mCurrentPhotoPath == null && mCurrentPhotoPath!!.isEmpty() && mCurrentPhotoPath.equals("null")|| mCurrentPhotoPath.equals("http://15.222.88.69/uploads/default_pic.png")) {
             ToastUtil.showToast("Please add profile picture")
         } else {
             if (Utils.isConnected(this)) {

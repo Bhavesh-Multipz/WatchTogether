@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -41,6 +40,8 @@ import com.instaconnect.android.utils.Prefrences
 import com.instaconnect.android.utils.models.User
 import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.*
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -265,6 +266,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.img_google -> {
+
                 signIn()
             }
             R.id.img_fb -> {
