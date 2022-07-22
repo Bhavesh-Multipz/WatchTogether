@@ -10,7 +10,7 @@ class HomeRepository constructor(private val api : MyApi): BaseRepository() {
     suspend fun loadPreference(
         version: String,
         device_type: String,
-        userId: String,
+        userId: String
     ) = safeApiCall {
         api.loadPreference(version, device_type, userId)
     }
@@ -19,7 +19,7 @@ class HomeRepository constructor(private val api : MyApi): BaseRepository() {
         deviceToken: String?,
         userId: String?,
         deviceType: String?,
-        voipToken: String?,
+        voipToken: String?
     ) = safeApiCall {
         api.updateToken(deviceToken, userId, deviceType,voipToken)
     }

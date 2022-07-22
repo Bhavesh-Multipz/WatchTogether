@@ -22,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
     var isLogin: Boolean = false
 
     var list = arrayOf(
-        Manifest.permission.INTERNET,
+        Manifest.permission.INTERNET
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

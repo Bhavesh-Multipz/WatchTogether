@@ -26,6 +26,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.PendingResult
@@ -641,7 +642,7 @@ class HomeActivity : AppCompatActivity(), LocationListener, View.OnClickListener
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {

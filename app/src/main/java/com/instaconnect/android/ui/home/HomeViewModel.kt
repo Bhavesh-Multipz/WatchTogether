@@ -25,7 +25,7 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
     suspend fun loadPreference(
         version: String,
         device_type: String,
-        userId: String,
+        userId: String
     ) = viewModelScope.launch {
         _loadPreferenceResponse.value = Resource.Loading
         _loadPreferenceResponse.value = repository.loadPreference(version, device_type,userId)
@@ -35,7 +35,7 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
         deviceToken: String?,
         userId: String?,
         deviceType: String?,
-        voipToken: String?,
+        voipToken: String?
     ) = viewModelScope.launch {
         _updateTokenResponse.value = Resource.Loading
         _updateTokenResponse.value = repository.updateToken(deviceToken,userId,deviceType,voipToken)
